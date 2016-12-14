@@ -80,29 +80,29 @@
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:src="@drawable/default_gray_square"
                     android:layout_weight="1"
                     android:padding="@dimen/eightDP"/>
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_weight="1.4">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:padding="@dimen/eightDP"
-                        android:layout_weight="1"
+                        android:layout_weight="1.4"
                         android:text="Complementary Metal OXide Semiconductor VLSI Design"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-                        android:minLines="3"
+                        android:maxLines="3"
                         android:ellipsize="end"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:padding="@dimen/eightDP"
-                        android:layout_weight="1"
+                        android:layout_weight="0.6"
                         android:text="Techmax Publications"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:maxLines="3"
