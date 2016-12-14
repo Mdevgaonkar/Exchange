@@ -29,4 +29,5 @@
     <dimen name="zeroDp">0dp</dimen>
     <dimen name="sixtyFourDp">64dp</dimen>
     <dimen name="badge_text_size">13sp</dimen>
+    <dimen name="twoHundredDp">200dp</dimen>
 </resources>

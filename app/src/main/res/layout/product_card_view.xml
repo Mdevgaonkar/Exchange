@@ -47,16 +47,16 @@
             android:paddingRight="@dimen/eightDP"
             android:paddingBottom="@dimen/eightDP"
             android:layout_gravity="center_vertical">
-            <TextView
-                android:id="@+id/product_publisher"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:text="@string/publication"
-                android:gravity="center_vertical"
-                android:ellipsize="end"
-                android:maxLines="1"/>
+            <!--<TextView-->
+                <!--android:id="@+id/product_publisher"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"-->
+                <!--android:text="@string/publication"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:ellipsize="end"-->
+                <!--android:maxLines="1"/>-->
             <TextView
                 android:id="@+id/product_price"
                 android:layout_width="0dp"

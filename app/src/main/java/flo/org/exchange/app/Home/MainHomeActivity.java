@@ -36,6 +36,7 @@ import java.util.List;
 
 import flo.org.exchange.R;
 import flo.org.exchange.app.Home.Buy.BuyFragment;
+import flo.org.exchange.app.Home.ProductView.productView;
 import flo.org.exchange.app.Home.sell.SellFragment;
 import flo.org.exchange.app.Login.Person;
 import flo.org.exchange.app.utils.cartViewUtils.BadgeDrawable;
@@ -292,8 +293,8 @@ public class MainHomeActivity extends AppCompatActivity
 
         if (id == R.id.settings) {
 //            openCustomTab("https://google.com");
-//            Intent cct = new Intent(this, DemoListActivity.class);
-//            startActivity(cct);
+            Intent cct = new Intent(this, productView.class);
+            startActivity(cct);
         } //else if (id == R.id.nav_gallery) {
 //
 //        } else if (id == R.id.nav_slideshow) {

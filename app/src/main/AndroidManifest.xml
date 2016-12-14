@@ -60,10 +60,13 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".app.Home.listing.productListingActivity"
-            android:label="@string/store" />
+            android:label="@string/store"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar"/>
 
         <!-- chrome Custom Tab Activities START -->
         <activity
+            android:screenOrientation="portrait"
             android:name=".app.utils.chromeCustomTab.WebviewActivity"
             android:label="@string/title_activity_webview"></activity>
 
@@ -78,7 +81,10 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".app.Home.ProductView.productView"></activity>
+        <activity
+            android:name=".app.Home.ProductView.productView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar"/>
     </application>
 
 </manifest>

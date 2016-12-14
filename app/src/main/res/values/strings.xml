@@ -191,6 +191,9 @@
     <string name="action_cart">Shopping Cart</string>
     <string name="savingPhoneNumber">Saving Phone Number</string>
     <string name="PhoneNumberSaved">Contact Details Saved</string>
+    <string name="productsImage">Image of the Product</string>
+    <string name="addToCart">ADD TO CART</string>
+    <string name="buyNow">BUY NOW</string>
 
 
     <!--Chrome custom tabs strings START-->

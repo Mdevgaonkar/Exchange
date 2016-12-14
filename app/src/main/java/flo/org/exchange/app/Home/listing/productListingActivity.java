@@ -59,7 +59,11 @@ public class productListingActivity extends AppCompatActivity
             implements View.OnClickListener,ConnectivityReceiver.ConnectivityReceiverListener{
 
     private static final String TAG = productListingActivity.class.getSimpleName();
-    private static final String WHERE_EQUAL_TO = "?where=";
+    private static final String QUERY = "?";
+    private static final String LOAD_RELATIONS ="loadRelations=book%2Cinstrument%2Ccombopack";
+    private static final String QUERY_SEPERATOR = "&";
+    private static final String LOAD_PROPS = "props=listPrice%2CobjectId%2Cmrp%2CdateEnlisted";
+    private static final String WHERE_EQUAL_TO = "where=";
     private Toolbar activityToolbar;
     private static boolean NETWORK_STATE = false;
 
@@ -80,7 +84,7 @@ public class productListingActivity extends AppCompatActivity
 
     private TextView tv;
 
-    private ScrollView  productScrollView;
+//    private ScrollView  productScrollView;
 
     private LinearLayout errorLayout;
     private LinearLayout emptyLayout;
@@ -536,9 +540,8 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void setupRecyclerView() {
-        productScrollView = (ScrollView) findViewById(R.id.product_scrollView);
-        productScrollView.setVisibility(View.GONE);
         productRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_product_list);
+        productRecyclerView.setVisibility(View.GONE);
 
         productList = new ArrayList<>();
         productListingAdapter = new productListingAdapter(getApplicationContext(), productList);
@@ -551,7 +554,7 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void showRecyclerScrollView(){
-        productScrollView.setVisibility(View.VISIBLE);
+//        productScrollView.setVisibility(View.VISIBLE);
         productRecyclerView.setVisibility(View.VISIBLE);
         hideEmptyView();
         hideProgressLayout();
@@ -560,7 +563,7 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void hideRecyclerScrollView(){
-        productScrollView.setVisibility(View.GONE);
+//        productScrollView.setVisibility(View.GONE);
         productRecyclerView.setVisibility(View.GONE);
     }
 
@@ -588,7 +591,7 @@ public class productListingActivity extends AppCompatActivity
     private void getCollegeBranches(){
         showoptionsprogressBarLayout();
         Person person = campusExchangeApp.getInstance().getUniversalPerson();
-        String whereClauseForCollege = "colleges?where=objectId%20%3D%20%27"+person.getPersonCollegeObjectId()+"%27";
+        String whereClauseForCollege = "colleges?loadRelations=branches&where=objectId%20%3D%20%27"+person.getPersonCollegeObjectId()+"%27";
         String backendRequestUrl = getString(R.string.baseBackendUrl);
         backendRequestUrl = backendRequestUrl+whereClauseForCollege;
         JsonObjectRequest getCollegeList = new JsonObjectRequest(
@@ -721,9 +724,11 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void prepareProducts() {
+
+//        http://api.backendless.com/test/data/products?loadRelations=book%2Cinstrument%2Ccombopack&props=listPrice%2CobjectId%2Cmrp
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
-        productRequest = productRequest+___class+WHERE_EQUAL_TO+whereClause;
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+whereClause;
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,
@@ -736,6 +741,8 @@ public class productListingActivity extends AppCompatActivity
                             String responseData = response.getJSONArray(RESPONSE_DATA).toString();
                             Gson gson = campusExchangeApp.getInstance().getGson();
                             productList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            if(productList.size()>0){
+                                Log.d("Product title",productList.get(0).book.title);}
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Product list","no rational data");
@@ -746,8 +753,8 @@ public class productListingActivity extends AppCompatActivity
                         updateUI();
                         hideProgressLayout();
 
-                        tv.setText(response.toString());
-                        tv.setVisibility(View.VISIBLE);
+//                        tv.setText(response.toString());
+//                        tv.setVisibility(View.VISIBLE);
                         Log.d("Response", response.toString());
                     }
                 },
@@ -789,7 +796,7 @@ public class productListingActivity extends AppCompatActivity
     private void prepareProducts(String filter) {
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
-        productRequest = productRequest+___class+WHERE_EQUAL_TO+filter;
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter;
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,
