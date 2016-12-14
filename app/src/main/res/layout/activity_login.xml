@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimary"
+    tools:context="flo.org.exchange.app.Login.loginActivity"
+    android:fitsSystemWindows="true"
+    android:gravity="center"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        >
+        <LinearLayout
+            android:id="@+id/welcomeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/sixteenDp"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            >
+            <com.pkmmte.view.CircularImageView
+                android:id="@+id/profile_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_default_avatar"
+                app:border="true"
+                app:borderWidth="2dp"
+                app:border_color="@color/colorCard"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/welcome"
+                android:layout_marginTop="@dimen/sixteenDp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorCard"/>
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sixteenDp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorCard"/>
+
+            <TextView
+                android:id="@+id/college_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/sixteenDp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorCard"
+                android:visibility="gone"/>
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/select_college_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownSelector="@drawable/filled_background_rounded_rectangle"
+                android:dropDownWidth="match_parent"
+                android:spinnerMode="dropdown"
+                android:background="@drawable/filled_background_rounded_rectangle"
+                android:layout_margin="@dimen/sixteenDp"
+                android:visibility="gone"
+                >
+            </android.support.v7.widget.AppCompatSpinner>
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/select_course_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownSelector="@drawable/filled_background_rounded_rectangle"
+                android:dropDownWidth="match_parent"
+                android:spinnerMode="dropdown"
+                android:background="@drawable/filled_background_rounded_rectangle"
+                android:layout_margin="@dimen/sixteenDp"
+                android:visibility="gone"
+                >
+            </android.support.v7.widget.AppCompatSpinner>
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/select_year_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dropDownSelector="@drawable/filled_background_rounded_rectangle"
+                android:dropDownWidth="match_parent"
+                android:spinnerMode="dropdown"
+                android:background="@drawable/filled_background_rounded_rectangle"
+                android:layout_margin="@dimen/sixteenDp"
+                android:visibility="gone"
+                >
+            </android.support.v7.widget.AppCompatSpinner>
+
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_lets_start"
+                android:text="@string/lets_start"
+                android:textColor="@color/text_invert"
+                android:paddingRight="@dimen/sixteenDp"
+                android:paddingLeft="@dimen/sixteenDp"
+                android:layout_marginTop="@dimen/sixteenDp"
+                android:background="@drawable/button_hollow"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/sixteenDp"
+            android:layout_gravity="center"
+            android:id="@+id/splashLayout"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_campus_me"
+                android:padding="@dimen/thirtyTwoDP"
+                android:contentDescription="@string/app_logo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loginLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/sixteenDp"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/continue_with"
+            android:textColor="@color/colorCard"
+            android:gravity="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginBottom="@dimen/sixteenDp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_sign_in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/thirtyTwoDP"
+            android:layout_marginRight="@dimen/thirtyTwoDP"
+            android:layout_marginBottom="@dimen/sixteenDp"
+
+             />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/promiseText"
+            android:textColor="@color/colorCard"
+            android:gravity="center"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginBottom="@dimen/sixteenDp"/>
+
+        <TextView
+            android:id="@+id/skip_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/skip"
+            android:textColor="@color/colorCard"
+            android:layout_gravity="right"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:layout_marginTop="@dimen/sixteenDp"
+            android:layout_marginRight="@dimen/sixteenDp"
+            android:layout_marginBottom="@dimen/sixteenDp"
+            android:padding="@dimen/sixteenDp"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>

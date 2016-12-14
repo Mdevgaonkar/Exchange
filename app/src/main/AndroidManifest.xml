@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="flo.org.exchange">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name=".app.utils.campusExchangeApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.Base.NoActionBar">
+
+        <!-- Google Play Services -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <!-- Truecaller verification -->
+        <meta-data
+            android:name="com.truecaller.android.sdk.PartnerKey"
+            android:value="@string/partnerKey" />
+
+        <activity
+            android:name=".app.Home.MainHomeActivity"
+            android:label="@string/title_activity_main_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Home.HomeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Login.loginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Login.profile_options"
+            android:label="@string/my_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Login.splashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.Login.EditProfile"
+            android:label="@string/edit_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".app.Home.listing.productListingActivity"
+            android:label="@string/store" />
+
+        <!-- chrome Custom Tab Activities START -->
+        <activity
+            android:name=".app.utils.chromeCustomTab.WebviewActivity"
+            android:label="@string/title_activity_webview"></activity>
+
+        <receiver android:name=".app.utils.chromeCustomTab.ActionBroadcastReceiver" />
+        <!-- chrome Custom Tab Activities END -->
+
+        <receiver
+            android:name=".app.utils.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".app.Home.ProductView.productView"></activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,198 @@
+<resources>
+    <string name="app_name">EXchange</string>
+    <string name="title_activity_main_home">EXchange</string>
+    <string name="partnerKey">zEBwB7f6ea2dd34664b2f875c03440ed9921f</string>
+
+
+    <!--SIDE BAR-->
+    <string name="my_profile">My Account</string>
+    <string name="defaultNameText">Login to get started</string>
+    <string name="defaultCollegeText"> </string>
+    <string name="home">Home</string>
+    <string name="myOrders">My Orders</string>
+    <string name="mySells">My Sells</string>
+    <string name="whishlist">Whishlist</string>
+    <string name="notifications">Notifications</string>
+    <string name="quick_help">Quick Help</string>
+    <string name="about_us">About Us</string>
+    <string name="settings">Settings</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--OVERFLOW MENU-->
+    <string name="action_settings">Settings</string>
+
+    <!--HOME-->
+    <string name="buy">BUY</string>
+    <string name="sell">SELL</string>
+
+    <!--Default Product types-->
+    <string name="bookType">B</string>
+    <string name="instrumentType">I</string>
+    <string name="comboType">C</string>
+
+    <!--Buy Fragment-->
+    <string name="categoriesHeading">Categories</string>
+    <string name="booksCategory">Books</string>
+    <string name="utilitiesCategory">Utilities</string>
+    <string name="novelsCategory">Novels</string>
+    <string name="servicesCategory">Services</string>
+    <string name="instrumentsCategory">Instruments</string>
+    <string name="othersCategory">Others</string>
+
+    <string name="topStores">Explore The Stores</string>
+    <string name="dealsOfTheDay">Deals Of The Day</string>
+    <string name="recommendedForYou">Recommended For You</string>
+
+    <!--Sell Fragment-->
+    <string name="whatDoYouWantToSell">What do you want to sell?</string>
+    <string name="howItWorks">How it works?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="promiseText">We won’t post anything, promise!</string>
+    <string name="continue_with">Continue with?</string>
+    <string name="skip">SKIP</string>
+    <string name="welcome">Welcome</string>
+    <string name="app_logo">app logo</string>
+    <string name="loading">Loading</string>
+    <string name="lets_start">LET\'S START</string>
+    <string name="login">Login</string>
+    <string name="googleSignIn">Sign in with Google</string>
+    <string name="retryLogin">Plese Retry login</string>
+    <string name="select_course_year">Select Course Year</string>
+    <string name="select_your_course">Select Your Course</string>
+    <string name="select_your_college">Select Your College</string>
+    <string name="infoCollectionError">Please enter all the details</string>
+    <string name="order_history">Order History</string>
+    <string name="sign_out">SIGN OUT</string>
+    <string name="rate_app">Rate App</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="mobile_number">REGISTER MOBILE NUMBER WITH TRUECALLER</string>
+    <string name="email">EMAIL</string>
+    <string name="full_name">FULL NAME</string>
+    <string name="save_details">SAVE DETAILS</string>
+    <string name="text_thanks_for_phone">Thankyou For Trusting us with your Phonenumber</string>
+    <string name="saving">Saving</string>
+    <string name="uploading">Uploading</string>
+    <string name="no_changes_were_made">There are no changes to save.</string>
+
+    <!--List of Years-->
+    <string-array name="courseYears">
+        <item>Select Course Year</item>
+        <item>F.E.</item>
+        <item>S.E.</item>
+        <item>T.E.</item>
+        <item>B.E.</item>
+    </string-array>
+
+    <!--List of semesters-->
+    <string-array name="semesters">
+        <item>Sem</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
+    <!--Chrome custom tabs strings START-->
+    <string name="action_create_notification">Create Notification</string>
+    <string name="title_activity_notification_parent">Notification Demo</string>
+    <string name="title_activity_webview">WebviewActivity</string>
+    <string name="notification_title">Open Web Content</string>
+    <string name="notification_text">Open your web content on Chrome Custom Tabs</string>
+    <string name="notification_sample_url">https://developer.chrome.com/multidevice/android/customtabs</string>
+    <string name="label_url">URL:</string>
+    <string name="default_test_url">http://developer.android.com</string>
+    <string name="back_to_app">Back to your application!</string>
+    <string name="label_start_custom_tab">Open Custom Tab</string>
+    <string name="label_add_menus">Add Menus</string>
+    <string name="label_add_action_button">Add Action Button</string>
+    <string name="label_action">Perform Action</string>
+
+    <string name="label_toobar_color">Toolbar Color:</string>
+    <string name="default_toolbar_color">#980e03</string>
+    <string name="menu_item_title">Sample Menu Item</string>
+    <string name="label_may_launch_url">May Launch URL</string>
+
+    <!-- Demo Activities Titles -->
+    <string name="title_activity_simple_chrome_tab">Simple Chrome Custom Tab</string>
+    <string name="title_activity_customized_chrome_tab">Customized UI Chrome Custom Tab</string>
+    <string name="title_activity_service_connection">Service Connection Activity</string>
+
+    <!-- Demo Activities Descriptions -->
+    <string name="description_activity_simple_chrome_tab">
+        It is the minimal possible implementation of Chrome Custom Tabs. Doesn’t have any
+        customizations, warm-up or pre-fetch. Allows the user to choose which URL to open.
+    </string>
+
+    <string name="description_activity_customized_chrome_tab">
+        Allows the user to choose which URL to open, the Toolbar color, add an Action button and
+        custom menus to the Toolbar.
+    </string>
+
+    <string name="description_activity_service_connection">
+        Connects to the Chrome Custom Tabs Service and warms up Chrome. Allows user to call may
+        launch url before opening the Url.
+    </string>
+
+    <string name="description_activity_notification">
+        Creates a Notification that opens a Chrome Custom Tab when clicked, and returns to the host
+        app when the user hits Back or Up
+    </string>
+    <string name="label_custom_back_button">Custom back button</string>
+    <string name="label_show_title">Show title</string>
+    <string name="label_auto_hide_appbar">Auto-hide AppBar</string>
+    <string name="label_add_default_share">Add default share</string>
+    <string name="label_toobar_secondary_color">Secondary Toolbar Color</string>
+    <string name="label_add_toolbar_item">Add toolbar item</string>
+    <string name="action_button_toast_text">Action Button Clicked with URL: %s</string>
+    <string name="menu_item_toast_text">Menu Item Clicked with URL: %s</string>
+    <string name="toolbar_toast_text">Toolbar Clicked with URL: %s</string>
+    <string name="unknown_toast_text">Unknown Action Clicked with URL: %s</string>
+    <!--Chrome custom tabs strings END-->
+
+
+    <!--Backend links-->
+
+    <!--User table-->
+    <string name="createUser">http://xchange.hol.es/createUser.php</string>
+    <string name="readUser">http://xchange.hol.es/readUser.php</string>
+    <string name="updateUser">http://xchange.hol.es/updateUser.php</string>
+    <string name="setting_up">Setting Up</string>
+    <string name="setup_complete">Setup Complete</string>
+    <string name="readingUser">Ohh&#8230; You look familiar. Let us confirm.</string>
+    <string name="updatingUser">Yup we know you already, just updating your info.</string>
+    <string name="noUser">No user found</string>
+    <string name="NetworkError">Opps...a Network Error occured.</string>
+    <string name="NetworkFaliure">No Data connection found. Please try again later.</string>
+    <string name="good_connection">Good! Connected to Internet</string>
+    <string name="filterTextBranch">Branch</string>
+    <string name="filterTextSemester">Semester</string>
+    <string name="filterTextSubject">Subject</string>
+    <string name="price">price</string>
+    <string name="publication">Publication</string>
+    <string name="action_add_favourite">Add to Favourites</string>
+    <string name="gettingCredentials">Getting Credentials</string>
+    <string name="credentialFetcher">http://xchange.hol.es/credentialfetcher.php</string>
+    <string name="store">Store</string>
+    <string name="baseBackendUrl">http://api.backendless.com/test/data/</string>
+    <string name="products">products</string>
+    <string name="buyPageVariables">http://xchange.hol.es/hompageVariables.json</string>
+    <string name="optionNotAvailable">Sorry the option is not available yet</string>
+    <string name="branch_filterOptionTitle">Select Branch</string>
+    <string name="ok_action">OK</string>
+    <string name="semester_filterOptionTitle">Select Semester</string>
+    <string name="subject_filterOptionTitle">Select Subject</string>
+    <string name="action_cart">Shopping Cart</string>
+    <string name="savingPhoneNumber">Saving Phone Number</string>
+    <string name="PhoneNumberSaved">Contact Details Saved</string>
+
+
+    <!--Chrome custom tabs strings START-->
+    <!--Chrome custom tabs strings END-->
+</resources>

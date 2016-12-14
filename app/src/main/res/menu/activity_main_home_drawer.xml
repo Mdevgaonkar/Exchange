@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/home"
+            android:checked="true"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/previous_items"
+            android:icon="@drawable/ic_inbox_black_24dp"
+            android:title="@string/myOrders" />
+        <item
+            android:id="@+id/mySells"
+            android:icon="@drawable/ic_local_atm_black_24dp"
+            android:title="@string/mySells" />
+        <item
+            android:id="@+id/whishlist"
+            android:icon="@drawable/ic_favorite_border_black_24dp"
+            android:title="@string/whishlist" />
+        <item
+            android:id="@+id/notifications"
+            android:icon="@drawable/ic_notifications_none_black_24dp"
+            android:title="@string/notifications" />
+    </group>
+
+    <group>
+
+        <item
+            android:id="@+id/quick_help"
+            android:icon="@drawable/ic_quick_help_48dp"
+            android:title="@string/quick_help"/>
+        <item
+            android:id="@+id/about_us"
+            android:icon="@drawable/ic_about_us_48dp"
+            android:title="@string/about_us"/>
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings_black_48dp"
+            android:title = "@string/settings"/>
+
+    </group>
+
+</menu>

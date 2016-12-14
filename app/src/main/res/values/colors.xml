@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#0097a7</color>
+    <color name="colorPrimaryDark">#007885</color>
+    <color name="colorAccent">#E5E7E8</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBackground">#f5f5f5</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGreen">#43A047</color>
+    <color name="colorRed">#DE3A3A</color>
+    <color name="colorCard">#FEFEFE</color>
+    <color name="colorStatusBar">#33000000</color>
+    <color name="colorRipple">#120097A7</color>
+    <color name="colorGray">#DFDFDF</color>
+    <color name="colorLightGray">#38000000</color>
+    <color name="colorGrayDark">#D8D8D8</color>
+    <color name="colorFilterBar">#DEF1F3</color>
+    <color name="colorBadge">#FFAB00</color>
+    <color name="colorOptionsMenu">#80FFFFFF</color>
+
+    <!--A200-->
+</resources>
