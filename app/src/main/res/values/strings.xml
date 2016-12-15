@@ -195,7 +195,7 @@
     <string name="addToCart">ADD TO CART</string>
     <string name="buyNow">BUY NOW</string>
     <string name="addToCartSmall">Add to Cart</string>
-    <string name="rupeesSymbol">₹</string>
+    <string name="rupeesSymbol">₹\t</string>
     <string name="priceEndSymbol">/-</string>
 
 

@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -75,6 +74,10 @@ public class productListingActivity extends AppCompatActivity
     private static final String PRODUCT_POLL_URL = "productPollUrl";
 
     private static final String RESPONSE_DATA = "data";
+
+    private static final int FILTER_APPLY_VISIBLE = 1;
+    private static final int FILTER_APPLY_GONE = 2;
+    private static final int FILTER_CLEAR_VISIBLE = 3;
 
     private RecyclerView productRecyclerView;
     private ImageView emptyView;
@@ -230,18 +233,19 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private  void toggleApplyClearButton(int i){
+
         switch (i){
-            case 1:
+            case FILTER_APPLY_VISIBLE:
                 btn_apply_remove_filter.setText("APPLY");
                 btn_apply_remove_filter.setVisibility(View.VISIBLE);
                 apply_remove_action = true;
                 break;
-            case 2:
+            case FILTER_APPLY_GONE:
                 btn_apply_remove_filter.setText("APPLY");
                 btn_apply_remove_filter.setVisibility(View.GONE);
                 apply_remove_action = null;
                 break;
-            case 3:
+            case FILTER_CLEAR_VISIBLE:
                 btn_apply_remove_filter.setText("CLEAR");
                 btn_apply_remove_filter.setVisibility(View.VISIBLE);
                 apply_remove_action = false;
@@ -282,8 +286,9 @@ public class productListingActivity extends AppCompatActivity
         if(!subjectFilterDiscarded){
             FilterClause = FilterClause + "%20AND%20";  // AND
             FilterClause = FilterClause + "subject.subjectShort%3D%27"; //term%3D%27 %27
-            FilterClause = FilterClause + subjects.get(branchSelectedPosition).subjectShort;
+            FilterClause = FilterClause + subjects.get(subjectSelectedPosition).subjectShort;
             FilterClause = FilterClause + "%27";
+//            showSnack(subjects.get(branchSelectedPosition).subjectShort);
         }
 
         return FilterClause;
@@ -340,13 +345,13 @@ public class productListingActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 clearSubjectsFilter();
                 if (semesterFilter.getSelectedItemPosition() == 0) {
-                     toggleApplyClearButton(2);
+                     toggleApplyClearButton(FILTER_APPLY_GONE);
 
                     branchFilter.setSelection(0);
 
                 } else {
                     //showSnack("Semester "+semesterFilter.getSelectedItemPosition()+" Selected");
-                    toggleApplyClearButton(1);
+                    toggleApplyClearButton(FILTER_APPLY_VISIBLE);
                     if(branchFilter.getSelectedItemPosition() > 0){
 
                         if (NETWORK_STATE){
@@ -372,13 +377,13 @@ public class productListingActivity extends AppCompatActivity
                 if (branchFilter.getSelectedItemPosition() <= 0) {
 
                     if(semesterFilter.getSelectedItemPosition()>0) {
-                        toggleApplyClearButton(1);
-                    }else toggleApplyClearButton(2);
+                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+                    }else toggleApplyClearButton(FILTER_APPLY_GONE);
 
                 } else {
                     //showSnack(branchFilter.getSelectedItemPosition()+" Branch Selected");
                     if(semesterFilter.getSelectedItemPosition()>0){
-                        toggleApplyClearButton(1);
+                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
                         if (NETWORK_STATE){
                             getsubjectList();
                         }else {
@@ -400,12 +405,12 @@ public class productListingActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (subjectFilter.getSelectedItemPosition() == 0) {
                     if(semesterFilter.getSelectedItemPosition()>0 || branchFilter.getSelectedItemPosition()>0) {
-                        toggleApplyClearButton(1);
-                    }else toggleApplyClearButton(2);
+                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+                    }else toggleApplyClearButton(FILTER_APPLY_GONE);
 
                 } else {
 //                    showSnack(subjectFilter.getSelectedItemPosition()+" Selected");
-                    toggleApplyClearButton(1);
+                    toggleApplyClearButton(FILTER_APPLY_VISIBLE);
                 }
 
             }
@@ -573,30 +578,6 @@ public class productListingActivity extends AppCompatActivity
         Log.d("product Recyler view","Hidden");
     }
 
-
-    /**
-     * Adding few albums for testing
-     */
-    private void prepareAlbums() {
-        showProgressLayout();
-        for(int i=0; i<10;i++) {
-            Products a = new Products();
-            a.listPrice = i;
-            a.book.photofile = "http://wallpaperwarrior.com/wp-content/uploads/2016/08/Cat-Wallpaper-6.jpg";
-            a.book.title = "Book"+i;
-            Log.d("Product Title",a.book.title);
-            productList.add(a);
-        }
-
-//        productListingAdapter = new productListingAdapter(getApplicationContext(), productList);
-//        productRecyclerView.setAdapter(productListingAdapter);
-
-        productListingAdapter.notifyDataSetChanged();
-        showRecyclerScrollView();
-    }
-
-
-
 //    private void showProgressDialog(String showString) {
 //        if (mProgressDialog == null) {
 //            mProgressDialog = new ProgressDialog(this);
@@ -614,7 +595,6 @@ public class productListingActivity extends AppCompatActivity
 //            mProgressDialog.hide();
 //        }
 //    }
-
 
     private void getCollegeBranches(){
         showoptionsprogressBarLayout();
@@ -926,7 +906,7 @@ public class productListingActivity extends AppCompatActivity
         switch (v.getId()){
             case R.id.take_a_poll:
                 //code to show chrome custom tab for the poll
-                if(pollUrl.isEmpty() || pollUrl.equals("") || pollUrl.equals(null)){
+                if(pollUrl.isEmpty() || pollUrl.equals("") ){//|| pollUrl.equals(null)){
                     showSnack(getString(R.string.optionNotAvailable));
                 }else openCustomTab(pollUrl);
                 break;
@@ -937,7 +917,7 @@ public class productListingActivity extends AppCompatActivity
                         String filter = generateFilterClause();
                         prepareProducts(filter);
                         apply_remove_action = false;
-                        toggleApplyClearButton(3);
+                        toggleApplyClearButton(FILTER_CLEAR_VISIBLE);
 
 
                 }else {
@@ -946,7 +926,7 @@ public class productListingActivity extends AppCompatActivity
                     branchFilter.setSelection(0);
                     clearSubjectsFilter();
                     loadUI();
-                    toggleApplyClearButton(2);
+                    toggleApplyClearButton(FILTER_APPLY_GONE);
                 }
                 break;
             case R.id.error_Layout:
@@ -965,9 +945,7 @@ public class productListingActivity extends AppCompatActivity
         subjectOptionsSpinnerAdapter.notifyDataSetChanged();
     }
 
-
     public void openCustomTab(String urlFromCall) {
-        String url = urlFromCall;
 
         int color = getColor("#0097a7");
         int secondaryColor = getColor("#0097a7");
@@ -1022,7 +1000,7 @@ public class productListingActivity extends AppCompatActivity
         intentBuilder.setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
         CustomTabActivityHelper.openCustomTab(
-                this, intentBuilder.build(), Uri.parse(url), new WebviewFallback());
+                this, intentBuilder.build(), Uri.parse(urlFromCall), new WebviewFallback());
     }
 
     private int getColor(String color) {
@@ -1086,6 +1064,7 @@ public class productListingActivity extends AppCompatActivity
         Snackbar snackbar = Snackbar.make(activity_product_listing, message, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
+
     @Override
     public void onNetworkConnectionChanged(boolean isConnected) {
         Log.d("networkChanged",isConnected?"Connected":"Not Connected");

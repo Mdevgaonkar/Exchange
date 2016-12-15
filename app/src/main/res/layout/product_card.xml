@@ -10,7 +10,7 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
         android:elevation="3dp"
-        card_view:cardCornerRadius="@dimen/card_album_radius">
+        card_view:cardCornerRadius="@dimen/card_product_radius">
 
 
         <LinearLayout
@@ -20,7 +20,7 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/album_cover_height"
+                android:layout_height="@dimen/product_cover_height"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:scaleType="fitXY" />
@@ -42,12 +42,13 @@
                         android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingLeft="@dimen/album_title_padding"
-                        android:paddingRight="@dimen/album_title_padding"
-                        android:paddingTop="@dimen/album_title_padding"
+                        android:paddingLeft="@dimen/product_title_padding"
+                        android:paddingRight="@dimen/product_title_padding"
+                        android:paddingTop="@dimen/product_title_padding"
                         android:textColor="@color/colorBlack"
                         android:maxLines="2"
                         android:ellipsize="end"
+
                         android:text="Let us C by Yashvant Kanetkar limited edition 14"
                         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                         />
@@ -57,13 +58,13 @@
                         android:id="@+id/count"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingBottom="@dimen/songs_count_padding_bottom"
-                        android:paddingLeft="@dimen/album_title_padding"
-                        android:paddingRight="@dimen/album_title_padding"
+                        android:paddingBottom="@dimen/product_price_padding_bottom"
+                        android:paddingLeft="@dimen/product_title_padding"
+                        android:paddingRight="@dimen/product_title_padding"
                         android:textColor="@color/colorPrimary"
                         android:maxLines="1"
                         android:text="Rs. 400/-"
-                        android:textSize="@dimen/album_title"
+                        android:textSize="@dimen/product_title"
 
                         />
                     <!--android:textSize="@dimen/songs_count" />-->
@@ -76,10 +77,11 @@
 
                     <ImageView
                         android:id="@+id/overflow"
-                        android:layout_width="@dimen/ic_album_overflow_width"
-                        android:layout_height="@dimen/ic_album_overflow_height"
-                        android:layout_marginTop="@dimen/ic_album_overflow_margin_top"
+                        android:layout_width="@dimen/ic_product_overflow_width"
+                        android:layout_height="@dimen/ic_product_overflow_height"
+                        android:layout_marginTop="@dimen/ic_product_overflow_margin_top"
                         android:scaleType="centerCrop"
+                        android:tint="@color/colorDarkGray"
                         android:src="@drawable/ic_more_options_black_24dp" />
 
                 </LinearLayout>
