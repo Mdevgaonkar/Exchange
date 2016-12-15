@@ -1,0 +1,147 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="3dp"
+        card_view:cardCornerRadius="@dimen/card_album_radius">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/album_cover_height"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:scaleType="fitXY" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="@dimen/album_title_padding"
+                        android:paddingRight="@dimen/album_title_padding"
+                        android:paddingTop="@dimen/album_title_padding"
+                        android:textColor="@color/colorBlack"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:text="Let us C by Yashvant Kanetkar limited edition 14"
+                        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                        />
+                    <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>-->
+
+                    <TextView
+                        android:id="@+id/count"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="@dimen/songs_count_padding_bottom"
+                        android:paddingLeft="@dimen/album_title_padding"
+                        android:paddingRight="@dimen/album_title_padding"
+                        android:textColor="@color/colorPrimary"
+                        android:maxLines="1"
+                        android:text="Rs. 400/-"
+                        android:textSize="@dimen/album_title"
+
+                        />
+                    <!--android:textSize="@dimen/songs_count" />-->
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/overflow"
+                        android:layout_width="@dimen/ic_album_overflow_width"
+                        android:layout_height="@dimen/ic_album_overflow_height"
+                        android:layout_marginTop="@dimen/ic_album_overflow_margin_top"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_more_options_black_24dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:visibility="gone">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/thumbnail"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/album_cover_height"-->
+                <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+                <!--android:clickable="true"-->
+                <!--android:scaleType="fitXY" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/title"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/thumbnail"-->
+                <!--android:paddingLeft="@dimen/album_title_padding"-->
+                <!--android:paddingRight="@dimen/album_title_padding"-->
+                <!--android:paddingTop="@dimen/album_title_padding"-->
+                <!--android:textColor="@color/colorBlack"-->
+                <!--android:text="Let us C by Yashvant Kanetkar limited edition 14"-->
+                <!--android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"-->
+                 <!--/>-->
+            <!--&lt;!&ndash;android:textAppearance="@style/Base.TextAppearance.AppCompat.Body1"/>&ndash;&gt;-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/count"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/title"-->
+                <!--android:paddingBottom="@dimen/songs_count_padding_bottom"-->
+                <!--android:paddingLeft="@dimen/album_title_padding"-->
+                <!--android:paddingRight="@dimen/album_title_padding"-->
+                <!--android:textColor="@color/colorPrimary"-->
+                <!--android:text="Rs. 400/-"-->
+                <!--android:textSize="@dimen/album_title"-->
+                <!--/>-->
+                <!--&lt;!&ndash;android:textSize="@dimen/songs_count" />&ndash;&gt;-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/overflow"-->
+                <!--android:layout_width="@dimen/ic_album_overflow_width"-->
+                <!--android:layout_height="@dimen/ic_album_overflow_height"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_below="@id/thumbnail"-->
+                <!--android:layout_marginTop="@dimen/ic_album_overflow_margin_top"-->
+                <!--android:scaleType="centerCrop"-->
+                <!--android:src="@drawable/ic_more_options_black_24dp" />-->
+
+        <!--</RelativeLayout>-->
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

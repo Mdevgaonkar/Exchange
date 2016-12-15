@@ -31,15 +31,17 @@ public class Products {
     public int mrp;
 
 
-    public Books book;
-    public Instruments instrument;
-    public Combopacks combopack;
-    public PersonGSON sellerId;
+    public Books book = new Books();
+    public Instruments instrument = new Instruments();
+    public Combopacks combopack = new Combopacks();
+    public PersonGSON sellerId = new PersonGSON();
 
     public ArrayList<PersonGSON.college> college = null;
     public ArrayList<Subjects> subject = null;
     public String term;
     public ArrayList<PersonGSON.course> specialization = null;
+
+
 
 
 }

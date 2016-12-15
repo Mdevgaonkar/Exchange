@@ -62,7 +62,7 @@ public class productListingActivity extends AppCompatActivity
     private static final String QUERY = "?";
     private static final String LOAD_RELATIONS ="loadRelations=book%2Cinstrument%2Ccombopack";
     private static final String QUERY_SEPERATOR = "&";
-    private static final String LOAD_PROPS = "props=listPrice%2CobjectId%2Cmrp%2CdateEnlisted";
+    private static final String LOAD_PROPS = "props=listPrice%2CobjectId%2Cmrp%2CdateEnlisted%2Ctype";
     private static final String WHERE_EQUAL_TO = "where=";
     private Toolbar activityToolbar;
     private static boolean NETWORK_STATE = false;
@@ -141,7 +141,9 @@ public class productListingActivity extends AppCompatActivity
         ___class = b.getString(PRODUCT_CLASS);
         poll = b.getBoolean(PRODUCT_POLL);
         pollUrl = b.getString(PRODUCT_POLL_URL);
+
         setupActionbar(title);
+
         checkConnection();
         setupCoordinatorLayout();
         setupErrorLayout();
@@ -194,11 +196,13 @@ public class productListingActivity extends AppCompatActivity
             if(status == 0) {
                 setupfilterOptionsLayout();
                 prepareProducts();
+//                prepareAlbums();
                 hidefilterOptionsLayout();
                 hideoptionsprogressBarLayout();
             }else if(status == 4){
                 setupfilterOptionsLayout();
                 prepareProducts();
+//                prepareAlbums();
                 showfilterOptionsLayout();
                 getCollegeBranches();
             }else if(status == 1){
@@ -488,7 +492,7 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void updateUI() {
-        if (productList.isEmpty()) {
+        if (productList.size() == 0) {
             showEmptyView();
             Log.d("Product listing","List is Empty");
         }
@@ -540,11 +544,11 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void setupRecyclerView() {
-        productRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_product_list);
+        productRecyclerView = (RecyclerView) findViewById(R.id.product_list_recycler_view);
         productRecyclerView.setVisibility(View.GONE);
 
         productList = new ArrayList<>();
-        productListingAdapter = new productListingAdapter(getApplicationContext(), productList);
+        productListingAdapter = new productListingAdapter(this, productList);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         productRecyclerView.setLayoutManager(mLayoutManager);
@@ -560,11 +564,35 @@ public class productListingActivity extends AppCompatActivity
         hideProgressLayout();
         hideComingSoonLayout();
         hideErrorLayout();
+        Log.d("product Recyler view","Shown");
     }
 
     private void hideRecyclerScrollView(){
 //        productScrollView.setVisibility(View.GONE);
         productRecyclerView.setVisibility(View.GONE);
+        Log.d("product Recyler view","Hidden");
+    }
+
+
+    /**
+     * Adding few albums for testing
+     */
+    private void prepareAlbums() {
+        showProgressLayout();
+        for(int i=0; i<10;i++) {
+            Products a = new Products();
+            a.listPrice = i;
+            a.book.photofile = "http://wallpaperwarrior.com/wp-content/uploads/2016/08/Cat-Wallpaper-6.jpg";
+            a.book.title = "Book"+i;
+            Log.d("Product Title",a.book.title);
+            productList.add(a);
+        }
+
+//        productListingAdapter = new productListingAdapter(getApplicationContext(), productList);
+//        productRecyclerView.setAdapter(productListingAdapter);
+
+        productListingAdapter.notifyDataSetChanged();
+        showRecyclerScrollView();
     }
 
 
@@ -740,9 +768,11 @@ public class productListingActivity extends AppCompatActivity
                         try {
                             String responseData = response.getJSONArray(RESPONSE_DATA).toString();
                             Gson gson = campusExchangeApp.getInstance().getGson();
-                            productList = Arrays.asList(gson.fromJson(responseData,Products[].class));
-                            if(productList.size()>0){
-                                Log.d("Product title",productList.get(0).book.title);}
+                            List<Products> productsList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            productList.clear();
+                            for(Products product : productsList) {
+                                productList.add(product);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Product list","no rational data");
@@ -808,7 +838,12 @@ public class productListingActivity extends AppCompatActivity
                         try {
                             String responseData = response.getJSONArray(RESPONSE_DATA).toString();
                             Gson gson = campusExchangeApp.getInstance().getGson();
-                            productList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            List<Products> productsList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            productList.clear();
+                            for(Products product : productsList) {
+                                productList.add(product);
+                            }
+//                            showSnack(productList.size()+"");
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Product list","no rational data");
@@ -818,7 +853,7 @@ public class productListingActivity extends AppCompatActivity
                         }
                         updateDataSetOfRecyclerView();
                         updateUI();
-                        hideProgressLayout();
+//                        showRecyclerScrollView();
 
 //                        tv.setText(response.toString());
                         Log.d("Response", response.toString());
