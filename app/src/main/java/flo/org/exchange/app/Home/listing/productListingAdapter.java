@@ -1,6 +1,9 @@
 package flo.org.exchange.app.Home.listing;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +21,10 @@ import com.bumptech.glide.Glide;
 import java.util.List;
 
 import flo.org.exchange.R;
+import flo.org.exchange.app.Home.ProductView.productView;
 import flo.org.exchange.app.utils.Products;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by Mayur on 15/12/2016
@@ -32,7 +38,7 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
     private static final String TYPE_INSTRUMENT ="I";
     private static final String TYPE_COMBOPACK ="C";
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView title, count;
         public ImageView thumbnail, overflow;
 
@@ -41,7 +47,16 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
             title = (TextView) view.findViewById(R.id.title);
             count = (TextView) view.findViewById(R.id.count);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+            thumbnail.setOnClickListener(this);
             overflow = (ImageView) view.findViewById(R.id.overflow);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+            Intent productView = new Intent(mContext,productView.class);
+            mContext.startActivity(productView);
         }
     }
 
@@ -97,7 +112,12 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_product, popup.getMenu());
         popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
-        popup.show();
+
+        MenuPopupHelper menuHelper = new MenuPopupHelper(mContext, (MenuBuilder) popup.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
+
+//        popup.show();
     }
 
     /**
