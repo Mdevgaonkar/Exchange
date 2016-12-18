@@ -54,7 +54,7 @@ public class EditProfile extends AppCompatActivity
                     ITrueCallback,
                     ConnectivityReceiver.ConnectivityReceiverListener {
 
-    private static final String TAG = "SignInActivity";
+    private static final String TAG = "EditUser profile";
     private static boolean NETWORK_STATE = false;
     private static final String PHONE_REGEX = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}";
     private static final String NAME_REGEX = "^[\\p{L} .'-]+$";
@@ -93,6 +93,11 @@ public class EditProfile extends AppCompatActivity
     private String old_personCollege;
     private String old_personCourse;
     private String old_personYear;
+    private String old_collegeLocation;
+    private String old_collegeShort;
+    private String old_collegeObjectID;
+    private String old_courseObjectId;
+    private String old_courseShort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +113,6 @@ public class EditProfile extends AppCompatActivity
 
     private void autofillEditText() {
         old_personName = person.getPersonName();
-
         old_personEmail = person.getPersonEmail();
         old_personNumber = person.getPhoneNumber();
 
@@ -231,6 +235,9 @@ public class EditProfile extends AppCompatActivity
 
         if(person.getPersonInfoCollected().equals("true")){
             old_personCollege = person.getCollegeName();
+            old_collegeLocation = person.getPersonCollegeLocation();
+            old_collegeShort = person.getPersonCollegeShort();
+            old_collegeObjectID = person.getPersonCollegeObjectId();
             person_collegename.setSelection(collegesStringArray.indexOf(person.getCollegeName()));
 
             if(person_collegename.getSelectedItemPosition() > 0 ) {
@@ -242,6 +249,8 @@ public class EditProfile extends AppCompatActivity
                 person_branchname.setClickable(true);
                 person_branchname.setSelection(branchesStringArray.indexOf(person.getCourse()));
                 old_personCourse = person.getCourse();
+                old_courseObjectId = person.getPersonCourseoBjectId();
+                old_courseShort = person.getPersonCourseShort();
 
             }
 
@@ -458,7 +467,7 @@ public class EditProfile extends AppCompatActivity
 
         Log.d(TAG+"UpUser", updateUserString);
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequest jsonuserUpdateReq = new JsonObjectRequest(Request.Method.GET,
                 updateUserString, null,
                 new Response.Listener<JSONObject>() {
 
@@ -474,7 +483,9 @@ public class EditProfile extends AppCompatActivity
                         }
                         if (response.isNull("objectId")) {
                             Snackbar.make(activity_profile_edit, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                            rollbackIfError();
                         }else {
+                            Snackbar.make(activity_profile_edit, R.string.savedSuccessfully, Snackbar.LENGTH_LONG).show();
                             finish();
 //                            StartMainHomeActivity();
                         }
@@ -483,14 +494,36 @@ public class EditProfile extends AppCompatActivity
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                VolleyLog.d(TAG+" :while creating user", "Error: " + error.getMessage());
+                rollbackIfError();
+                Snackbar.make(activity_profile_edit, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                VolleyLog.d(TAG+" :while updating user", "Error: " + error.getMessage());
             }
         });
 
         // Adding request to request queue
-        campusExchangeApp.getInstance().addToRequestQueue(jsonObjReq, tag_json_obj+":CreatingUser");
+        campusExchangeApp.getInstance().addToRequestQueue(jsonuserUpdateReq, tag_json_obj+":CreatingUser");
 
         hideProgressDialog();
+    }
+
+    private void rollbackIfError() {
+
+        showProgressDialog(getString(R.string.rollingback));
+
+//      Details to be rolled back
+        person.setPersonName(old_personName);
+        person.setPersonEmail(old_personEmail);
+        person.setPhoneNumber(old_personNumber);
+        person.setCollegeName(old_personCollege);
+        person.setPersonCollegeLocation(old_collegeLocation);
+        person.setPersonCollegeShort(old_collegeShort);
+        person.setPersonCollegeObjectId(old_collegeObjectID);
+        person.setCourse(old_personCourse);
+        person.setPersonCourseoBjectId(old_courseObjectId);
+        person.setPersonCourseShort(old_courseShort);
+        person.setAcademicYear(old_personYear);
+        hideProgressDialog();
+
     }
 
     private void registerPhoneNumber() {

@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -285,11 +286,18 @@ public class productListingActivity extends AppCompatActivity
         }
         if(!subjectFilterDiscarded){
             FilterClause = FilterClause + "%20AND%20";  // AND
-            FilterClause = FilterClause + "subject.subjectShort%3D%27"; //term%3D%27 %27
-            FilterClause = FilterClause + subjects.get(subjectSelectedPosition).subjectShort;
+            FilterClause = FilterClause + "subject.subject%3D%27"; //term%3D%27 %27
+            FilterClause = FilterClause + URLEncoder.encode(subjects.get(subjectSelectedPosition).subject);
             FilterClause = FilterClause + "%27";
 //            showSnack(subjects.get(branchSelectedPosition).subjectShort);
         }
+        FilterClause = FilterClause + "%20AND%20";  // AND
+        FilterClause = FilterClause + "college.collegeName%3D%27"; //term%3D%27 %27
+        FilterClause = FilterClause + URLEncoder.encode(campusExchangeApp.getInstance().getUniversalPerson().getCollegeName());
+        FilterClause = FilterClause + "%27";
+
+        FilterClause = FilterClause + "%20AND%20";  // AND
+        FilterClause = FilterClause + "enlisted%3DTRUE"; //enlisted = TRUE
 
         return FilterClause;
     }
@@ -667,7 +675,7 @@ public class productListingActivity extends AppCompatActivity
         int sem = semesterFilter.getSelectedItemPosition();
         int branch = branchFilter.getSelectedItemPosition()-1;
         if(sem > 0 && branch >= 0){
-            String whereClauseForSubjects = "Subjects?props=subject%2CsubjectShort&where=branch.branchShort%3D%27"+branches.get(branch).branchShort+"%27%20AND%20semester%3D"+sem;
+            String whereClauseForSubjects = "Subjects?props=subject%2CsubjectShort&where=branch.branch%3D%27"+URLEncoder.encode(branches.get(branch).branch)+"%27%20AND%20semester%3D"+sem;
             String backendRequestUrl = getString(R.string.baseBackendUrl);
             backendRequestUrl = backendRequestUrl+whereClauseForSubjects;
             JsonObjectRequest getSubjectList = new JsonObjectRequest(

@@ -30,14 +30,17 @@
     <string name="bookType">B</string>
     <string name="instrumentType">I</string>
     <string name="comboType">C</string>
+    <string name="combopack">Combopack</string>
 
     <!--Buy Fragment-->
     <string name="categoriesHeading">Categories</string>
     <string name="booksCategory">Books</string>
+    <string name="book">Book</string>
     <string name="utilitiesCategory">Utilities</string>
     <string name="novelsCategory">Novels</string>
     <string name="servicesCategory">Services</string>
     <string name="instrumentsCategory">Instruments</string>
+    <string name="instrument">Instrument</string>
     <string name="othersCategory">Others</string>
 
     <string name="topStores">Explore The Stores</string>
@@ -125,25 +128,6 @@
     <string name="title_activity_service_connection">Service Connection Activity</string>
 
     <!-- Demo Activities Descriptions -->
-    <string name="description_activity_simple_chrome_tab">
-        It is the minimal possible implementation of Chrome Custom Tabs. Doesn’t have any
-        customizations, warm-up or pre-fetch. Allows the user to choose which URL to open.
-    </string>
-
-    <string name="description_activity_customized_chrome_tab">
-        Allows the user to choose which URL to open, the Toolbar color, add an Action button and
-        custom menus to the Toolbar.
-    </string>
-
-    <string name="description_activity_service_connection">
-        Connects to the Chrome Custom Tabs Service and warms up Chrome. Allows user to call may
-        launch url before opening the Url.
-    </string>
-
-    <string name="description_activity_notification">
-        Creates a Notification that opens a Chrome Custom Tab when clicked, and returns to the host
-        app when the user hits Back or Up
-    </string>
     <string name="label_custom_back_button">Custom back button</string>
     <string name="label_show_title">Show title</string>
     <string name="label_auto_hide_appbar">Auto-hide AppBar</string>
@@ -193,10 +177,36 @@
     <string name="PhoneNumberSaved">Contact Details Saved</string>
     <string name="productsImage">Image of the Product</string>
     <string name="addToCart">ADD TO CART</string>
-    <string name="buyNow">BUY NOW</string>
+    <string name="buyNow">BUY FOR</string>
     <string name="addToCartSmall">Add to Cart</string>
     <string name="rupeesSymbol">₹\t</string>
     <string name="priceEndSymbol">/-</string>
+    <string name="mrp">MRP :</string>
+
+    <string name="title">Title\t\t\t\t\t\t\t\t\t\t\t\t</string>
+    <string name="condition">Condition\t\t\t\t\t\t\t\t</string>
+    <string name="ISBN">ISBN\t\t\t\t\t\t\t\t\t\t\t\t</string>
+    <string name="author">Author\t\t\t\t\t\t\t\t\t\t</string>
+    <string name="publisher">Publisher\t\t\t\t\t\t\t\t</string>
+    <string name="edition">Edition\t\t\t\t\t\t\t\t\t\t</string>
+    <string name="pubYear">Publication Year\t</string>
+    <string name="subjects">Subjects\t\t\t\t\t\t\t\t</string>
+    <string name="term">Semester\t\t\t\t\t\t\t\t</string>
+    <string name="course">Specialization\t\t\t</string>
+    <string name="category">Category\t\t\t\t\t\t\t\t</string>
+
+    <!--Conditions-->
+    <string name="newCondition">New</string>
+    <string name="goodCondition">2nd Hand, good condition</string>
+    <string name="badCondition">2nd Hand, worn out but usable</string>
+    <string name="not_available">N/A</string>
+    <string name="savedSuccessfully">Successfully Saved</string>
+    <string name="rollingback">Reverting to previousdata</string>
+    <string name="ISBNnoSpace">ISBN</string>
+    <string name="byString">"By "</string>
+    <string name="editionNoSpace">"Edition "</string>
+    <string name="pubYearNoSpace">"Publication Year "</string>
+    <string name="categoryNoSpace">"Category "</string>
 
 
     <!--Chrome custom tabs strings START-->

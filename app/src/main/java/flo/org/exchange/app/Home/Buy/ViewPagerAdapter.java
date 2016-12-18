@@ -81,7 +81,11 @@ public class ViewPagerAdapter extends PagerAdapter {
                 .into(imageView);
         }catch (NullPointerException e){
             Log.d("introImages","can't load image");
-            Glide.with(mContext).load(R.drawable.sidebar_header_background).into(imageView);
+            Glide.with(mContext)
+                    .load(R.drawable.sidebar_header_background)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .into(imageView);
         }
 //        imageView.setImageResource(Integer.parseInt(mResources[position]));
         imageView.setOnClickListener(new View.OnClickListener() {

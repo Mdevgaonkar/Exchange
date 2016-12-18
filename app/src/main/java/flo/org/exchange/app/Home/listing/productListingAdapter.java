@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -38,7 +39,11 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
     private static final String TYPE_INSTRUMENT ="I";
     private static final String TYPE_COMBOPACK ="C";
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private static final String PRODUCT_TYPE = "type";
+    private static final String PRODUCT_OBJECT_ID = "objectId";
+    private static final String BIC_OBJECT_ID = "bicObjectId";
+
+    public class MyViewHolder extends RecyclerView.ViewHolder{
         public TextView title, count;
         public ImageView thumbnail, overflow;
 
@@ -47,17 +52,10 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
             title = (TextView) view.findViewById(R.id.title);
             count = (TextView) view.findViewById(R.id.count);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
-            thumbnail.setOnClickListener(this);
             overflow = (ImageView) view.findViewById(R.id.overflow);
-            view.setOnClickListener(this);
+
         }
 
-        @Override
-        public void onClick(View v) {
-
-            Intent productView = new Intent(mContext,productView.class);
-            mContext.startActivity(productView);
-        }
     }
 
 
@@ -76,24 +74,58 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        Products product = productList.get(position);
+        final Products product = productList.get(position);
         if (product.type.equals(TYPE_BOOK)){
             holder.title.setText(product.book.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
-            Glide.with(mContext).load(product.book.photofile).into(holder.thumbnail);
+            try{
+                Glide.with(mContext).load(product.book.photofile).thumbnail(0.5f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.thumbnail);
+            }catch (NullPointerException e) {
+                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+            }
         }else if(product.type.equals(TYPE_INSTRUMENT)){
             holder.title.setText(product.instrument.instrumentName);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
-            Glide.with(mContext).load(product.instrument.photofile).into(holder.thumbnail);
+            try{
+                Glide.with(mContext).load(product.instrument.photofile).thumbnail(0.5f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.thumbnail);
+            }catch (NullPointerException e) {
+                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+            }
         }else if(product.type.equals(TYPE_COMBOPACK)){
             holder.title.setText(product.combopack.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
-            Glide.with(mContext).load(product.combopack.photoUrl).into(holder.thumbnail);
+            try{
+            Glide.with(mContext).load(product.combopack.photoUrl)
+                    .thumbnail(0.5f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.thumbnail);
+            }catch (NullPointerException e) {
+                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+            }
         }
 
+        holder.thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openProductView(product);
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openProductView(product);
+            }
+        });
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +133,21 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
                 showPopupMenu(holder.overflow);
             }
         });
+    }
+
+
+    public void openProductView(Products product){
+        Intent productView = new Intent(mContext,productView.class);
+        productView.putExtra(PRODUCT_TYPE, product.type);
+        productView.putExtra(PRODUCT_OBJECT_ID, product.objectId);
+        if (product.type.equals(TYPE_BOOK)){
+            productView.putExtra(BIC_OBJECT_ID, product.book.objectId);
+        }else if(product.type.equals(TYPE_INSTRUMENT)){
+            productView.putExtra(BIC_OBJECT_ID, product.instrument.objectId);
+        }else if(product.type.equals(TYPE_COMBOPACK)){
+            productView.putExtra(BIC_OBJECT_ID, product.combopack.objectId);
+        }
+        mContext.startActivity(productView);
     }
 
     /**

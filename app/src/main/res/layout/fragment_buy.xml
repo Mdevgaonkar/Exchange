@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     tools:context="flo.org.exchange.app.Home.Buy.BuyFragment">
+
     <LinearLayout
         android:id="@+id/error_Layout"
         android:layout_width="match_parent"
@@ -32,6 +33,11 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
     <ScrollView
         android:id="@+id/buy_scrollView"
         android:layout_width="match_parent"
@@ -399,4 +405,5 @@
 
     </LinearLayout>
     </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

@@ -8,12 +8,11 @@ import java.util.ArrayList;
 public class Combopacks {
 
     public String title;
+    public String subTitle;
 
     public String objectId;
     public ArrayList<Books> books= new ArrayList<Books>();
     public ArrayList<Instruments> instruments= new ArrayList<Instruments>();
-
-    public int validTill;
     public String photoUrl;
-    private String description;
+    public String description;
 }

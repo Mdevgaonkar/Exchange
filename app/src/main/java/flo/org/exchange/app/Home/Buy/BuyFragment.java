@@ -10,6 +10,7 @@ import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.TypedValue;
@@ -94,6 +95,8 @@ public class BuyFragment extends Fragment implements
 
     private ArrayList<buyFragmentVariables.carousal.items> carousalItems;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     public BuyFragment() {
         // Required empty public constructor
@@ -105,6 +108,8 @@ public class BuyFragment extends Fragment implements
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         home_view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_buy,container,false);
+
+        setupSwipeToRefresh();
         setupFramelayout();
         setupVariablesObject();
         setupViews();
@@ -114,6 +119,19 @@ public class BuyFragment extends Fragment implements
         checkConnection();
         return home_view;
 
+    }
+
+    private void setupSwipeToRefresh() {
+        swipeRefreshLayout = (SwipeRefreshLayout) home_view.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorRed, R.color.colorGreen);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //Your refresh code here
+                refreshFragment();
+                showSnack("Refreshed");
+            }
+        });
     }
 
     private void setupVariablesObject() {
@@ -593,6 +611,7 @@ public class BuyFragment extends Fragment implements
 
         showProgressBar();
         fetchVariables();
+        swipeRefreshLayout.setRefreshing(false);
 
     }
 }

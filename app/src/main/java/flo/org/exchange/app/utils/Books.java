@@ -12,8 +12,5 @@ public class Books {
     public String photofile;
     public String edition;
     public String publicationYear;
-    public Integer priceGood;
-    public Integer priceBad;
-    public Integer priceNew;
     public String objectId;
 }
