@@ -79,30 +79,34 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
             holder.title.setText(product.book.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
+            holder.thumbnail.setImageResource(R.drawable.ic_book_default);
             try{
                 Glide.with(mContext).load(product.book.photofile).thumbnail(0.5f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.thumbnail);
             }catch (NullPointerException e) {
-                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+                holder.thumbnail.setImageResource(R.drawable.ic_book_default);
             }
         }else if(product.type.equals(TYPE_INSTRUMENT)){
             holder.title.setText(product.instrument.instrumentName);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
+            holder.thumbnail.setImageResource(R.drawable.ic_instrument_default);
             try{
-                Glide.with(mContext).load(product.instrument.photofile).thumbnail(0.5f)
+                Glide.with(mContext).load(product.instrument.photoFile).thumbnail(0.5f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.thumbnail);
+//                Log.d("instrument pic",""+product.instrument.photoFile);
             }catch (NullPointerException e) {
-                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+                holder.thumbnail.setImageResource(R.drawable.ic_instrument_default);
             }
         }else if(product.type.equals(TYPE_COMBOPACK)){
             holder.title.setText(product.combopack.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading album cover using Glide library
+            holder.thumbnail.setImageResource(R.drawable.ic_combo_default);
             try{
             Glide.with(mContext).load(product.combopack.photoUrl)
                     .thumbnail(0.5f)
@@ -110,7 +114,7 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.thumbnail);
             }catch (NullPointerException e) {
-                holder.thumbnail.setImageResource(R.drawable.sidebar_header_background);
+                holder.thumbnail.setImageResource(R.drawable.ic_combo_default);
             }
         }
 

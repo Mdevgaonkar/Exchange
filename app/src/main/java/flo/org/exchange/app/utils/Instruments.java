@@ -6,7 +6,7 @@ package flo.org.exchange.app.utils;
 public class Instruments {
         public String instrumentName;
         public String description;
-        public String photofile;
+        public String photoFile;
         public String type;
         public String objectId;
         public String instrumentSubtitle;

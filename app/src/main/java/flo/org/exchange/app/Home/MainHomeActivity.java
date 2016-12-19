@@ -293,8 +293,6 @@ public class MainHomeActivity extends AppCompatActivity
 
         if (id == R.id.settings) {
 //            openCustomTab("https://google.com");
-            Intent cct = new Intent(this, productView.class);
-            startActivity(cct);
         } //else if (id == R.id.nav_gallery) {
 //
 //        } else if (id == R.id.nav_slideshow) {

@@ -207,6 +207,7 @@
     <string name="editionNoSpace">"Edition "</string>
     <string name="pubYearNoSpace">"Publication Year "</string>
     <string name="categoryNoSpace">"Category "</string>
+    <string name="allType">A</string>
 
 
     <!--Chrome custom tabs strings START-->

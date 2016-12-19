@@ -26,7 +26,6 @@ public class buyFragmentVariables {
 
 
     public class carousal{
-        public int count;
         public ArrayList<items> items  = new ArrayList<items>();
 
         public class items{
@@ -38,11 +37,11 @@ public class buyFragmentVariables {
             public String  pollUrl;
             public int Status;
             public String ___class;
+            public String type;
         }
 
     }
     public class categories {
-        public int count;
         public ArrayList<items> items = new ArrayList<items>();
 
         public class items {
@@ -52,10 +51,10 @@ public class buyFragmentVariables {
             public boolean poll;
             public String  pollUrl;
             public String ___class;
+            public String type;
         }
     }
     public class stores{
-        public int    count;
         public ArrayList<items>    items = new ArrayList<items>();
         public class items{
             public String title;
@@ -65,6 +64,7 @@ public class buyFragmentVariables {
             public boolean poll;
             public String  pollUrl;
             public String ___class;
+            public String type;
         }
 
     }

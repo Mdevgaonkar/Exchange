@@ -86,7 +86,9 @@
                         android:id="@+id/bannerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/twelveDP">
+                        android:layout_marginTop="@dimen/twelveDP"
+                        android:layout_marginRight="@dimen/twelveDP"
+                        android:layout_marginLeft="@dimen/twelveDP">
 
                         <!--banner-->
                         <ImageView
@@ -103,6 +105,7 @@
                         android:orientation="horizontal"
                         android:layout_marginLeft="@dimen/eightDP"
                         android:layout_marginRight="@dimen/eightDP"
+                        android:layout_marginTop="@dimen/twelveDP"
                         >
 
                         <!--productImageView-->

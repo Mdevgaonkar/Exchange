@@ -341,61 +341,21 @@
             android:layout_height="wrap_content"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
             android:padding="@dimen/activity_horizontal_margin"
-            android:text="@string/recommendedForYou"/>
+            android:text="@string/recommendedForYou"
+            android:visibility="gone"/>
 
     <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:paddingRight="@dimen/search_bar_margins">
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_view_deal_1"
-                    android:layout_width="300dp"
-                    android:layout_height="110dp"
-                    android:layout_marginLeft="@dimen/search_bar_margins"
-                    card_view:cardCornerRadius="4dp">
 
-                    <ImageView
-                        android:layout_width="300dp"
-                        android:layout_height="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/sidebar_header_background"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_view_deal_2"
-                    android:layout_width="300dp"
-                    android:layout_height="110dp"
-                    android:layout_marginLeft="@dimen/search_bar_margins"
-                    card_view:cardCornerRadius="4dp">
-
-                    <ImageView
-                        android:layout_width="300dp"
-                        android:layout_height="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/sidebar_header_background"/>
-                </android.support.v7.widget.CardView>
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_view_deal_3"
-                    android:layout_width="300dp"
-                    android:layout_height="110dp"
-                    android:layout_marginLeft="@dimen/search_bar_margins"
-                    card_view:cardCornerRadius="4dp">
-
-                    <ImageView
-                        android:layout_width="300dp"
-                        android:layout_height="fill_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/sidebar_header_background"/>
-                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 

@@ -34,6 +34,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     private static final String PRODUCT_CLASS = "productClass";
     private static final String PRODUCT_POLL = "productPoll";
     private static final String PRODUCT_POLL_URL = "productPollUrl";
+    private static final String PRODUCT_TYPE = "type";
 
     private ArrayList<String> carousalImages;
     private ArrayList<buyFragmentVariables.carousal.items> carousalItems;
@@ -101,7 +102,8 @@ public class ViewPagerAdapter extends PagerAdapter {
                                 carousalItems.get(position).whereClause,
                                 carousalItems.get(position).poll,
                                 carousalItems.get(position).pollUrl,
-                                carousalItems.get(position).___class
+                                carousalItems.get(position).___class,
+                                carousalItems.get(position).type
                         );
                         break;
                     case 2:         //Product View
@@ -121,9 +123,9 @@ public class ViewPagerAdapter extends PagerAdapter {
         return itemView;
     }
 
-    private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String ___class) {
+    private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String ___class, String type) {
         Intent openProductStore = new Intent(mContext, flo.org.exchange.app.Home.listing.productListingActivity.class);
-//        openProductStore.putExtra(PRODUCT_TYPE, productType);
+        openProductStore.putExtra(PRODUCT_TYPE, type);
         openProductStore.putExtra(PRODUCT_TITLE, productTitle);
         openProductStore.putExtra(PRODUCT_STATUS, productListStatus);
         openProductStore.putExtra(PRODUCT_WHERE_CLAUSE, whereClause);

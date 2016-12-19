@@ -307,7 +307,7 @@ public class productView extends AppCompatActivity
         Details = Details + greyFont + getString(R.string.title) + endGreyFont + product.instrument.instrumentName+" ("+product.instrument.instrumentSubtitle+")"+breakTag+breakTag;
         String condition=getCondition();
         Details = Details + greyFont + getString(R.string.condition) + endGreyFont + condition+breakTag+breakTag;
-        Details = Details + greyFont + getString(R.string.category) + greyFont + product.instrument.type +breakTag+breakTag;
+        Details = Details + greyFont + getString(R.string.category) + endGreyFont+ product.instrument.type +breakTag+breakTag;
         String subjects = getSubjects();
         Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
         Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
@@ -358,7 +358,8 @@ public class productView extends AppCompatActivity
                 View comboBookView = getLayoutInflater().inflate(R.layout.combo_items_view,itemBookView[i],false);
                 itemBookView [i]= (CardView) comboBookView.findViewById(R.id.comboItemsViewCard);
                 TextView tv = (TextView) comboBookView.findViewById(R.id.itemDescription);
-                tv.setText(getComboBookDetails(i));
+                tv.setText(Html.fromHtml(getComboBookDetails(i)));
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
                 ImageView iv = (ImageView) comboBookView.findViewById(R.id.itemImage);
                 iv.setImageResource(R.drawable.ic_combo_default);
                 try{
@@ -393,15 +394,16 @@ public class productView extends AppCompatActivity
             int number_of_instruments= instruments.size();
             itemInstrumentView = new CardView[number_of_instruments];
             for (int i = 0; i < number_of_instruments; i++){
-                View comboInstrumentView = getLayoutInflater().inflate(R.layout.combo_items_view,itemBookView[i],false);
-                itemBookView [i]= (CardView) comboInstrumentView.findViewById(R.id.comboItemsViewCard);
+                View comboInstrumentView = getLayoutInflater().inflate(R.layout.combo_items_view,itemInstrumentView[i],false);
+                itemInstrumentView[i]= (CardView) comboInstrumentView.findViewById(R.id.comboItemsViewCard);
                 TextView tv = (TextView) comboInstrumentView.findViewById(R.id.itemDescription);
-                tv.setText(getComboInstrumentDetails(i));
+                tv.setText(Html.fromHtml(getComboInstrumentDetails(i)));
+                tv.setMovementMethod(LinkMovementMethod.getInstance());
                 ImageView iv = (ImageView) comboInstrumentView.findViewById(R.id.itemImage);
                 iv.setImageResource(R.drawable.ic_combo_default);
                 try{
                     Glide.with(this)
-                            .load(instruments.get(i).photofile)
+                            .load(instruments.get(i).photoFile)
                             .thumbnail(0.5f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -446,7 +448,7 @@ public class productView extends AppCompatActivity
 
         Details = Details + getString(R.string.categoryNoSpace) + product.combopack.instruments.get(position).type +breakTag+breakTag; //category
 
-        Details = Details + getString(R.string.categoryNoSpace) + product.combopack.instruments.get(position).description+breakTag+breakTag; //description
+        Details = Details + product.combopack.instruments.get(position).description+breakTag+breakTag; //description
 
         return Details;
     }
@@ -692,7 +694,7 @@ public class productView extends AppCompatActivity
 
         }else if(type.equals(getString(R.string.instrumentType))){
             productImageView.setImageResource(R.drawable.ic_instrument_default);
-            setImage(product.instrument.photofile, R.drawable.ic_instrument_error);
+            setImage(product.instrument.photoFile, R.drawable.ic_instrument_error);
 
         }else if(type.equals(getString(R.string.comboType))){
             productImageView.setImageResource(R.drawable.ic_combo_default);

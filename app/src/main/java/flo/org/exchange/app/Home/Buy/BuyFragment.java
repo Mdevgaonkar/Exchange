@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -63,6 +62,7 @@ public class BuyFragment extends Fragment implements
     private static final String PRODUCT_CLASS = "productClass";
     private static final String PRODUCT_POLL = "productPoll";
     private static final String PRODUCT_POLL_URL = "productPollUrl";
+    private static final String PRODUCT_TYPE = "type";
 
     private static final String CAROUSAL = "carousal";
     private static final String CATEGORIES = "categories";
@@ -169,10 +169,10 @@ public class BuyFragment extends Fragment implements
 
     public void updateStoresView(){
 
-        if(varsStores.count > 0 ) {
+        if(varsStores.items.size() > 0 ) {
             //adding elements to the array
             storeItems.clear();
-            for (int i = 0; i < varsStores.count; i++) {
+            for (int i = 0; i < varsStores.items.size(); i++) {
                 storeItems.add(i,varsStores.items.get(i));
             }
             if(storeItems.size()>0){
@@ -183,7 +183,7 @@ public class BuyFragment extends Fragment implements
                     store_cards.removeAllViews();
                 }
                 //adding views to the linear layout
-                int number_of_cards = varsStores.count;
+                int number_of_cards = varsStores.items.size();
                 card_view_store = new CardView[number_of_cards];
                 for (int i = 0; i < number_of_cards; i++) {
                     View store_card_view = getActivity().getLayoutInflater().inflate(R.layout.store_card_view,card_view_store[i],false);
@@ -235,6 +235,7 @@ public class BuyFragment extends Fragment implements
         int status = 0;
         String whereClause= null;
         String ___class = null;
+        String type = null;
         String title = null;
         boolean poll =  false;
         String pollUrl = null;
@@ -244,11 +245,12 @@ public class BuyFragment extends Fragment implements
         pollUrl = varsStores.items.get(index).pollUrl;
         whereClause = varsStores.items.get(index).whereClause;
         ___class = varsStores.items.get(index).___class;
+        type = varsStores.items.get(index).type;
 //                 showSnack(title+" "+status+" "+whereClause);
         if(status == 1){
             showSnack(getString(R.string.optionNotAvailable));
         }else {
-            openProductStoreList(title,status,whereClause,poll,pollUrl,___class);
+            openProductStoreList(title,status,whereClause,poll,pollUrl,___class, type);
         }
 
     }
@@ -319,9 +321,9 @@ public class BuyFragment extends Fragment implements
     }
 
     public void updateViewpagerData(){
-        if(varsCarousal.count > 0 ) {
+        if(varsCarousal.items.size() > 0 ) {
             carousalItems.clear();
-            for (int i = 0; i < varsCarousal.count; i++) {
+            for (int i = 0; i < varsCarousal.items.size(); i++) {
                 carousalItems.add(i,varsCarousal.items.get(i));
             }
             mAdapter.notifyDataSetChanged();
@@ -432,6 +434,7 @@ public class BuyFragment extends Fragment implements
         int status = 0;
         String whereClause= null;
         String ___class = null;
+        String type = null;
         String title = null;
         boolean poll =  false;
         String pollUrl = null;
@@ -441,11 +444,12 @@ public class BuyFragment extends Fragment implements
         pollUrl = varsCategories.items.get(index).pollUrl;
         whereClause = varsCategories.items.get(index).whereClause;
         ___class = varsCategories.items.get(index).___class;
+        type = varsCategories.items.get(index).type;
 //                 showSnack(title+" "+status+" "+whereClause);
         if(status == 1){
             showSnack(getString(R.string.optionNotAvailable));
         }else {
-            openProductStoreList(title,status,whereClause,poll,pollUrl,___class);
+            openProductStoreList(title,status,whereClause,poll,pollUrl,___class,type);
         }
 
     }
@@ -497,9 +501,9 @@ public class BuyFragment extends Fragment implements
 //            mProgressDialog.hide();
 //        }
 //    }
-    private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String productClass) {
+    private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String productClass, String type) {
         Intent openProductStore = new Intent(getActivity(), flo.org.exchange.app.Home.listing.productListingActivity.class);
-//        openProductStore.putExtra(PRODUCT_TYPE, productType);
+        openProductStore.putExtra(PRODUCT_TYPE, type);
         openProductStore.putExtra(PRODUCT_TITLE, productTitle);
         openProductStore.putExtra(PRODUCT_STATUS, productListStatus);
         openProductStore.putExtra(PRODUCT_WHERE_CLAUSE, whereClause);

@@ -73,6 +73,7 @@ public class productListingActivity extends AppCompatActivity
     private static final String PRODUCT_CLASS = "productClass";
     private static final String PRODUCT_POLL = "productPoll";
     private static final String PRODUCT_POLL_URL = "productPollUrl";
+    private static final String PRODUCT_TYPE = "type";
 
     private static final String RESPONSE_DATA = "data";
 
@@ -118,6 +119,7 @@ public class productListingActivity extends AppCompatActivity
     private boolean poll;
     private String pollUrl;
     private String ___class;
+    private String type;
 
 
     List<College> colleges;
@@ -145,6 +147,7 @@ public class productListingActivity extends AppCompatActivity
         ___class = b.getString(PRODUCT_CLASS);
         poll = b.getBoolean(PRODUCT_POLL);
         pollUrl = b.getString(PRODUCT_POLL_URL);
+        type = b.getString(PRODUCT_TYPE);
 
         setupActionbar(title);
 
@@ -272,8 +275,22 @@ public class productListingActivity extends AppCompatActivity
             subjectFilterDiscarded = true;
         }else subjectFilterDiscarded = false;
 
+        if(type.equals(getString(R.string.bookType))){
+            FilterClause = FilterClause + "type%3D%27B%27"; //type%3D%27B%27
+            FilterClause = FilterClause + "%20AND%20";  // AND
+        }else if(type.equals(getString(R.string.instrumentType))){
+            FilterClause = FilterClause + "type%3D%27I%27"; //type%3D%27I%27
+            FilterClause = FilterClause + "%20AND%20";  // AND
+        }else if(type.equals(getString(R.string.comboType))){
+            FilterClause = FilterClause + "type%3D%27C%27"; //type%3D%27C%27
+            FilterClause = FilterClause + "%20AND%20";  // AND
+        }else if(type.equals(getString(R.string.allType))){
+            FilterClause = "";
+        }
+
+
         if(!semFilterDiscarded){
-//            FilterClause = FilterClause + "%20AND%20";  // AND
+
             FilterClause = FilterClause + "term%3D%27"; //term%3D%27 %27
             FilterClause = FilterClause + semesterSelectedPosition;
             FilterClause = FilterClause + "%27";
