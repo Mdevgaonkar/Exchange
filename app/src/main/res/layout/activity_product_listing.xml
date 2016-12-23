@@ -140,11 +140,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/trialNetwork"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
         <LinearLayout
             android:id="@+id/error_Layout"
             android:layout_width="match_parent"

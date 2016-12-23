@@ -53,5 +53,9 @@ dependencies {
     //truecaller SDK
     compile(name: "truesdk-0.5", ext: "aar")
 
+    //Realm
+    // Realm
+    compile 'io.realm:realm-android:0.82.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

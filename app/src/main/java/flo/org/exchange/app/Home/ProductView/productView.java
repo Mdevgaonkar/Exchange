@@ -1,8 +1,12 @@
 package flo.org.exchange.app.Home.ProductView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -15,6 +19,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +27,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -42,15 +48,18 @@ import java.util.List;
 import java.util.Map;
 
 import flo.org.exchange.R;
+import flo.org.exchange.app.Home.cart.cartView;
 import flo.org.exchange.app.Login.College;
 import flo.org.exchange.app.utils.BackendlessResponse;
 import flo.org.exchange.app.utils.Books;
 import flo.org.exchange.app.utils.ConnectivityReceiver;
 import flo.org.exchange.app.utils.Instruments;
 import flo.org.exchange.app.utils.Products;
+import flo.org.exchange.app.utils.RealmUtils.RealmController;
 import flo.org.exchange.app.utils.Subjects;
 import flo.org.exchange.app.utils.campusExchangeApp;
-
+import flo.org.exchange.app.utils.cartObject;
+import flo.org.exchange.app.utils.cartViewUtils.BadgeDrawable;
 
 
 public class productView extends AppCompatActivity
@@ -61,6 +70,7 @@ public class productView extends AppCompatActivity
     private static final String LOAD_RELATIONS ="loadRelations=book%2Csubject%2Ccollege%2Cspecialization%2Ccombopack%2Ccombopack.books%2Ccombopack.instruments%2Cinstrument";
     private static final String SLASH = "/";
     private static final String QUERY = "?";
+    private static final String TAG = productView.class.getSimpleName();
     private boolean NETWORK_STATE = false;
 
     private Toolbar activityToolbar;
@@ -85,13 +95,13 @@ public class productView extends AppCompatActivity
     private LinearLayout tab_content_details,tab_content_description;
     private TextView tab_content_text_details,tab_content_text_description;
 
-    private static final String PRODUCT_TYPE = "type";
+
     private static final String PRODUCT_OBJECT_ID = "objectId";
-    private static final String BIC_OBJECT_ID = "bicObjectId";
+
 
     private Products product;
-    private CardView[] itemInstrumentView;
-    private CardView[] itemBookView;
+
+    private LayerDrawable mCartMenuIcon;
 
 
     @Override
@@ -99,11 +109,11 @@ public class productView extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_view);
         Bundle b = getExtrasFromIntent();
-        String type = b.getString(PRODUCT_TYPE);
+//        String type = b.getString(PRODUCT_TYPE);
         String product_objectId = b.getString(PRODUCT_OBJECT_ID);
-        String bic_objectId = b.getString(BIC_OBJECT_ID);
+//        String bic_objectId = b.getString(BIC_OBJECT_ID);
 
-        setupActionbar(type);
+        setupActionbar(getString(R.string.emptyString));
         checkConnection();
         setupCoordinatorLayout();
         setupProduct_scrollView();
@@ -188,6 +198,7 @@ public class productView extends AppCompatActivity
         showProductLayout();
         setGeneralProperties();
         String productType = product.type;
+        setActionBarTitle(productType);
         if(productType.equals(getString(R.string.bookType))){
             setBookProperties();
         }else if(productType.equals(getString(R.string.instrumentType))){
@@ -197,6 +208,11 @@ public class productView extends AppCompatActivity
         }else {
             showErrorLayout();
         }
+    }
+
+    private void setActionBarTitle(String type) {
+        String Title = getTitle(type);
+        getSupportActionBar().setTitle(Title);
     }
 
     private void setGeneralProperties(){
@@ -353,10 +369,10 @@ public class productView extends AppCompatActivity
         if(books.size()>0){
 
             int number_of_books= books.size();
-            itemBookView = new CardView[number_of_books];
+            CardView[] itemBookView = new CardView[number_of_books];
             for (int i = 0; i < number_of_books; i++){
-                View comboBookView = getLayoutInflater().inflate(R.layout.combo_items_view,itemBookView[i],false);
-                itemBookView [i]= (CardView) comboBookView.findViewById(R.id.comboItemsViewCard);
+                View comboBookView = getLayoutInflater().inflate(R.layout.combo_items_view, itemBookView[i],false);
+                itemBookView[i]= (CardView) comboBookView.findViewById(R.id.comboItemsViewCard);
                 TextView tv = (TextView) comboBookView.findViewById(R.id.itemDescription);
                 tv.setText(Html.fromHtml(getComboBookDetails(i)));
                 tv.setMovementMethod(LinkMovementMethod.getInstance());
@@ -392,9 +408,9 @@ public class productView extends AppCompatActivity
         if(instruments.size()>0){
 
             int number_of_instruments= instruments.size();
-            itemInstrumentView = new CardView[number_of_instruments];
+            CardView[] itemInstrumentView = new CardView[number_of_instruments];
             for (int i = 0; i < number_of_instruments; i++){
-                View comboInstrumentView = getLayoutInflater().inflate(R.layout.combo_items_view,itemInstrumentView[i],false);
+                View comboInstrumentView = getLayoutInflater().inflate(R.layout.combo_items_view, itemInstrumentView[i],false);
                 itemInstrumentView[i]= (CardView) comboInstrumentView.findViewById(R.id.comboItemsViewCard);
                 TextView tv = (TextView) comboInstrumentView.findViewById(R.id.itemDescription);
                 tv.setText(Html.fromHtml(getComboInstrumentDetails(i)));
@@ -759,6 +775,47 @@ public class productView extends AppCompatActivity
         return title;
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_home, menu);
+        mCartMenuIcon = (LayerDrawable) menu.findItem(R.id.action_cart).getIcon();
+        int cartSize = RealmController.getInstance().getItems().size();
+        setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        return true;
+    }
+
+    public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
+
+        BadgeDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
+    }
+    public void openCart() {
+        Intent cart = new Intent(this,cartView.class);
+        startActivity(cart);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -766,17 +823,29 @@ public class productView extends AppCompatActivity
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_cart:
+                openCart();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(mCartMenuIcon!=null){
+            int cartSize = RealmController.getInstance().getItems().size();
+            setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+        }
+
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btn_addToCart:
                 //method call for updating cart
-
+                addToCart(product.objectId);
                 break;
             case R.id.btn_buyNow:
                 //method call for buy checkout
@@ -794,6 +863,35 @@ public class productView extends AppCompatActivity
 
         }
         
+    }
+
+    private void addToCart(String s) {
+        if(isItemInCart(s)) {
+            Toast.makeText(this,getString(R.string.alreadyInCart),Toast.LENGTH_LONG).show();
+        }else {
+            cartObject item = new cartObject();
+            item.setId((int) (RealmController.getInstance().getItems().size()+ System.currentTimeMillis()));
+            item.setProductId(s);
+            item.setQuantity(1);
+            Toast.makeText(this,getString(R.string.addedToCart),Toast.LENGTH_LONG).show();
+            campusExchangeApp.getInstance().getRealm().beginTransaction();
+            campusExchangeApp.getInstance().getRealm().copyToRealm(item);
+            campusExchangeApp.getInstance().getRealm().commitTransaction();
+            invalidateOptionsMenu();
+        }
+    }
+
+    private boolean isItemInCart(String s) {
+        if (RealmController.getInstance().hasItems()){
+            if(RealmController.getInstance().getCartObjectWithProductId(s) == null){
+                return false;
+            }else {
+                return true;
+            }
+        }else {
+            return false;
+        }
+
     }
 
     private void checkConnection() {
@@ -815,11 +913,22 @@ public class productView extends AppCompatActivity
             showSnack(getString(R.string.NetworkFaliure));
         }
     }
+
     private void showSnack(String snackString) {
         String message;
         message = snackString;
         Snackbar snackbar = Snackbar.make(activity_product_view, message, Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(NETWORK_STATE){
+            campusExchangeApp.getInstance().getmRequestQueue().cancelAll(TAG);
+        }
+        finish();
+        super.onBackPressed();
+
     }
 
 

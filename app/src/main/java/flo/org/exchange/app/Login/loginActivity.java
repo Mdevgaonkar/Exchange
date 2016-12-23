@@ -492,7 +492,10 @@ public class loginActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mProgressDialog.dismiss();
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+        }
+
     }
 
     public void checkCacheLogin(){

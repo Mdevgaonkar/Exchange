@@ -8,8 +8,8 @@
         android:icon="@drawable/ic_favorite_black_24dp"/>
 
     <item
-        android:id="@+id/action_play_next"
+        android:id="@+id/action_add_cart"
         android:orderInCategory="101"
         android:title="@string/addToCartSmall"
-        android:icon="@drawable/ic_menu_cart"/>
+        android:icon="@drawable/ic_local_grocery_store_black_24dp"/>
 </menu>

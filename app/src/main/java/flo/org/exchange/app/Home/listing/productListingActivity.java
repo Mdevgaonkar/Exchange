@@ -1,10 +1,14 @@
 package flo.org.exchange.app.Home.listing;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
@@ -17,14 +21,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,13 +47,16 @@ import java.util.List;
 import java.util.Map;
 
 import flo.org.exchange.R;
+import flo.org.exchange.app.Home.cart.cartView;
 import flo.org.exchange.app.Login.College;
 import flo.org.exchange.app.Login.Person;
 import flo.org.exchange.app.Login.spinnerAdapter;
 import flo.org.exchange.app.utils.ConnectivityReceiver;
 import flo.org.exchange.app.utils.Products;
+import flo.org.exchange.app.utils.RealmUtils.RealmController;
 import flo.org.exchange.app.utils.Subjects;
 import flo.org.exchange.app.utils.campusExchangeApp;
+import flo.org.exchange.app.utils.cartViewUtils.BadgeDrawable;
 import flo.org.exchange.app.utils.chromeCustomTab.CustomTabActivityHelper;
 import flo.org.exchange.app.utils.chromeCustomTab.WebviewFallback;
 import flo.org.exchange.app.utils.searchableSpinnerViewUtils.SearchableSpinner;
@@ -64,7 +70,6 @@ public class productListingActivity extends AppCompatActivity
     private static final String QUERY_SEPERATOR = "&";
     private static final String LOAD_PROPS = "props=listPrice%2CobjectId%2Cmrp%2CdateEnlisted%2Ctype";
     private static final String WHERE_EQUAL_TO = "where=";
-    private Toolbar activityToolbar;
     private static boolean NETWORK_STATE = false;
 
     private static final String PRODUCT_TITLE = "productTitle";
@@ -82,12 +87,10 @@ public class productListingActivity extends AppCompatActivity
     private static final int FILTER_CLEAR_VISIBLE = 3;
 
     private RecyclerView productRecyclerView;
-    private ImageView emptyView;
     private productListingAdapter productListingAdapter;
     private List<Products> productList;
     private CoordinatorLayout activity_product_listing;
 
-    private TextView tv;
 
 //    private ScrollView  productScrollView;
 
@@ -112,8 +115,6 @@ public class productListingActivity extends AppCompatActivity
     private Button btn_apply_remove_filter;
     private Boolean apply_remove_action= null;        //true --> Apply  false-->Clear
 
-    private Bundle b;
-    private String title;
     private int status;
     private String whereClause;
     private boolean poll;
@@ -133,6 +134,9 @@ public class productListingActivity extends AppCompatActivity
     //    Chrome custom activity helper
     private CustomTabActivityHelper mCustomTabActivityHelper;
 
+    // Cart Icon
+    private LayerDrawable mCartMenuIcon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +144,8 @@ public class productListingActivity extends AppCompatActivity
         setContentView(R.layout.activity_product_listing);
         Intent productType = getIntent();
 
-        b = productType.getExtras();
-        title = b.getString(PRODUCT_TITLE);
+        Bundle b = productType.getExtras();
+        String title = b.getString(PRODUCT_TITLE);
         status = b.getInt(PRODUCT_STATUS,1);
         whereClause = b.getString(PRODUCT_WHERE_CLAUSE);
         ___class = b.getString(PRODUCT_CLASS);
@@ -158,7 +162,6 @@ public class productListingActivity extends AppCompatActivity
         setupProgressBarLayout();
         setupEmptyView();
         setupRecyclerView();
-        setupTextView();
         loadUI();
 //        updatefilterOptionsLayout();
 //        getCollegeBranches();
@@ -195,6 +198,10 @@ public class productListingActivity extends AppCompatActivity
     protected void onResume() {
         // register connection status listener
         campusExchangeApp.getInstance().setConnectivityListener(this);
+        if(mCartMenuIcon!=null){
+            int cartSize = RealmController.getInstance().getItems().size();
+            setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+        }
         super.onResume();
     }
 
@@ -259,9 +266,9 @@ public class productListingActivity extends AppCompatActivity
 
     private String generateFilterClause() {
         String FilterClause = "";
-        boolean semFilterDiscarded = true;
-        boolean branchFilterdiscarded = true;
-        boolean subjectFilterDiscarded = true;
+        boolean semFilterDiscarded;
+        boolean branchFilterdiscarded;
+        boolean subjectFilterDiscarded;
         int semesterSelectedPosition =semesterFilter.getSelectedItemPosition();
         if (semesterSelectedPosition <= 0){
             semFilterDiscarded = true;
@@ -515,9 +522,7 @@ public class productListingActivity extends AppCompatActivity
 
 
     private void checkConnection() {
-        boolean isConnected = ConnectivityReceiver.isConnected();
-        NETWORK_STATE = isConnected;
-//        showSnack(isConnected);
+        NETWORK_STATE = ConnectivityReceiver.isConnected();
 
     }
 
@@ -553,7 +558,6 @@ public class productListingActivity extends AppCompatActivity
     private void setupEmptyView() {
         emptyLayout = (LinearLayout) findViewById(R.id.emptyLayout);
         emptyLayout.setVisibility(View.GONE);
-        emptyView = (ImageView) findViewById(R.id.no_products_listed);
     }
 
     private void showEmptyView(){
@@ -566,11 +570,6 @@ public class productListingActivity extends AppCompatActivity
 
     private void hideEmptyView(){
         emptyLayout.setVisibility(View.GONE);
-    }
-
-    private void setupTextView() {
-        tv = (TextView) findViewById(R.id.trialNetwork);
-        tv.setText("Loading");
     }
 
     private void setupRecyclerView() {
@@ -681,7 +680,7 @@ public class productListingActivity extends AppCompatActivity
             }
         };
 
-        campusExchangeApp.getInstance().addToRequestQueue(getCollegeList,"gettingCollegeList");
+        campusExchangeApp.getInstance().addToRequestQueue(getCollegeList,TAG);
 
     }
 
@@ -745,7 +744,7 @@ public class productListingActivity extends AppCompatActivity
                 }
             };
 
-            campusExchangeApp.getInstance().addToRequestQueue(getSubjectList,"gettingSubjectsList");
+            campusExchangeApp.getInstance().addToRequestQueue(getSubjectList,TAG);
         }else{
             if(sem <= 0) {
                 showSnack("Please select semester");
@@ -825,7 +824,7 @@ public class productListingActivity extends AppCompatActivity
             }
         };
 
-        campusExchangeApp.getInstance().addToRequestQueue(getProductList,"gettingProductList");
+        campusExchangeApp.getInstance().addToRequestQueue(getProductList,TAG);
     }
 
     private void prepareProducts(String filter) {
@@ -897,7 +896,7 @@ public class productListingActivity extends AppCompatActivity
             }
         };
 
-        campusExchangeApp.getInstance().addToRequestQueue(getProductList,"gettingProductList");
+        campusExchangeApp.getInstance().addToRequestQueue(getProductList,TAG);
     }
 
     private void updateDataSetOfRecyclerView() {
@@ -906,12 +905,49 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void setupActionbar(String title) {
-        activityToolbar = (Toolbar) findViewById(R.id.action_bar_product_listings);
+        Toolbar activityToolbar = (Toolbar) findViewById(R.id.action_bar_product_listings);
         setSupportActionBar(activityToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(title);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_home, menu);
+        mCartMenuIcon = (LayerDrawable) menu.findItem(R.id.action_cart).getIcon();
+        int cartSize = RealmController.getInstance().getItems().size();
+        setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
+        return true;
+    }
+
+    public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
+
+        BadgeDrawable badge;
+
+        // Reuse drawable if possible
+        Drawable reuse = icon.findDrawableByLayerId(R.id.ic_badge);
+        if (reuse != null && reuse instanceof BadgeDrawable) {
+            badge = (BadgeDrawable) reuse;
+        } else {
+            badge = new BadgeDrawable(context);
+        }
+
+        badge.setCount(count);
+        icon.mutate();
+        icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
 
     @Override
@@ -921,8 +957,16 @@ public class productListingActivity extends AppCompatActivity
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_cart:
+                openCart();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openCart() {
+        Intent cart = new Intent(this,cartView.class);
+        startActivity(cart);
     }
 
     @Override
@@ -1046,7 +1090,7 @@ public class productListingActivity extends AppCompatActivity
         private int spacing;
         private boolean includeEdge;
 
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
             this.spanCount = spanCount;
             this.spacing = spacing;
             this.includeEdge = includeEdge;
@@ -1103,4 +1147,15 @@ public class productListingActivity extends AppCompatActivity
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        if(NETWORK_STATE) {
+            campusExchangeApp.getInstance().getmRequestQueue().cancelAll(TAG);
+        }
+        finish();
+        super.onBackPressed();
+
+    }
+
 }

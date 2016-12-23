@@ -208,7 +208,23 @@
     <string name="pubYearNoSpace">"Publication Year "</string>
     <string name="categoryNoSpace">"Category "</string>
     <string name="allType">A</string>
-
+    <string name="emptyString" />
+    <string name="removedText">Removed</string>
+    <string name="percentageSymbol">%</string>
+    <string name="loadingCart">Gathering all items</string>
+    <string name="quantity">Quantity:\t</string>
+    <string name="addedToCart">Item Added to cart</string>
+    <string name="alreadyInCart">Already present in cart</string>
+    <string name="myCart">My Cart</string>
+    <string name="alreadyInWishlist">Already Present in Wishlist</string>
+    <string name="addedToWishlist">Item Added to Wishlist</string>
+    <string name="let_s_shop_now">Let\'s Shop now</string>
+    <string name="btn_continue">Continue</string>
+    <string name="movedToWishlist">Item Successfully moved to wishlist</string>
+    <string name="removedFromCart">Item Successfully removed from cart</string>
+    <string name="totalItemsText">Total Items :\t</string>
+    <string name="maxItemLimitReached">Maximum limit reached</string>
+    <string name="maximumQuantityLimit">5</string>
 
     <!--Chrome custom tabs strings START-->
     <!--Chrome custom tabs strings END-->

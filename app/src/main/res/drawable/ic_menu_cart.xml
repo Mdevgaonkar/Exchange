@@ -13,6 +13,6 @@
         android:id="@+id/ic_badge"
         android:drawable="@drawable/ic_local_grocery_store_black_24dp"
         android:gravity="center"
-        
+
         />
 </layer-list>

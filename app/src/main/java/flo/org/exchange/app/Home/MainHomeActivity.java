@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -26,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,9 +38,12 @@ import java.util.List;
 
 import flo.org.exchange.R;
 import flo.org.exchange.app.Home.Buy.BuyFragment;
-import flo.org.exchange.app.Home.ProductView.productView;
+import flo.org.exchange.app.Home.cart.cartView;
 import flo.org.exchange.app.Home.sell.SellFragment;
 import flo.org.exchange.app.Login.Person;
+import flo.org.exchange.app.utils.RealmUtils.RealmController;
+import flo.org.exchange.app.utils.campusExchangeApp;
+import flo.org.exchange.app.utils.cartObject;
 import flo.org.exchange.app.utils.cartViewUtils.BadgeDrawable;
 import flo.org.exchange.app.utils.chromeCustomTab.CustomTabActivityHelper;
 import flo.org.exchange.app.utils.chromeCustomTab.WebviewFallback;
@@ -65,6 +70,7 @@ public class MainHomeActivity extends AppCompatActivity
 
 //    Chrome custom activity helper
     private CustomTabActivityHelper mCustomTabActivityHelper;
+
 
 
     @Override
@@ -100,12 +106,7 @@ public class MainHomeActivity extends AppCompatActivity
 
 
         setUpNavHeaderDetails();
-
-
-
-
     }
-
 
 
 
@@ -131,7 +132,7 @@ public class MainHomeActivity extends AppCompatActivity
 
             if(!person.getPersonPhotoUrl().equals("null")){
                 try{
-                    Glide.with(getApplicationContext()).load(person.getPersonPhotoUrl())
+                    Glide.with(getApplicationContext()).load(Uri.parse(person.getPersonPhotoUrl()))
                             .thumbnail(0.5f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -169,7 +170,12 @@ public class MainHomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-            setUpNavHeaderDetails();
+        setUpNavHeaderDetails();
+        if(mCartMenuIcon!=null){
+            int cartSize = RealmController.getInstance().getItems().size();
+            setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+        }
+
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -242,7 +248,17 @@ public class MainHomeActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_home, menu);
         mCartMenuIcon = (LayerDrawable) menu.findItem(R.id.action_cart).getIcon();
-        setBadgeCount(this, mCartMenuIcon, String.valueOf(mCartCount++));
+        int cartSize = RealmController.getInstance().getItems().size();
+        setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
+
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
+            }
+        }
+
         return true;
     }
 
@@ -270,19 +286,45 @@ public class MainHomeActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         if (id == R.id.action_cart){
-            onClickIncrementCartCount();
+            openCart();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void onClickIncrementCartCount() {
-        setBadgeCount(this, mCartMenuIcon, String.valueOf(mCartCount++));
+    public void openCart() {
+        Intent cart = new Intent(this,cartView.class);
+        startActivity(cart);
+    }
+
+    private void addToCart(String s) {
+        if(isItemInCart(s)) {
+            Toast.makeText(this,"Already present",Toast.LENGTH_LONG).show();
+        }else {
+            cartObject item = new cartObject();
+            item.setId((int) (RealmController.getInstance().getItems().size()+ System.currentTimeMillis()));
+            item.setProductId(s);
+            item.setQuantity(1);
+
+            campusExchangeApp.getInstance().getRealm().beginTransaction();
+            campusExchangeApp.getInstance().getRealm().copyToRealm(item);
+            campusExchangeApp.getInstance().getRealm().commitTransaction();
+        }
+    }
+
+    private boolean isItemInCart(String s) {
+        if (RealmController.getInstance().hasItems()){
+            if(RealmController.getInstance().getCartObjectWithProductId(s) == null){
+                return false;
+            }else {
+                return true;
+            }
+        }else {
+            return false;
+        }
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -290,6 +332,7 @@ public class MainHomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
 
         if (id == R.id.settings) {
 //            openCustomTab("https://google.com");

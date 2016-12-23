@@ -18,6 +18,7 @@
     <color name="colorFilterBar">#DEF1F3</color>
     <color name="colorBadge">#FFAB00</color>
     <color name="colorOptionsMenu">#80FFFFFF</color>
+    <color name="colorlightPrimary">#DEF1F3</color>
 
     <!--A200-->
 </resources>

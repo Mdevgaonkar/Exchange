@@ -207,7 +207,10 @@ public class EditProfile extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mProgressDialog.dismiss();
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+        }
+
     }
 
     private void setupSpinners(List<String> collegesStringArray) {

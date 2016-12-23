@@ -2,6 +2,7 @@ package flo.org.exchange.app.Login;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -121,7 +122,7 @@ public class profile_options extends AppCompatActivity
         person_name.setText(personName);
         person_college.setText(personCollege);
         try {
-            Glide.with(getApplicationContext()).load(personPhotoUrl)
+            Glide.with(getApplicationContext()).load(Uri.parse(personPhotoUrl))
                     .thumbnail(0.5f)
                     .crossFade()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

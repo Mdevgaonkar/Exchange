@@ -2,6 +2,7 @@ package flo.org.exchange.app.Home.listing;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.view.menu.MenuPopupHelper;
 import android.support.v7.widget.PopupMenu;
@@ -24,6 +25,9 @@ import java.util.List;
 import flo.org.exchange.R;
 import flo.org.exchange.app.Home.ProductView.productView;
 import flo.org.exchange.app.utils.Products;
+import flo.org.exchange.app.utils.RealmUtils.RealmController;
+import flo.org.exchange.app.utils.campusExchangeApp;
+import flo.org.exchange.app.utils.cartObject;
 
 import static java.security.AccessController.getContext;
 
@@ -78,7 +82,7 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
         if (product.type.equals(TYPE_BOOK)){
             holder.title.setText(product.book.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
-            // loading album cover using Glide library
+            // loading product image using Glide library
             holder.thumbnail.setImageResource(R.drawable.ic_book_default);
             try{
                 Glide.with(mContext).load(product.book.photofile).thumbnail(0.5f)
@@ -91,21 +95,20 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
         }else if(product.type.equals(TYPE_INSTRUMENT)){
             holder.title.setText(product.instrument.instrumentName);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
-            // loading album cover using Glide library
+            // loading product image using Glide library
             holder.thumbnail.setImageResource(R.drawable.ic_instrument_default);
             try{
                 Glide.with(mContext).load(product.instrument.photoFile).thumbnail(0.5f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.thumbnail);
-//                Log.d("instrument pic",""+product.instrument.photoFile);
             }catch (NullPointerException e) {
                 holder.thumbnail.setImageResource(R.drawable.ic_instrument_default);
             }
         }else if(product.type.equals(TYPE_COMBOPACK)){
             holder.title.setText(product.combopack.title);
             holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
-            // loading album cover using Glide library
+            // loading product image using Glide library
             holder.thumbnail.setImageResource(R.drawable.ic_combo_default);
             try{
             Glide.with(mContext).load(product.combopack.photoUrl)
@@ -134,7 +137,7 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.overflow);
+                showPopupMenu(holder.overflow, product);
             }
         });
     }
@@ -157,12 +160,33 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
     /**
      * Showing popup menu when tapping on 3 dots
      */
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view, final Products product) {
         // inflate menu
         PopupMenu popup = new PopupMenu(mContext, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_product, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MyMenuItemClickListener());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_add_cart:
+                            addToCart(product.objectId);
+                        ((productListingActivity)mContext).invalidateOptionsMenu();
+                        return true;
+                    case R.id.action_add_favourite:
+                        if(RealmController.getInstance().isItemInWishlist(product.objectId)) {
+                            Toast.makeText(mContext, R.string.alreadyInWishlist,Toast.LENGTH_LONG).show();
+                        }else {
+                            RealmController.getInstance().addToWishList(product.objectId);
+                            Toast.makeText(mContext, R.string.addedToWishlist,Toast.LENGTH_LONG).show();
+//                            ActivityCompat.invalidateOptionsMenu();
+                        }
+                        return true;
+                    default:
+                }
+                return false;
+            }
+        });
 
         MenuPopupHelper menuHelper = new MenuPopupHelper(mContext, (MenuBuilder) popup.getMenu(), view);
         menuHelper.setForceShowIcon(true);
@@ -171,27 +195,33 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
 //        popup.show();
     }
 
-    /**
-     * Click listener for popup menu items
-     */
-    class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
+    private void addToCart(String s) {
+        if(isItemInCart(s)) {
+            Toast.makeText(mContext, R.string.alreadyInCart,Toast.LENGTH_LONG).show();
+        }else {
+            cartObject item = new cartObject();
+            item.setId((int) (RealmController.getInstance().getItems().size()+ System.currentTimeMillis()));
+            item.setProductId(s);
+            item.setQuantity(1);
+            Toast.makeText(mContext, R.string.addedToCart,Toast.LENGTH_LONG).show();
+            campusExchangeApp.getInstance().getRealm().beginTransaction();
+            campusExchangeApp.getInstance().getRealm().copyToRealm(item);
+            campusExchangeApp.getInstance().getRealm().commitTransaction();
         }
+    }
 
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.action_add_favourite:
-                    Toast.makeText(mContext, "Added to favourite", Toast.LENGTH_SHORT).show();
-                    return true;
-                case R.id.action_play_next:
-                    Toast.makeText(mContext, "Added to Cart", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
+    private boolean isItemInCart(String s) {
+        if (RealmController.getInstance().hasItems()){
+            if(RealmController.getInstance().getCartObjectWithProductId(s) == null){
+                return false;
+            }else {
+                return true;
             }
+        }else {
             return false;
         }
+
     }
 
     @Override

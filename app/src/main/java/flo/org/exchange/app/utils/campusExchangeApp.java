@@ -16,6 +16,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import flo.org.exchange.app.Login.Person;
+import flo.org.exchange.app.utils.RealmUtils.RealmController;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 import static android.content.ContentValues.TAG;
 
@@ -26,11 +29,18 @@ import static android.content.ContentValues.TAG;
 
 public class campusExchangeApp extends Application {
 
+
+
     private RequestQueue mRequestQueue;
 
 
 
     private Person universalPerson;
+
+    private String OFFLINE_REALM = "offlineRealmDB";
+
+    //    Realm vars
+    private Realm realm;
 
 
 
@@ -49,6 +59,26 @@ public class campusExchangeApp extends Application {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
         setupPerson();
+        setupRealm();
+    }
+
+    private void setupRealm() {
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+                .name(OFFLINE_REALM)
+                .schemaVersion(1)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfiguration);
+        setupRealmObject();
+    }
+
+    public void setupRealmObject() {
+        this.realm = RealmController.with(this).getRealm();
+
+    }
+
+    public void refreshRealm(){
+        RealmController.with(this).refresh();
     }
 
     private void setupPerson() {
@@ -155,5 +185,17 @@ public class campusExchangeApp extends Application {
 
     public void setGson(Gson gson) {
         this.gson = gson;
+    }
+
+    public RequestQueue getmRequestQueue() {
+        return mRequestQueue;
+    }
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public void setRealm(Realm realm) {
+        this.realm = realm;
     }
 }
