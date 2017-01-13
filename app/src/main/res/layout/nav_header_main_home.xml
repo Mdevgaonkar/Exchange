@@ -10,15 +10,18 @@
     android:padding="@dimen/sixteenDp"
     android:gravity="left">
 
-        <com.pkmmte.view.CircularImageView
+        <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/personPhotoInHeader"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:src="@drawable/ic_default_avatar"
-            app:border="true"
-            app:borderWidth="2dp"
-            />
+            app:civ_border_color="#EEEEEE"
+            app:civ_border_width="2dp"/>
+            <!--app:civ_shadow="true"-->
+            <!--app:civ_shadow_radius="5"-->
+            <!--app:civ_shadow_color="#8BC34A"-->
+            <!--/>-->
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context="flo.org.exchange.app.Home.listing.productListingActivity"
+    tools:context="flo.org.campusmein.app.Home.listing.productListingActivity"
     android:background="@color/colorBackground">
 
     <LinearLayout
@@ -82,7 +82,7 @@
                         android:elevation="@dimen/zeroDp"
                         />
 
-                    <flo.org.exchange.app.utils.searchableSpinnerViewUtils.SearchableSpinner
+                    <flo.org.campusmein.app.utils.searchableSpinnerViewUtils.SearchableSpinner
                         android:id="@+id/semesterFilter"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/twentiEightDp"
@@ -95,7 +95,7 @@
                         android:minHeight="@dimen/zeroDp"
                         />
 
-                    <flo.org.exchange.app.utils.searchableSpinnerViewUtils.SearchableSpinner
+                    <flo.org.campusmein.app.utils.searchableSpinnerViewUtils.SearchableSpinner
                         android:id="@+id/branchFilter"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/twentiEightDp"
@@ -110,7 +110,7 @@
 
 
 
-                    <flo.org.exchange.app.utils.searchableSpinnerViewUtils.SearchableSpinner
+                    <flo.org.campusmein.app.utils.searchableSpinnerViewUtils.SearchableSpinner
                         android:id="@+id/subjectFilter"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/twentiEightDp"
@@ -247,12 +247,27 @@
 
         </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
             <android.support.v7.widget.RecyclerView
                     android:id="@+id/product_list_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
+
                     />
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@drawable/button_hollow_blue"-->
+            <!--android:textColor="@color/text_invert_blue"-->
+            <!--android:layout_margin="@dimen/twelveDP"-->
+            <!--android:text="Load More"/>-->
+            </LinearLayout>
+
 
 
 

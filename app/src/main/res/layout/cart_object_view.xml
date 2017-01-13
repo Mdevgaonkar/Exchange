@@ -5,12 +5,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cart_object_card"
-    android:background="?android:attr/selectableItemBackground"
     card_view:cardCornerRadius="@dimen/fourDP">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -19,6 +19,7 @@
             android:id="@+id/cart_itemImage"
             android:layout_width="128dp"
             android:layout_height="170dp"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_combo_default"/>
 
         <LinearLayout
@@ -180,8 +181,8 @@
                         android:paddingTop="@dimen/fourDP"
                         android:paddingBottom="@dimen/fourDP"
                         android:textStyle="bold"
-                        android:textColor="@color/colorBackground"
-                        android:background="@drawable/filled_background_rounded_rectangle_primary_color"
+                        android:textColor="@color/text_invert_blue"
+                        android:background="@drawable/button_hollow_blue"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:text="+"
                         android:gravity="center"/>
@@ -205,8 +206,8 @@
                         android:paddingBottom="@dimen/fourDP"
                         android:layout_margin="@dimen/tab_indicator_height"
                         android:textStyle="bold"
-                        android:background="@drawable/filled_background_rounded_rectangle_primary_color"
-                        android:textColor="@color/colorBackground"
+                        android:textColor="@color/text_invert_blue"
+                        android:background="@drawable/button_hollow_blue"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                         android:text="-"
                         android:gravity="center"/>

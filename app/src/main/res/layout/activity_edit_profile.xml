@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="flo.org.exchange.app.Login.profile_options"
+    tools:context="flo.org.campusmein.app.Login.EditProfile"
     android:background="@color/colorBackground">
 
     <LinearLayout

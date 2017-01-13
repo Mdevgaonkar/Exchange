@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context="flo.org.exchange.app.Home.Buy.BuyFragment">
+    tools:context="flo.org.campusmein.app.Home.Buy.BuyFragment">
 
     <LinearLayout
         android:id="@+id/error_Layout"
@@ -81,7 +81,7 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view_categories"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         android:layout_marginTop="@dimen/search_bar_margins"
         android:layout_marginLeft="@dimen/search_bar_margins"
@@ -90,7 +90,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             >
             <TextView

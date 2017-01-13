@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context="flo.org.exchange.app.Home.listing.productListingActivity"
+    tools:context="flo.org.campusmein.app.Home.cart.cartView"
     android:background="@color/colorBackground">
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,39 +25,69 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:visibility="visible">
+        android:gravity="center"
+        android:visibility="gone">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/sixtyFourDp"
+                    android:paddingRight="@dimen/sixtyFourDp"
+                    android:layout_marginLeft="@dimen/thirtyTwoDP"
+                    android:layout_marginRight="@dimen/thirtyTwoDP"
+                    android:layout_marginTop="@dimen/thirtyTwoDP"
+                    android:src="@drawable/ic_empty_cart_layout"
+                    />
+                <Button
+                    android:id="@+id/shopNow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/let_s_shop_now"
+                    android:textColor="@color/colorWhite"
+                    android:padding="@dimen/sixteenDp"
+                    android:minWidth="@dimen/zeroDp"
+                    android:minHeight="@dimen/zeroDp"
+                    android:background="@drawable/filled_background_rounded_rectangle_primary_color" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
+    <android.support.v7.widget.CardView
+        android:id="@+id/error_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/sixteenDp"
+        android:visibility="visible">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:orientation="vertical">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/sixtyFourDp"
-                android:paddingRight="@dimen/sixtyFourDp"
-                android:layout_marginLeft="@dimen/thirtyTwoDP"
-                android:layout_marginRight="@dimen/thirtyTwoDP"
-                android:src="@drawable/ic_empty_cart_layout"
-                />
-            <Button
-                android:id="@+id/shopNow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/let_s_shop_now"
-                android:textColor="@color/colorWhite"
-                android:padding="@dimen/sixteenDp"
-                android:minWidth="@dimen/zeroDp"
-                android:minHeight="@dimen/zeroDp"
-                android:background="@drawable/filled_background_rounded_rectangle_primary_color" />
+                android:src="@drawable/ic_signal_cellular_connected_no_internet_0_bar_black_24dp"
+                android:layout_margin="@dimen/sixteenDp"
+                android:tint="@android:color/tertiary_text_light"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="@dimen/eightDP"
+                android:layout_margin="@dimen/eightDP"
+                android:textColor="@android:color/tertiary_text_light"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                android:text="@string/NetworkError"/>
         </LinearLayout>
-        </ScrollView>
-        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

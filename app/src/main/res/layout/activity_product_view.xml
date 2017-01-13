@@ -11,7 +11,7 @@
     android:fitsSystemWindows="true"
     android:gravity="center"
     android:background="@color/colorBackground"
-    tools:context="flo.org.exchange.app.Home.ProductView.productView">
+    tools:context="flo.org.campusmein.app.Home.ProductView.productView">
 
     <!--product_scrollView-->
     <android.support.v4.widget.NestedScrollView
@@ -119,6 +119,7 @@
                             android:paddingLeft="@dimen/fourDP"
                             android:paddingRight="@dimen/fourDP"
                             android:contentDescription="@string/productsImage"
+                            android:scaleType="fitXY"
                             />
 
                         <LinearLayout
@@ -229,7 +230,9 @@
                             android:id="@+id/comboItemsViewLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:paddingTop="@dimen/fourDP"
+                            android:paddingBottom="@dimen/fourDP">
                             <include
                                 layout="@layout/combo_items_view"
                                 android:id="@+id/comboItem"/>

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:gravity="center"
-    tools:context="flo.org.exchange.app.Login.profile_options"
+    tools:context="flo.org.campusmein.app.Login.profile_options"
     android:background="@color/colorBackground">
 
     <LinearLayout
@@ -46,15 +46,17 @@
             android:layout_gravity="center"
             android:visibility="visible"
             >
-            <com.pkmmte.view.CircularImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/profile_img_profile_view"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/ic_default_avatar"
-                app:border="true"
-                app:borderWidth="2dp"
-                app:border_color="@color/colorPrimary"
-                />
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="4dp"/>
+                <!--app:civ_shadow="true"-->
+                <!--app:civ_shadow_radius="10"-->
+                <!--app:civ_shadow_color="#8BC34A"-->
+                <!--/>-->
 
             <TextView
                 android:id="@+id/person_name_profile_view"

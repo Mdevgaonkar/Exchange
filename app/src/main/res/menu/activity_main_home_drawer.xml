@@ -8,7 +8,7 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home" />
         <item
-            android:id="@+id/previous_items"
+            android:id="@+id/myOrders"
             android:icon="@drawable/ic_inbox_black_24dp"
             android:title="@string/myOrders" />
         <item
@@ -16,7 +16,7 @@
             android:icon="@drawable/ic_local_atm_black_24dp"
             android:title="@string/mySells" />
         <item
-            android:id="@+id/whishlist"
+            android:id="@+id/myWhishlist"
             android:icon="@drawable/ic_favorite_border_black_24dp"
             android:title="@string/whishlist" />
         <item

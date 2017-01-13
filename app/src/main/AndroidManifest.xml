@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="flo.org.exchange">
+    package="flo.org.campusmein">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -12,8 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.Base.NoActionBar"
-        >
+        android:theme="@style/AppTheme.Base.NoActionBar">
 
         <!-- Google Play Services -->
         <meta-data
@@ -25,9 +24,17 @@
             android:name="com.truecaller.android.sdk.PartnerKey"
             android:value="@string/partnerKey" />
 
+        <receiver
+            android:name=".app.utils.ConnectivityReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".app.Home.MainHomeActivity"
-            android:label="@string/title_activity_main_home"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Base.NoActionBar" />
         <activity
@@ -35,7 +42,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Base.NoActionBar" />
         <activity
-            android:name=".app.Login.loginActivity"
+            android:name=".app.Login.login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Base.NoActionBar" />
         <activity
@@ -74,21 +81,28 @@
         <receiver android:name=".app.utils.chromeCustomTab.ActionBroadcastReceiver" />
         <!-- chrome Custom Tab Activities END -->
 
-        <receiver
-            android:name=".app.utils.ConnectivityReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".app.Home.ProductView.productView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Base.NoActionBar" />
-
         <activity
             android:name=".app.Home.cart.cartView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Home.WishList.wishlistView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Home.orderPlacement.priceView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Home.orderPlacement.ordersView"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Base.NoActionBar" />
+        <activity
+            android:name=".app.Home.orderPlacement.orderDetailsView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Base.NoActionBar"/>
     </application>

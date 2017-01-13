@@ -9,6 +9,7 @@
     <color name="colorGreen">#43A047</color>
     <color name="colorRed">#DE3A3A</color>
     <color name="colorCard">#FEFEFE</color>
+    <color name="colorRedFav">#D50000</color>
     <color name="colorStatusBar">#33000000</color>
     <color name="colorRipple">#120097A7</color>
     <color name="colorGray">#DFDFDF</color>
@@ -19,6 +20,7 @@
     <color name="colorBadge">#FFAB00</color>
     <color name="colorOptionsMenu">#80FFFFFF</color>
     <color name="colorlightPrimary">#DEF1F3</color>
+    <color name="colorOrange">#F0AD4E</color>
 
     <!--A200-->
 </resources>

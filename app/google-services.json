@@ -1,40 +1,71 @@
 {
   "project_info": {
-    "project_number": "1075614023069",
-    "project_id": "firebase-xchange"
+    "project_number": "922913373581",
+    "project_id": "firebase-campusmein"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1075614023069:android:830f6000e4e57723",
+        "mobilesdk_app_id": "1:922913373581:android:830f6000e4e57723",
         "android_client_info": {
           "package_name": "flo.org.exchange"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1075614023069-56mks153vd7aej075k7m4bfs5rno1tsa.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "flo.org.exchange",
-            "certificate_hash": "5F3BECEAD7DB68EEF70EA3AA6425B6A810AE46EC"
-          }
-        },
-        {
-          "client_id": "1075614023069-mib3k4h75nk1qqsu7b2gbdpeo6jai84r.apps.googleusercontent.com",
+          "client_id": "922913373581-bdf2rpm680ju4qrdukksvlpej1egmq50.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDYMO1kNfTkEuT6a-ZwYlNwtWY5YRoLxjI"
+          "current_key": "AIzaSyB7Y3xroz8v2tnf8k_B4rBJ7hW9mDh0HE0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922913373581:android:3273b51baf15c078",
+        "android_client_info": {
+          "package_name": "flo.org.campusmein"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "922913373581-j87a5gicrcqqvuq6vgi0q95apfnc7sku.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "flo.org.campusmein",
+            "certificate_hash": "5F3BECEAD7DB68EEF70EA3AA6425B6A810AE46EC"
+          }
+        },
+        {
+          "client_id": "922913373581-bdf2rpm680ju4qrdukksvlpej1egmq50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7Y3xroz8v2tnf8k_B4rBJ7hW9mDh0HE0"
         }
       ],
       "services": {
         "analytics_service": {
           "status": 2,
           "analytics_property": {
-            "tracking_id": "UA-86559402-1"
+            "tracking_id": "UA-89436478-1"
           }
         },
         "appinvite_service": {

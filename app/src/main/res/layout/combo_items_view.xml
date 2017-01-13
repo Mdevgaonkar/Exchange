@@ -16,6 +16,7 @@
                 android:id="@+id/itemImage"
                 android:layout_width="96dp"
                 android:layout_height="128dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_combo_default"/>
 
             <LinearLayout

@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_orderDetails"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:gravity="center"
+    tools:context="flo.org.campusmein.app.Home.orderPlacement.orderDetailsView"
+    android:background="@color/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/action_bar_cart_listings"
+            layout="@layout/tab_action_bar"
+            />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/ordDt_error_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/sixteenDp"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_signal_cellular_connected_no_internet_0_bar_black_24dp"
+                    android:layout_margin="@dimen/sixteenDp"
+                    android:tint="@android:color/tertiary_text_light"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="@dimen/eightDP"
+                    android:layout_margin="@dimen/eightDP"
+                    android:textColor="@android:color/tertiary_text_light"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                    android:text="@string/NetworkError"/>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <LinearLayout
+            android:id="@+id/ordDt_progressLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/zeroDp"
+                android:layout_gravity="center"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ordDt_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/orderView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/eightDP">
+
+                        <TextView
+                            android:id="@+id/ordDt_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/fourDP"
+                            android:textStyle="bold"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="MON, JAN 9 2017"
+                            />
+
+                        <TextView
+                            android:id="@+id/ordDt_itemTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="Let Us C"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_itemSubtitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="by Yashvant Kanetkar"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:id="@+id/ordDt_qty"
+                                android:layout_width="@dimen/zeroDp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                android:textColor="@android:color/secondary_text_light"
+                                android:padding="@dimen/eightDP"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:text="@string/quantity_n"
+                                />
+
+                            <LinearLayout
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:background="@color/colorDarkGray"/>
+
+                            <TextView
+                                android:id="@+id/ordDt_gr_total"
+                                android:layout_width="@dimen/zeroDp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                android:textColor="@android:color/secondary_text_light"
+                                android:padding="@dimen/eightDP"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:gravity="center"
+                                android:text="@string/grand_total_n"
+                                />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/ordDt_payment_mode"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="@string/payment_by"
+                            />
+
+
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/ordDt_receive_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteenDp"
+                    android:layout_marginRight="@dimen/sixteenDp"
+                    android:layout_marginBottom="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/eightDP">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="Receive Order"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_code"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:gravity="center"
+                            android:text="4231"
+                            />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:gravity="center"
+                            android:text="Show this key to our representative while receiving your order"
+                            />
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteenDp"
+                    android:layout_marginRight="@dimen/sixteenDp"
+                    android:layout_marginBottom="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        >
+
+                        <LinearLayout
+                            android:id="@+id/ordDt_statusView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/ordDt_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/fourDP"
+                            android:layout_marginRight="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:layout_marginTop="@dimen/fourDP"
+                            android:text="1B46BA2E-B38F-2B6A-FF4A-1C4139352400"
+                            />
+
+                        <TextView
+                            android:id="@+id/ordDt_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginRight="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="Delivery Pending"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_status_comments"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginRight="@dimen/sixteenDp"
+                            android:layout_marginLeft="@dimen/sixteenDp"
+                            android:text="@string/expected_on_or_before_t"
+                            />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/colorGrayDark"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_status_refresh"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Button"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:text="@string/refresh_txt_btn"
+                            />
+                    </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+                            <ProgressBar
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/ordDt_manageOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteenDp"
+                    android:layout_marginRight="@dimen/sixteenDp"
+                    android:layout_marginBottom="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/eightDP">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="Manage Order"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:id="@+id/ordDt_cancel_btn"
+                                android:layout_width="@dimen/zeroDp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_highlight_off_black_24dp"
+                                    android:layout_marginTop="@dimen/sixDp"
+                                    android:tint="@android:color/tertiary_text_light"/>
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                    android:textColor="@android:color/secondary_text_light"
+                                    android:padding="@dimen/eightDP"
+                                    android:gravity="center"
+                                    android:text="Cancel Order"
+                                    />
+
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="1dp"
+                                android:id="@+id/divider"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:background="@color/colorDarkGray"/>
+
+                            <LinearLayout
+                                android:id="@+id/ordDt_contact_us_btn"
+                                android:layout_width="@dimen/zeroDp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:clickable="true"
+                                android:background="?android:attr/selectableItemBackground"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/ic_mail_outline_black_24dp"
+                                    android:layout_marginTop="@dimen/sixDp"
+                                    android:tint="@android:color/tertiary_text_light"/>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                                    android:textColor="@android:color/secondary_text_light"
+                                    android:padding="@dimen/eightDP"
+                                    android:gravity="center"
+                                    android:text="Contact Us"
+                                    />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/ordDt_delivery_address_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteenDp"
+                    android:layout_marginRight="@dimen/sixteenDp"
+                    android:layout_marginBottom="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/eightDP">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="@string/delivery_address"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_delivery_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="Terna Engineering College, Nerul Navi-Mumbai."
+                            />
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
+
+
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

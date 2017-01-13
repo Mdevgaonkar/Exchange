@@ -11,7 +11,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:src="@drawable/sidebar_header_background"
+        tools:src="@color/colorDarkGray"
         android:id="@+id/img_pager_item"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"
