@@ -2,8 +2,11 @@ package flo.org.campusmein.app.Login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -34,12 +38,16 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.google.gson.Gson;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -127,9 +135,9 @@ public class login extends AppCompatActivity
 
     private void showOrHideSkipOption(){
         if(srcString.equals("new")){
-            skip_button.setVisibility(View.GONE);
-        }else if(srcString.equals("cart")){
             skip_button.setVisibility(View.VISIBLE);
+        }else if(srcString.equals("cart")){
+            skip_button.setVisibility(View.GONE);
         }
     }
 
@@ -735,7 +743,7 @@ public class login extends AppCompatActivity
              * */
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
                 Log.d("Headers", headers.toString());
                 return headers;
             }
@@ -774,6 +782,7 @@ public class login extends AppCompatActivity
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+
                             String personObjectId = null;
                             try {
                                 if (response.isNull("objectId")) {
@@ -781,15 +790,15 @@ public class login extends AppCompatActivity
                                         Snackbar.make(activity_login," person already exists ", Snackbar.LENGTH_LONG).show();
 //                                        readUser();
                                         userUpdate();
-                                        hideProgressDialog();
                                     }
                                 } else {
                                     personObjectId = response.getString("objectId");
     //                                Snackbar.make(activity_login, R.string.setup_complete + " " + personObjectId, Snackbar.LENGTH_LONG).show();
                                     campusExchangeApp.getInstance().getUniversalPerson().setPersonObjectId(personObjectId);
     //                                getCredentials();
-                                    StartMainHomeActivity();
+                                    loginUser();
                                 }
+                                hideProgressDialog();
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -798,7 +807,7 @@ public class login extends AppCompatActivity
                                 btn_lets_start.setVisibility(View.GONE);
                                 campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                                 campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-                                Log.d("cruser","innermost");
+                                Log.d("cruser",e.toString());
                             }
 
 
@@ -812,7 +821,7 @@ public class login extends AppCompatActivity
                             btn_lets_start.setVisibility(View.GONE);
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-                            Log.d("cruser","inner");
+                            Log.d("cruserinner",error.toString());
                             Log.d("volley",error.toString());
                         }
                     }){
@@ -821,7 +830,7 @@ public class login extends AppCompatActivity
                  * */
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
                     Log.d("Headers", headers.toString());
                     return headers;
                 }
@@ -836,7 +845,7 @@ public class login extends AppCompatActivity
             btn_lets_start.setVisibility(View.GONE);
             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
             campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-            Log.d("cruser","outer");
+            Log.d("cruserouter",e.toString());
 
         }
     }
@@ -877,7 +886,7 @@ public class login extends AppCompatActivity
                             if (response.isNull("objectId")) {
                                 Snackbar.make(activity_login, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
                             }else {
-                                StartMainHomeActivity();
+                                loginUser();
                             }
                         }
                     },
@@ -889,7 +898,7 @@ public class login extends AppCompatActivity
                             btn_lets_start.setVisibility(View.GONE);
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-                            Log.d("upuser","inner");
+                            Log.d("upuser",error.toString());
                         }
                     }){
                 /**
@@ -897,7 +906,7 @@ public class login extends AppCompatActivity
                  * */
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
                     Log.d("Headers", headers.toString());
                     return headers;
                 }
@@ -912,7 +921,7 @@ public class login extends AppCompatActivity
             btn_lets_start.setVisibility(View.GONE);
             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
             campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-            Log.d("upuser","outer");
+            Log.d("upuserouter",e.toString());
 
         }
     }
@@ -955,7 +964,7 @@ public class login extends AppCompatActivity
                             btn_lets_start.setVisibility(View.GONE);
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                             campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-                            Log.d("Ruser","inner");
+                            Log.d("Ruserinner",e.toString());
                         }
                     }
                 },
@@ -967,7 +976,7 @@ public class login extends AppCompatActivity
                         btn_lets_start.setVisibility(View.GONE);
                         campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                         campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
-                        Log.d("Ruser","outer");
+                        Log.d("Ruserouter",error.toString());
                         Log.d("volley",error.toString());
                     }
                 }){
@@ -976,13 +985,257 @@ public class login extends AppCompatActivity
              * */
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
                 Log.d("Headers", headers.toString());
                 return headers;
             }
         };
 
         campusExchangeApp.getInstance().addToRequestQueue(readeNewUser,TAG);
+    }
+
+    private void deviceRegistration(){
+        showProgressDialog(getString(R.string.setting_up));
+        new Thread(new Runnable() {
+            public void run() {
+                //code
+                try {
+                    InstanceID instanceID = InstanceID.getInstance(getApplicationContext());
+                    String token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+                            GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+                    Log.d("Device_token",token);
+
+                    String id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                    Log.d("Device_id",id);
+                    String deviceVersion = android.os.Build.VERSION.RELEASE;
+
+                    String devReg = " {"
+                            +"\"deviceToken\""+":\""+token+"\","
+                            +    "\"deviceId\""+":\""+id+"\","
+                            +   "\"os\""+":"+"\"ANDROID\""+","
+                            +    "\"osVersion\""+":"+"\""+deviceVersion+"\""
+                            +"}";
+
+                    JSONObject jsonObject = new JSONObject(devReg);
+                    Log.d("Device_Reg", jsonObject.toString());
+                    //f4bf6491e2a9ecc8
+                    uploadDeviceKeys(jsonObject);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d("Device_Token Exception",e.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.d("Device_Json Exception",e.toString());
+                }
+            }
+        }).start();
+
+    }
+
+    private void uploadDeviceKeys(final JSONObject regObj) {
+        String createDeviceString = "https://api.backendless.com/test/messaging/registrations";
+
+        JsonObjectRequest registerNewDevice = new JsonObjectRequest(
+                Request.Method.POST,
+                createDeviceString,
+                regObj,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.d("Device_Reg_Id", response.getString("registrationId"));
+                            if (Boolean.valueOf(campusExchangeApp.getInstance().getUniversalPerson().getPersonPresent())) {
+                                relateUserWithDevice(regObj);
+
+                            } else {
+                                hideProgressDialog();
+                                StartMainHomeActivity();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("Device_Reg_Id", "unsuccessful");
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Device_volley", error.toString());
+                    }
+                }) {
+            /**
+             * Passing some request headers
+             */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
+//                HashMap<String, String> headers= new HashMap<String, String>();
+//                headers.put("application-id","99AD5E9B-7377-7F3E-FF59-F65B19158D00");
+//                headers.put("secret-key","8265CE11-7333-14FE-FF11-0A96233C9100");
+                headers.put("Content-Type", "application/json");
+                headers.put("application-type", "REST");
+                Log.d("device_Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        campusExchangeApp.getInstance().addToRequestQueue(registerNewDevice, TAG);
+
+    }
+
+    private void relateUserWithDevice(JSONObject regObj){
+
+        Log.d("RelateUser","Called");
+
+        try {
+            String deviceToken = regObj.getString("deviceToken");
+            String deviceId = regObj.getString("deviceId");
+            String os = regObj.getString("os");
+            String osVersion = regObj.getString("osVersion");
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String presentVersion = pInfo.versionName;
+
+            String userDevice = "{\n" +
+                    "                \"deviceId\": " + "\""+deviceId+"\",\n" +
+                    "                \"appVersion\": \""+presentVersion+"\",\n" +
+                    "                \"___class\": \"Users\"\n" +
+                    "    }";
+
+            JSONObject jsonPerson = new JSONObject(userDevice);
+
+            String createUserString = getString(R.string.classUsers);
+            createUserString = createUserString+"/"+campusExchangeApp.getInstance().getUniversalPerson().getPersonObjectId();
+
+            JsonObjectRequest updateNewUser = new JsonObjectRequest(
+                    Request.Method.PUT,
+                    createUserString,
+                    jsonPerson,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("RelateUser", response.toString());
+                            hideProgressDialog();
+                                if (response.isNull("objectId")) {
+//                                        Snackbar.make(activity_login, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                                        showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                                    }else {
+                                        Toast.makeText(getApplicationContext(), "Device registered for notifications", Toast.LENGTH_SHORT).show();
+                                    }
+                                hideProgressDialog();
+                                StartMainHomeActivity();
+                            }
+
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            hideProgressDialog();
+                            showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                            btn_lets_start.setVisibility(View.GONE);
+                            campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+                            campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
+                            Log.d("RelateUser",error.toString());
+                        }
+                    }){
+                /**
+                 * Passing some request headers
+                 * */
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
+                    Log.d("Headers", headers.toString());
+                    return headers;
+                }
+            };
+
+            campusExchangeApp.getInstance().addToRequestQueue(updateNewUser,TAG);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("RelateUser_JSON", e.toString());
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Log.d("RelateUser_Package", e.toString());
+        }
+
+
+    }
+
+
+    private void loginUser(){
+        showProgressDialog(getString(R.string.loginProgress));
+        String loginObjString = "{" +
+                " \"login\" : \""+campusExchangeApp.getInstance().getUniversalPerson().getPersonEmail()+"\"," +
+                " \"password\" : \""+campusExchangeApp.getInstance().getUniversalPerson().getPersonAuthCode()+"\"" +
+                "}";
+        String LoginUserString = "https://api.backendless.com/test/users/login";
+
+        try {
+            JSONObject loginObject = new JSONObject(loginObjString);
+
+
+        JsonObjectRequest loginUser = new JsonObjectRequest(
+                Request.Method.POST,
+                LoginUserString,
+                loginObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        hideProgressDialog();
+                        if(response.isNull("user-token")){
+                            loginUser();
+                        }else {
+                            try {
+                                Log.d("login_user_token",response.getString("user-token"));
+                                campusExchangeApp.getInstance().getUniversal_Credentials().setUserToken(response.getString("user-token"));
+                                deviceRegistration();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Log.d("Logn_user_token","unsuccessful");
+                                hideProgressDialog();
+                                showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                                btn_lets_start.setVisibility(View.GONE);
+                                campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+                                campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
+                            }
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("Login_volley",error.toString());
+                        hideProgressDialog();
+                        showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                        btn_lets_start.setVisibility(View.GONE);
+                        campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+                        campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
+                    }
+                }){
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMapWithoutUserToken();
+                headers.put("Content-Type","application/json");
+                headers.put("application-type","REST");
+                Log.d("device_Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        campusExchangeApp.getInstance().addToRequestQueue(loginUser,TAG);
+        } catch (JSONException e) {
+            hideProgressDialog();
+            showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+            btn_lets_start.setVisibility(View.GONE);
+            campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+            campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
+            e.printStackTrace();
+            Log.d("Login_JSON_exception", e.toString());
+        }
     }
 
 //    private void createUser() {
@@ -1174,6 +1427,9 @@ public class login extends AppCompatActivity
 //    }
 
     private void StartMainHomeActivity() {
+
+
+
 
         if(srcString.equals("new")){
             finish();

@@ -19,10 +19,10 @@
             android:id="@+id/myWhishlist"
             android:icon="@drawable/ic_favorite_border_black_24dp"
             android:title="@string/whishlist" />
-        <item
-            android:id="@+id/notifications"
-            android:icon="@drawable/ic_notifications_none_black_24dp"
-            android:title="@string/notifications" />
+        <!--<item-->
+            <!--android:id="@+id/notifications"-->
+            <!--android:icon="@drawable/ic_notifications_none_black_24dp"-->
+            <!--android:title="@string/notifications" />-->
     </group>
 
     <group>
@@ -35,10 +35,10 @@
             android:id="@+id/about_us"
             android:icon="@drawable/ic_about_us_48dp"
             android:title="@string/about_us"/>
-        <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_settings_black_48dp"
-            android:title = "@string/settings"/>
+        <!--<item-->
+            <!--android:id="@+id/settings"-->
+            <!--android:icon="@drawable/ic_settings_black_48dp"-->
+            <!--android:title = "@string/settings"/>-->
 
     </group>
 

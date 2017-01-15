@@ -1,16 +1,24 @@
 package flo.org.campusmein.app.Home;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,23 +27,41 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import flo.org.campusmein.R;
 import flo.org.campusmein.app.Home.Buy.BuyFragment;
@@ -45,6 +71,7 @@ import flo.org.campusmein.app.Home.orderPlacement.ordersView;
 import flo.org.campusmein.app.Home.sell.SellFragment;
 import flo.org.campusmein.app.utils.Person;
 import flo.org.campusmein.app.utils.RealmUtils.RealmController;
+import flo.org.campusmein.app.utils.buyFragmentVariables;
 import flo.org.campusmein.app.utils.campusExchangeApp;
 import flo.org.campusmein.app.utils.cartObject;
 import flo.org.campusmein.app.utils.cartViewUtils.BadgeDrawable;
@@ -53,7 +80,9 @@ import flo.org.campusmein.app.utils.chromeCustomTab.WebviewFallback;
 
 public class MainHomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                    View.OnClickListener {
+                    View.OnClickListener, View.OnTouchListener{
+    private int count = 0;
+    private long startMillis=0;
 
     private static final String TAG = MainHomeActivity.class.getSimpleName();
     Person person;
@@ -65,6 +94,8 @@ public class MainHomeActivity extends AppCompatActivity
     private TextView personNameInHeader, personCollegeInHeader;
     private CircularImageView personPhotoInHeader;
     private NavigationView navigationView;
+
+    private DrawerLayout drawer;
 
 //    cartIcon options
     private LayerDrawable mCartMenuIcon;
@@ -87,7 +118,8 @@ public class MainHomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -107,8 +139,10 @@ public class MainHomeActivity extends AppCompatActivity
         tabLayout.setSelectedTabIndicatorHeight(10);
 
 
+        fetchNewestVersion();
 
         setUpNavHeaderDetails();
+        validateUserLogin();
     }
 
 
@@ -118,6 +152,7 @@ public class MainHomeActivity extends AppCompatActivity
         personNameInHeader = (TextView) navigationView.getHeaderView(0).findViewById(R.id.persoNameInHeader);
         personCollegeInHeader = (TextView) navigationView.getHeaderView(0).findViewById(R.id.personCollegeInHeader);
         personPhotoInHeader = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.personPhotoInHeader);
+        personPhotoInHeader.setOnTouchListener(this);
         if(Boolean.valueOf(person.getPersonPresent())){
             my_profile.setImageResource(R.drawable.ic_mode_edit_black_24dp);
             if(!person.getPersonName().equals("null")){
@@ -205,8 +240,6 @@ public class MainHomeActivity extends AppCompatActivity
 
         }
     }
-
-
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -346,19 +379,22 @@ public class MainHomeActivity extends AppCompatActivity
                 startActivity(myOrders);
                 break;
             case R.id.mySells:
+                showSnack(getString(R.string.option_comming_soon),Snackbar.LENGTH_LONG);
                 break;
             case R.id.myWhishlist:
                 Intent myWishlist = new Intent(this, wishlistView.class);
                 startActivity(myWishlist);
                 break;
-            case R.id.notifications:
-                break;
+//            case R.id.notifications:
+//                break;
             case R.id.quick_help:
+                showHelpConfirmationDialog();
                 break;
             case R.id.about_us:
+                openCustomTab(getString(R.string.about_us_link));
                 break;
-            case R.id.settings:
-                break;
+//            case R.id.settings:
+//                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -435,11 +471,451 @@ public class MainHomeActivity extends AppCompatActivity
         }
     }
 
-//    private PendingIntent createPendingIntent(int actionSourceId) {
-//        Intent actionIntent = new Intent(
-//                this.getApplicationContext(), ActionBroadcastReceiver.class);
-//        actionIntent.putExtra(ActionBroadcastReceiver.KEY_ACTION_SOURCE, actionSourceId);
-//        return PendingIntent.getBroadcast(
-//                getApplicationContext(), actionSourceId, actionIntent, 0);
-//    }
+    private void showSnack(String snackString, int period) {
+        String message;
+        message = snackString;
+        Snackbar snackbar = Snackbar.make(drawer, message, period);
+        snackbar.show();
+    }
+
+    private void emailUsForHelp() {
+
+        String[] TO = {getString(R.string.helpdeskEmail)};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.helpQueryMailSubject)+campusExchangeApp.getInstance().getUniversalPerson().getPersonName()+campusExchangeApp.getInstance().getUniversalPerson().getPersonCollegeShort()+" "+campusExchangeApp.getInstance().getUniversalPerson().getPersonCourseShort());
+        String EmailBody = "\n\n"+campusExchangeApp.getInstance().getUniversalPerson().getPersonName()
+                +"\n\n"+campusExchangeApp.getInstance().getUniversalPerson().getCollegeName()
+                +",\n"+campusExchangeApp.getInstance().getUniversalPerson().getPersonCollegeLocation()+"."
+                +"\n\n"+campusExchangeApp.getInstance().getUniversalPerson().getPersonCourseShort()
+                +"\n\n"+"Your Query ->";
+
+
+        emailIntent.putExtra(Intent.EXTRA_TEXT,EmailBody );
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            finish();
+
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void showHelpConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.help_Confirmation));
+        builder.setMessage(getString(R.string.help_Confirmation_dialog_text));
+
+        String positiveText = getString(android.R.string.ok);
+        builder.setPositiveButton(positiveText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // positive button logic
+                        emailUsForHelp();
+                    }
+                });
+
+        String negativeText = getString(android.R.string.cancel);
+        builder.setNegativeButton(negativeText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // negative button logic
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        // display dialog
+        dialog.show();
+    }
+
+    private void validateUserLogin(){
+
+        String validateUserLoginString = "https://api.backendless.com/test/users/isvalidusertoken/"+campusExchangeApp.getInstance().getUniversal_Credentials().getUserToken();
+
+        StringRequest validateLogin = new StringRequest(Request.Method.GET,
+                validateUserLoginString,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("ValidateLogin_response", response);
+                        if (!Boolean.valueOf(response)) {
+                            loginUser();
+                        }
+//                        else {
+//                            showSnack(getString(R.string.validLoginGreetings), Snackbar.LENGTH_SHORT);
+//                        }
+                    }
+                },
+                new Response.ErrorListener(){
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showSnack(getString(R.string.pleaseRestartApp), Snackbar.LENGTH_INDEFINITE);
+                    }
+                }){
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                headers.put("Content-Type","application/json");
+                headers.put("application-type","REST");
+                Log.d("device_Headers", headers.toString());
+                return headers;
+            }
+        };
+//        JsonObjectRequest validateUserLogin = new JsonObjectRequest(
+//                Request.Method.GET,
+//                validateUserLoginString,
+//                null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//
+//                        String validity = response.toString();
+//                        Log.d("ValidateLogin_response",validity);
+//                        if(Boolean.valueOf(validity)){
+//                            showSnack("Welcome Back", Snackbar.LENGTH_SHORT);
+//                        }else {
+//                            loginUser();
+//                        }
+//
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.d("ValidateLogin_volley",error.toString());
+//                        showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+//                    }
+//                }){
+//            /**
+//             * Passing some request headers
+//             * */
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+//                headers.put("Content-Type","application/json");
+//                headers.put("application-type","REST");
+//                Log.d("device_Headers", headers.toString());
+//                return headers;
+//            }
+//        };
+
+        campusExchangeApp.getInstance().addToRequestQueue(validateLogin,TAG);
+
+    }
+
+    private void loginUser(){
+        String loginObjString = "{" +
+                " \"login\" : \""+campusExchangeApp.getInstance().getUniversalPerson().getPersonEmail()+"\"," +
+                " \"password\" : \""+campusExchangeApp.getInstance().getUniversalPerson().getPersonAuthCode()+"\"" +
+                "}";
+        String LoginUserString = "https://api.backendless.com/test/users/login";
+
+        try {
+            JSONObject loginObject = new JSONObject(loginObjString);
+
+
+            JsonObjectRequest loginUser = new JsonObjectRequest(
+                    Request.Method.POST,
+                    LoginUserString,
+                    loginObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            if(response.isNull("user-token")){
+                                loginUser();
+                            }else {
+                                try {
+                                    Log.d("login_user_token",response.getString("user-token"));
+                                    campusExchangeApp.getInstance().getUniversal_Credentials().setUserToken(response.getString("user-token"));
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.d("Logn_user_token","unsuccessful");
+                                    showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                                }
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Login_volley",error.toString());
+                            showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                        }
+                    }){
+                /**
+                 * Passing some request headers
+                 * */
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                    headers.put("Content-Type","application/json");
+                    headers.put("application-type","REST");
+                    Log.d("device_Headers", headers.toString());
+                    return headers;
+                }
+            };
+
+            campusExchangeApp.getInstance().addToRequestQueue(loginUser,TAG);
+        } catch (JSONException e) {
+            showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+            e.printStackTrace();
+            Log.d("Login_JSON_exception", e.toString());
+        }
+    }
+
+    private void fetchNewestVersion(){
+        JsonObjectRequest fetchVariables = new JsonObjectRequest(
+                Request.Method.GET,
+                getString(R.string.versionVariables),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Float_newVersionFloat","response");
+                        try {
+                            String newVersion = response.getString("appVersion");
+                            String unsupportedVersion = response.getString("unsupportedVersion");
+                            float newVersionFloat = Float.valueOf(newVersion);
+                            Log.d("Float_newVersionFloat",newVersionFloat+"");
+                            float unsupportedVersionFloat = Float.valueOf(unsupportedVersion);
+                            Log.d("Float_unsupported",unsupportedVersionFloat+"");
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            String presentVersion = pInfo.versionName;
+                            float presentVersionFloat = Float.valueOf(presentVersion);
+                            Log.d("Float_presentVersion",presentVersionFloat+"");
+                            if(presentVersionFloat<newVersionFloat){
+                                if(presentVersionFloat <= unsupportedVersionFloat){
+                                    showDialogToUpdate(1);
+                                }else {
+                                    showDialogToUpdate(0);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("JSON Exception",e.toString());
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                            Log.d("PackageMgrException",e.toString());
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("volley error",error.toString());
+                        showSnack("Please Update App", Snackbar.LENGTH_SHORT);
+                    }
+                }
+        );
+
+        campusExchangeApp.getInstance().addToRequestQueue(fetchVariables,"FetchingVariables");
+
+    }
+
+    private void showDialogToUpdate(int i) {
+        AlertDialog.Builder updateAppDialogBuilder = new AlertDialog.Builder(this);
+        updateAppDialogBuilder.setTitle(getString(R.string.AppUpdate));
+        if(i==0){
+            updateAppDialogBuilder.setMessage(getString(R.string.AppUpdateMessage));
+        }else {
+            updateAppDialogBuilder.setMessage(getString(R.string.AppUpdateMessageCumpulsory));
+        }
+
+
+        String positiveText = getString(android.R.string.ok);
+        updateAppDialogBuilder.setPositiveButton(positiveText, null);
+
+        if(i==0){
+            String negativeText = getString(android.R.string.cancel);
+            updateAppDialogBuilder.setNegativeButton(negativeText, null);
+        }
+
+
+        AlertDialog dialog = updateAppDialogBuilder.create();
+        if(i==0){
+            dialog.setCancelable(true);
+        }else if(i==1){
+            dialog.setCancelable(false);
+        }
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button positive_Btn = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                positive_Btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        updateAppIntent();
+                    }
+                });
+            }
+        });
+        // display dialog
+        dialog.show();
+    }
+
+    private void updateAppIntent() {
+        Log.d("RateApp","Clicked");
+        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Log.d("packageName",this.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
+        }
+    }
+
+    private void showDevSignature(){
+
+        AlertDialog.Builder devSignature_DialogBuilder;
+
+        devSignature_DialogBuilder = new AlertDialog.Builder(this);
+        devSignature_DialogBuilder.setTitle(getString(R.string.app_name));
+        devSignature_DialogBuilder.setMessage("You have unlocked developer Signature");
+
+        LinearLayout devSignature_layout = new LinearLayout(this);
+        devSignature_layout.setOrientation(LinearLayout.VERTICAL);
+        devSignature_layout.setGravity(Gravity.CENTER);
+        devSignature_layout.setPadding(dpTopixels(8),dpTopixels(8),dpTopixels(8),dpTopixels(8));
+
+        LinearLayout devSignature_sub_layout = new LinearLayout(this);
+        devSignature_sub_layout.setOrientation(LinearLayout.HORIZONTAL);
+        devSignature_sub_layout.setGravity(Gravity.CENTER);
+
+        LinearLayout campusMe_icon_layout = new LinearLayout(this);
+        campusMe_icon_layout.setOrientation(LinearLayout.HORIZONTAL);
+        campusMe_icon_layout.setGravity(Gravity.RIGHT);
+        LinearLayout dev_icon_layout = new LinearLayout(this);
+        dev_icon_layout.setOrientation(LinearLayout.HORIZONTAL);
+        dev_icon_layout.setGravity(Gravity.LEFT);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dpTopixels(64),
+                dpTopixels(64)
+        );
+        params.weight = 1;
+        params.setMargins(0,0,0,dpTopixels(8));
+
+        CircularImageView campusMe_icon = new CircularImageView(this);
+        campusMe_icon.setImageResource(R.mipmap.ic_launcher);
+        campusMe_icon.setBorderColor(getResources().getColor(R.color.colorPrimary));
+        campusMe_icon.setBorderWidth(dpTopixels(3));
+        campusMe_icon.setLayoutParams(params);
+
+        CircularImageView dev_icon = new CircularImageView(this);
+        dev_icon.setImageResource(R.drawable.dev_icon);
+        dev_icon.setBorderColor(getResources().getColor(R.color.colorPrimary));
+        dev_icon.setBorderWidth(dpTopixels(3));
+        dev_icon.setLayoutParams(params);
+
+
+        TextView dev_name = new TextView(this);
+        dev_name.setText("\nMayur Devgaonkar\ndmayur57@gmail.com\n");
+        dev_name.setGravity(Gravity.CENTER);
+        dev_name.setTextColor(getResources().getColor(android.R.color.primary_text_light));
+        dev_name.setTypeface(null, Typeface.BOLD);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            dev_name.setTextAppearance(android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Medium);
+        } else {
+            dev_name.setTextAppearance(this, android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Medium);
+        }
+
+        LinearLayout.LayoutParams TextParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        TextParams.setMargins(0,0,0,dpTopixels(8));
+
+
+        campusMe_icon_layout.addView(campusMe_icon);
+        dev_icon_layout.addView(dev_icon);
+        devSignature_sub_layout.addView(campusMe_icon_layout);
+        devSignature_sub_layout.addView(dev_icon_layout);
+        devSignature_layout.addView(devSignature_sub_layout);
+        devSignature_layout.addView(dev_name);
+        devSignature_DialogBuilder.setView(devSignature_layout);
+
+        AlertDialog dialog = devSignature_DialogBuilder.create();
+        // display dialog
+        dialog.show();
+
+        dev_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCustomTab("https://www.facebook.com/mayur.devgaonkar");
+            }
+        });
+        campusMe_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCustomTab("https://www.facebook.com/mayur.devgaonkar");
+            }
+        });
+
+    }
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        switch (view.getId()){
+            case R.id.personPhotoInHeader:
+                int eventaction = motionEvent.getAction();
+                if (eventaction == MotionEvent.ACTION_UP) {
+
+                    //get system current milliseconds
+                    long time= System.currentTimeMillis();
+
+
+                    //if it is the first time, or if it has been more than 3 seconds since the first tap ( so it is like a new try), we reset everything
+                    if (startMillis==0 || (time-startMillis> 3000) ) {
+                        startMillis=time;
+                        count=1;
+                    }
+                    //it is not the first, and it has been  less than 3 seconds since the first
+                    else{ //  time-startMillis< 3000
+                        count++;
+                        Log.d("Dev_count",""+count);
+                    }
+
+                    if (count==5) {
+                        //do whatever you need
+                        Log.d("Dev_Signature","Shown");
+                        showDevSignature();
+                    }
+                    return true;
+                }
+                break;
+        }
+
+        return true;
+    }
+
+    public int dpTopixels(int dps){
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dps,
+                getResources().getDisplayMetrics());
+    }
+
 }

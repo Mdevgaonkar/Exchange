@@ -108,7 +108,11 @@ public class ViewPagerAdapter extends PagerAdapter {
                     case 3:         //Combo View
                         break;
                     case 4:         //WebView Chrome custom Tab
-                        ((MainHomeActivity)mContext).openCustomTab(carousalItems.get(position).whereClause);
+                        if(carousalItems.get(position).poll){
+                            ((MainHomeActivity)mContext).openCustomTab(carousalItems.get(position).pollUrl);
+                        }else {
+                            ((MainHomeActivity) mContext).openCustomTab(carousalItems.get(position).whereClause);
+                        }
                         break;
                 }
 

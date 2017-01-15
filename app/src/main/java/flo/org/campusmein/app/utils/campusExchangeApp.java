@@ -1,6 +1,7 @@
 package flo.org.campusmein.app.utils;
 
 import android.app.Application;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.android.volley.Request;
@@ -34,6 +35,7 @@ public class campusExchangeApp extends Application {
 
 
     private Person universalPerson;
+    private credentials universal_Credentials;
 
     private String OFFLINE_REALM = "offlineRealmDB";
 
@@ -44,12 +46,16 @@ public class campusExchangeApp extends Application {
 
     private static final String application_id = "application-id";
     private static final String secret_key= "secret-key";
+    private static final String user_token_key= "user-token";
     private String APP_ID=null;
     private String SEC_KEY=null;
+    private String USER_TOKEN=null;
 
     private Gson gson;
 
     private static campusExchangeApp mInstance;
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -57,7 +63,16 @@ public class campusExchangeApp extends Application {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
         setupPerson();
+        setupCredentials();
         setupRealm();
+    }
+
+    private void setupCredentials() {
+        universal_Credentials = new credentials(mInstance.getApplicationContext());
+    }
+
+    public credentials getUniversal_Credentials() {
+        return universal_Credentials;
     }
 
     private void setupRealm() {
@@ -141,7 +156,6 @@ public class campusExchangeApp extends Application {
         }
     }
 
-
     public String getApplication_id() {
         return application_id;
     }
@@ -149,8 +163,6 @@ public class campusExchangeApp extends Application {
     public String getSecret_key() {
         return secret_key;
     }
-
-
 
     public String getAPP_ID() {
         return APP_ID;
@@ -173,7 +185,29 @@ public class campusExchangeApp extends Application {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put(getApplication_id(), getAPP_ID());
         headers.put(getSecret_key(), getSEC_KEY());
+        if(!getUSER_TOKEN().equals("false")){
+            headers.put(getUser_token_key(), getUSER_TOKEN());
+        }
+
         return headers;
+    }
+
+    public HashMap<String,String> getCredentialsHashMapWithoutUserToken(){
+        getCredentialsIn();
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put(getApplication_id(), getAPP_ID());
+        headers.put(getSecret_key(), getSEC_KEY());
+        return headers;
+    }
+
+
+    private String getUSER_TOKEN() {
+        USER_TOKEN = universal_Credentials.getUserToken();
+        return USER_TOKEN;
+    }
+
+    private String getUser_token_key() {
+        return user_token_key;
     }
 
     public Gson getGson() {

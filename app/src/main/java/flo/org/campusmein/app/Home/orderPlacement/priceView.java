@@ -7,16 +7,20 @@ import android.graphics.Paint;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +28,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -34,14 +39,17 @@ import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import flo.org.campusmein.R;
 import flo.org.campusmein.app.Home.MainHomeActivity;
+import flo.org.campusmein.app.Login.spinnerAdapter;
 import flo.org.campusmein.app.utils.ConnectivityReceiver;
 import flo.org.campusmein.app.utils.Person;
 import flo.org.campusmein.app.utils.PersonGSON;
@@ -61,6 +69,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
     private static final String LOAD_RELATIONS ="loadRelations=book%2Csubject%2Ccollege%2Cspecialization%2Ccombopack%2Ccombopack.books%2Ccombopack.instruments%2Cinstrument";
     private static final String SLASH = "/";
     private static final String QUERY = "?";
+    private static final String PHONE_REGEX = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}";
 
     private ProgressDialog mProgressDialog;
     private boolean NETWORK_STATE = false;
@@ -471,15 +480,106 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
         switch (v.getId()){
             case R.id.placeOrder:
                 //method call to post order data
-                if(!campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber().equals("")){
-                    placeBulkOrder();
-                }
+                showMobilenumberConfirmationDialog();
                 break;
             case R.id.continueShopping:
                 onStop();
                 break;
         }
 
+    }
+
+    private void showMobilenumberConfirmationDialog(){
+
+        AlertDialog.Builder confirmMobileNumber;
+        final EditText mobileNumber_editText = new EditText(this);
+
+        confirmMobileNumber = new AlertDialog.Builder(this);
+        confirmMobileNumber.setTitle(getString(R.string.EnterYourMobileNumber));
+        confirmMobileNumber.setMessage(R.string.confirm_mobile_number_message_text);
+
+        LinearLayout mobileNumDialog_layout = new LinearLayout(this);
+        mobileNumDialog_layout.setOrientation(LinearLayout.VERTICAL);
+        mobileNumDialog_layout.setPadding(dpTopixels(12),dpTopixels(12),dpTopixels(12),dpTopixels(12));
+
+        mobileNumber_editText.setHint(R.string.confirmation_mobile_number_edit_text);
+        mobileNumber_editText.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
+        mobileNumber_editText.setPadding(dpTopixels(8),dpTopixels(8),dpTopixels(8),dpTopixels(8));
+        mobileNumber_editText.setInputType(InputType.TYPE_CLASS_PHONE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        int pixelsLR = dpTopixels(6);
+        int pixelsTB = dpTopixels(6);
+        params.setMargins(pixelsLR,pixelsTB,pixelsLR,pixelsTB);
+        mobileNumber_editText.setLayoutParams(params);
+        if(campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber().equals("")){
+            mobileNumber_editText.setText(R.string.mobile_number_country_code);
+        }else {
+            mobileNumber_editText.setText(""+campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber());
+        }
+
+
+        mobileNumDialog_layout.addView(mobileNumber_editText);
+        confirmMobileNumber.setView(mobileNumDialog_layout);
+
+        String positiveText = getString(android.R.string.ok);
+        confirmMobileNumber.setPositiveButton(positiveText,null);
+
+        String negativeText = getString(android.R.string.cancel);
+        confirmMobileNumber.setNegativeButton(negativeText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // negative button logic
+                        dialog.dismiss();
+                    }
+                });
+
+        final AlertDialog dialog = confirmMobileNumber.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        // positive button logic
+                        if(mobileNumber_editText.getText().toString().isEmpty()){
+                            Toast.makeText(getApplicationContext(), R.string.confirm_mob_number_invalid_mob_number, Toast.LENGTH_LONG).show();
+                        }else {
+                            if(isPersonNumberValid(mobileNumber_editText.getText().toString())){
+                                if (!mobileNumber_editText.getText().equals(campusExchangeApp.getInstance().getUniversalPerson())) {
+                                    String oldPhoneNumber = campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber();
+                                    String newPhoneNumber = mobileNumber_editText.getText().toString();
+                                    if(oldPhoneNumber.equals(newPhoneNumber)){
+                                        updateMobileNumber(mobileNumber_editText.getText().toString());
+                                    }
+                                    detailsUpload();
+                                    placeBulkOrder();
+                                    dialog.dismiss();
+                                }
+                            }else {
+                                Toast.makeText(getApplicationContext(), R.string.confirm_mob_number_invalid_mob_number, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        // display dialog
+        dialog.show();
+    }
+
+    private static boolean isPersonNumberValid(String number) {
+        return number != null && Pattern.matches(PHONE_REGEX, number);
+    }
+
+    private void updateMobileNumber(String number) {
+
+        campusExchangeApp.getInstance().getUniversalPerson().setPhoneNumber(number);
     }
 
     private void placeBulkOrder() {
@@ -726,6 +826,92 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
         message = snackString;
         Snackbar snackbar = Snackbar.make(activity_priceView_listing, message, Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    private void detailsUpload(){
+
+        showProgressDialog(getString(R.string.uploading));
+
+        Person newPerson = campusExchangeApp.getInstance().getUniversalPerson();
+        PersonGSON gsonPerson = new PersonGSON();
+        PersonGSON.postPerson postObject = gsonPerson.getPostPerson();
+        postObject.setName(newPerson.getPersonName());
+        postObject.setContactNumber(newPerson.getPhoneNumber());
+        postObject.setEmail(newPerson.getPersonEmail());
+        postObject.college.setObjectId(newPerson.getPersonCollegeObjectId());
+        postObject.course.setObjectId(newPerson.getPersonCourseoBjectId());
+        postObject.setCourseYear(newPerson.getAcademicYear());
+        postObject.setProfilepic(newPerson.getPersonPhotoUrl());
+        postObject.setPassword(newPerson.getPersonAuthCode());
+
+        Gson gtoj = campusExchangeApp.getInstance().getGson();
+        String jsonObjStr = gtoj.toJson(postObject);
+        try {
+            JSONObject jsonPerson = new JSONObject(jsonObjStr);
+            if(newPerson.getPhoneNumber().equals("")){
+                jsonPerson.remove(gsonPerson.getKey_contactNumber());
+            }
+            jsonPerson.remove(gsonPerson.getKey_email());
+            jsonPerson.remove("password");
+
+            String createUserString = getString(R.string.classUsers);
+            createUserString = createUserString+"/"+newPerson.getPersonObjectId();
+
+            JsonObjectRequest updateNewUser = new JsonObjectRequest(
+                    Request.Method.PUT,
+                    createUserString,
+                    jsonPerson,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            String personObjectId = null;
+
+                            hideProgressDialog();
+                            try {
+                                Log.d("Person ObjectId", response.getString("objectId"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (response.isNull("objectId")) {
+                                Snackbar.make(activity_priceView_listing, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                                rollbackIfError();
+                            }else {
+                                Snackbar.make(activity_priceView_listing, R.string.NumberVerified, Snackbar.LENGTH_LONG).show();
+//                                finish();
+//                            StartMainHomeActivity();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            rollbackIfError();
+                            Snackbar.make(activity_priceView_listing, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                            VolleyLog.d(TAG+" :while updating user", "Error: " + error.getMessage());
+                        }
+                    }){
+                /**
+                 * Passing some request headers
+                 * */
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                    Log.d("Headers", headers.toString());
+                    return headers;
+                }
+            };
+
+            campusExchangeApp.getInstance().addToRequestQueue(updateNewUser,TAG);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            rollbackIfError();
+            Snackbar.make(activity_priceView_listing, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    private void rollbackIfError() {
+
     }
 
 

@@ -77,6 +77,42 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <android.support.v7.widget.CardView
+                    android:id="@+id/ordDt_delivery_updates_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/sixteenDp"
+                    android:layout_marginRight="@dimen/sixteenDp"
+                    android:layout_marginTop="@dimen/sixteenDp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="@dimen/eightDP">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/primary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:maxLines="2"
+                            android:ellipsize="end"
+                            android:text="@string/updates_sent_to"/>
+
+                        <TextView
+                            android:id="@+id/ordDt_updates_info_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                            android:textColor="@android:color/tertiary_text_light"
+                            android:padding="@dimen/eightDP"
+                            android:layout_marginLeft="@dimen/eightDP"
+
+                            />
+                    </LinearLayout>
+
+                </android.support.v7.widget.CardView>
 
 
                 <android.support.v7.widget.CardView
@@ -101,7 +137,6 @@
                             android:textStyle="bold"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="MON, JAN 9 2017"
                             />
 
                         <TextView
@@ -113,7 +148,7 @@
                             android:padding="@dimen/eightDP"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="Let Us C"/>
+                            />
 
                         <TextView
                             android:id="@+id/ordDt_itemSubtitle"
@@ -125,7 +160,7 @@
                             android:layout_marginLeft="@dimen/eightDP"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="by Yashvant Kanetkar"
+
                             />
 
                         <LinearLayout
@@ -206,7 +241,7 @@
                             android:padding="@dimen/eightDP"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="Receive Order"/>
+                            android:text="@string/receive_order_text"/>
 
                         <TextView
                             android:id="@+id/ordDt_code"
@@ -216,9 +251,7 @@
                             android:textColor="@android:color/primary_text_light"
                             android:padding="@dimen/eightDP"
                             android:layout_marginLeft="@dimen/eightDP"
-                            android:gravity="center"
-                            android:text="4231"
-                            />
+                            android:gravity="center"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -228,7 +261,7 @@
                             android:padding="@dimen/eightDP"
                             android:layout_marginLeft="@dimen/eightDP"
                             android:gravity="center"
-                            android:text="Show this key to our representative while receiving your order"
+                            android:text="@string/info_text_show_this_key_to_our_representative_while_receiving_your_order"
                             />
                     </LinearLayout>
 
@@ -265,7 +298,6 @@
                             android:layout_marginRight="@dimen/eightDP"
                             android:layout_marginLeft="@dimen/eightDP"
                             android:layout_marginTop="@dimen/fourDP"
-                            android:text="1B46BA2E-B38F-2B6A-FF4A-1C4139352400"
                             />
 
                         <TextView
@@ -279,7 +311,7 @@
                             android:layout_marginLeft="@dimen/eightDP"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="Delivery Pending"/>
+                            />
 
                         <TextView
                             android:id="@+id/ordDt_status_comments"
@@ -347,7 +379,7 @@
                             android:padding="@dimen/eightDP"
                             android:maxLines="2"
                             android:ellipsize="end"
-                            android:text="Manage Order"/>
+                            android:text="@string/manage_order_card_title_text"/>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -377,7 +409,7 @@
                                     android:textColor="@android:color/secondary_text_light"
                                     android:padding="@dimen/eightDP"
                                     android:gravity="center"
-                                    android:text="Cancel Order"
+                                    android:text="@string/cancel_order_btn_text"
                                     />
 
                             </LinearLayout>
@@ -412,7 +444,7 @@
                                     android:textColor="@android:color/secondary_text_light"
                                     android:padding="@dimen/eightDP"
                                     android:gravity="center"
-                                    android:text="Contact Us"
+                                    android:text="@string/contact_us_btn_text"
                                     />
 
                             </LinearLayout>
@@ -456,9 +488,7 @@
                             android:textColor="@android:color/tertiary_text_light"
                             android:padding="@dimen/eightDP"
                             android:layout_marginLeft="@dimen/eightDP"
-                            android:maxLines="2"
-                            android:ellipsize="end"
-                            android:text="Terna Engineering College, Nerul Navi-Mumbai."
+                            android:text=""
                             />
                     </LinearLayout>
 

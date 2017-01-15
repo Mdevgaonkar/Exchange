@@ -74,18 +74,10 @@ public class EditProfile extends AppCompatActivity
     private TextInputLayout personName_TextInputLayout,personEmail_TextInputLayout, personNumber_TextInputLayout;
     private LinearLayout mobile_number_registration;
 
-    private Person person = new Person(this);
+    private Person person = campusExchangeApp.getInstance().getUniversalPerson();
     private TrueClient mTrueClient;
 
     private ProgressDialog mProgressDialog;
-
-    //    Volley requests
-
-    // Tag used to cancel the request
-    String tag_json_obj = "json_obj_req";
-    private static final String GET_COLLEGES_URL = "http://xchange.hol.es/readColleges.php";
-
-
 
     private static final String RESPONSE_DATA = "data";
     List<College> colleges;
@@ -132,14 +124,15 @@ public class EditProfile extends AppCompatActivity
         }
         if (isPersonNumberValid(old_personNumber)){
             personNumber_TextInputLayout.setVisibility(View.VISIBLE);
+            person_mobilenumber.setVisibility(View.VISIBLE);
             person_mobilenumber.setText(old_personNumber);
-            person_mobilenumber.setEnabled(false);
-            person_mobilenumber.setClickable(false);
+//            person_mobilenumber.setEnabled(false);
+//            person_mobilenumber.setClickable(false);
         }else {
 //            show option of truecaller mobile registration
-            personNumber_TextInputLayout.setVisibility(View.GONE);
-            person_mobilenumber.setVisibility(View.GONE);
-            mobile_number_registration.setVisibility(View.VISIBLE);
+            personNumber_TextInputLayout.setVisibility(View.VISIBLE);
+            person_mobilenumber.setVisibility(View.VISIBLE);
+//            mobile_number_registration.setVisibility(View.GONE);
 
         }
     }
@@ -436,7 +429,11 @@ public class EditProfile extends AppCompatActivity
     }
 
     private static boolean isPersonNumberValid(String number) {
-        return number != null && Pattern.matches(PHONE_REGEX, number);
+        if(number.isEmpty()){
+            return true;
+        }else {
+            return number != null && Pattern.matches(PHONE_REGEX, number);
+        }
     }
 
 
@@ -646,7 +643,13 @@ public class EditProfile extends AppCompatActivity
 //      Details from edit texts
         person.setPersonName(person_fullname.getText().toString());
         person.setPersonEmail(person_email.getText().toString());
-        person.setPhoneNumber(person_mobilenumber.getText().toString());
+
+        //conditions to save phone number
+        if (!person_mobilenumber.getText().toString().isEmpty() && isPersonNumberValid(person_mobilenumber.getText().toString())){
+            person.setPhoneNumber(person_mobilenumber.getText().toString());
+        }
+
+
 
 //      Details from Spinner
         String personCollegeName = person_collegename.getSelectedItem().toString();

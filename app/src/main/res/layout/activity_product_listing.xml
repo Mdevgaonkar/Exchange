@@ -247,18 +247,34 @@
 
         </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="vertical">-->
 
             <android.support.v7.widget.RecyclerView
                     android:id="@+id/product_list_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
-
+                android:layout_weight="1"
                     />
+
+        <ProgressBar
+            android:id="@+id/listing_loadMore_progress"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            />
+
+        <TextView
+            android:id="@+id/listing_allproductsShown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/all_products_shown"
+            android:padding="@dimen/fourDP"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            />
         <!--<Button-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
@@ -266,7 +282,7 @@
             <!--android:textColor="@color/text_invert_blue"-->
             <!--android:layout_margin="@dimen/twelveDP"-->
             <!--android:text="Load More"/>-->
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
 
 

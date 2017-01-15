@@ -1,5 +1,6 @@
 package flo.org.campusmein.app.Login;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +37,8 @@ public class profile_options extends AppCompatActivity
         implements View.OnClickListener,
                     GoogleApiClient.OnConnectionFailedListener,
                     ConnectivityReceiver.ConnectivityReceiverListener {
+
+    private static final String SRC_STR_KEY = "src";
 
     private static boolean NETWORK_STATE = false;
     private GoogleApiClient mGoogleApiClient;
@@ -166,8 +170,12 @@ public class profile_options extends AppCompatActivity
         if(NETWORK_STATE){
         switch (v.getId()){
             case R.id.order_history:
+                Intent ordersView = new Intent(this, flo.org.campusmein.app.Home.orderPlacement.ordersView.class);
+                ordersView.putExtra(SRC_STR_KEY,"profile_options");
+                startActivity(ordersView);
                 break;
             case R.id.RateApp:
+                RateAppIntent();
                 break;
             case R.id.EditProfile:
                 Intent profile_edit_screen = new Intent(this, flo.org.campusmein.app.Login.EditProfile.class);
@@ -179,6 +187,24 @@ public class profile_options extends AppCompatActivity
                 signOut();
                 break;
         }
+        }
+    }
+
+    private void RateAppIntent() {
+        Log.d("RateApp","Clicked");
+        Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+        Log.d("packageName",this.getPackageName());
+        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+        // To count with Play market backstack, After pressing back button,
+        // to taken back to our application, we need to add following flags to intent.
+        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        try {
+            startActivity(goToMarket);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
         }
     }
 

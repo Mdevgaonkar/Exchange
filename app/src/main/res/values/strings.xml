@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Campusमें</string>
-    <string name="title_activity_main_home">EXchange</string>
+    <string name="title_activity_main_home">Campusमें</string>
     <string name="partnerKey">zEBwB7f6ea2dd34664b2f875c03440ed9921f</string>
 
 
@@ -71,7 +71,7 @@
     <string name="sign_out">SIGN OUT</string>
     <string name="rate_app">Rate App</string>
     <string name="edit_profile">Edit Profile</string>
-    <string name="mobile_number">REGISTER MOBILE NUMBER WITH TRUECALLER</string>
+    <string name="mobile_number">MOBILE NUMBER</string>
     <string name="email">EMAIL</string>
     <string name="full_name">FULL NAME</string>
     <string name="save_details">SAVE DETAILS</string>
@@ -168,6 +168,7 @@
     <string name="baseBackendUrl">http://api.backendless.com/test/data/</string>
     <string name="products">products</string>
     <string name="buyPageVariables">http://xchange.hol.es/hompageVariables.json</string>
+    <string name="versionVariables">http://xchange.hol.es/versionVariables.json</string>
     <string name="optionNotAvailable">Sorry the option is not available yet</string>
     <string name="branch_filterOptionTitle">Select Branch</string>
     <string name="ok_action">OK</string>
@@ -265,7 +266,39 @@
     <string name="cancellationProgress">Cancelling Your Order</string>
     <string name="helpdeskEmail">help.campusmein@gmail.com</string>
     <string name="orderid_helpdesk_mail_subject">"Order Id : "</string>
+    <string name="loginProgress">Logging you in</string>
+    <string name="helpQueryMailSubject">Help Query By\t</string>
+    <string name="help_Confirmation">Mail us your Query</string>
+    <string name="help_Confirmation_dialog_text">Mention your query on the next page and just press send.\n\nWe will contact you on phone or on mail as soon as possible.\n\n Press OK to Continue</string>
+    <string name="about_us_link">http://xchange.hol.es/</string>
+    <string name="option_comming_soon">Sorry... This Option Will Be Available Soon</string>
+    <string name="validLoginGreetings">Welcome</string>
+    <string name="EnterYourMobileNumber">Confirm Your Mobile Number</string>
+    <string name="confirm_mobile_number_message_text">All updates will be sent to this number via call or message</string>
+    <string name="confirmation_mobile_number_edit_text">Enter Mobile Number</string>
+    <string name="mobile_number_country_code">+91</string>
+    <string name="confirm_mob_number_invalid_mob_number">Please Enter a Valid 10 digit phone number</string>
+    <string name="NumberVerified">Phone Number Saved</string>
+    <string name="updates_sent_to">Updates Sent To</string>
+    <string name="receive_order_text">Receive Order</string>
+    <string name="info_text_show_this_key_to_our_representative_while_receiving_your_order">Show this key to our representative while receiving your order</string>
+    <string name="cancel_order_btn_text">Cancel Order</string>
+    <string name="contact_us_btn_text">Contact Us</string>
+    <string name="manage_order_card_title_text">Manage Order</string>
+    <string name="updateYourPhoneNumber">Please update your profile with your phone number to get updates regarding this order</string>
+    <string name="phone">Phone :\t</string>
+    <string name="all_orders_shown">All orders shown</string>
+    <string name="all_products_shown">All Products Shown</string>
+    <string name="someErrorOccurred">Oops... Some Error Occurred</string>
+    <string name="Sell_Coming_soon">Coming Soon!</string>
+    <string name="AppUpdate">App Update!</string>
+    <string name="AppUpdateMessage">Please update this app for a seamless experience.\n\nClick \"OK\" to update the app.</string>
+    <string name="AppUpdateMessageCumpulsory">This version of app is not supported.\n\nPlease update this app for a seamless experience.\n\nClick \"OK\" to update the app.</string>
 
+    <!--SELL POLL LINK-->
+    <string name="sell_poll_link">https://docs.google.com/forms/d/e/1FAIpQLSdQtyr5MpYznznBjsFgGvh9iiwjddv5LFgP4-UiMbqdRhkjVA/viewform</string>
+    <string name="sell_coming_doon_message">We will soon update our services so that you can sell your old things.\n\nHelp us by telling what you want to sell in your college campus.\n\n Click \"OK\" To Continue.</string>
+    <!--/SELL POLL LINK-->
 
     <!--Cancellation Reasons START-->
     <string-array name="cancelReasons">

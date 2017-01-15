@@ -84,7 +84,7 @@
                         android:layout_width="match_parent"
                         android:padding="@dimen/fourDP"
                         android:layout_height="wrap_content"
-                        android:inputType="text"
+                        android:inputType="phone"
                         android:textColorHint="@color/colorPrimaryDark"
                         android:hint="@string/mobile_number"
                         android:background="@drawable/filled_background_rounded_rectangle"/>

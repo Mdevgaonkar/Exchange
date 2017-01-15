@@ -28,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -49,6 +50,7 @@ import java.util.Map;
 import flo.org.campusmein.R;
 import flo.org.campusmein.app.Home.cart.cartView;
 import flo.org.campusmein.app.utils.College;
+import flo.org.campusmein.app.utils.EndlessRecyclerViewScrollListener;
 import flo.org.campusmein.app.utils.Person;
 import flo.org.campusmein.app.Login.spinnerAdapter;
 import flo.org.campusmein.app.utils.ConnectivityReceiver;
@@ -137,6 +139,11 @@ public class productListingActivity extends AppCompatActivity
     // Cart Icon
     private LayerDrawable mCartMenuIcon;
 
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private String nextPage="" ;
+    private ProgressBar listing_loadMore_progress;
+    private TextView listing_allProductsShown;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,8 +169,6 @@ public class productListingActivity extends AppCompatActivity
         setupProgressBarLayout();
         setupEmptyView();
         setupRecyclerView();
-//        updatefilterOptionsLayout();
-//        getCollegeBranches();
     }
 
     @Override
@@ -238,7 +243,7 @@ public class productListingActivity extends AppCompatActivity
                 }
             }
         }else {
-            showSnack(getString(R.string.NetworkFaliure));
+            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
             showErrorLayout();
         }
     }
@@ -389,7 +394,7 @@ public class productListingActivity extends AppCompatActivity
                         if (NETWORK_STATE){
                             getsubjectList();
                         }else {
-                            showSnack(getString(R.string.NetworkFaliure));
+                            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
                         }
                     }
                 }
@@ -419,7 +424,7 @@ public class productListingActivity extends AppCompatActivity
                         if (NETWORK_STATE){
                             getsubjectList();
                         }else {
-                            showSnack(getString(R.string.NetworkFaliure));
+                            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
                         }
                     }
                 }
@@ -475,7 +480,7 @@ public class productListingActivity extends AppCompatActivity
     private void showErrorLayout(){
         hideEmptyView();
         hideProgressLayout();
-        hideRecyclerScrollView();
+        hideRecyclerView();
         hideComingSoonLayout();
         errorLayout.setVisibility(View.VISIBLE);
 
@@ -498,7 +503,7 @@ public class productListingActivity extends AppCompatActivity
     private void showComingSoonLayout(){
         hideEmptyView();
         hideProgressLayout();
-        hideRecyclerScrollView();
+        hideRecyclerView();
         hideErrorLayout();
         comingSoonLayout.setVisibility(View.VISIBLE);
     }
@@ -532,7 +537,7 @@ public class productListingActivity extends AppCompatActivity
             Log.d("Product listing","List is Empty");
         }
         else {
-            showRecyclerScrollView();
+            showRecyclerView();
             Log.d("Product listing","List is shown");
 
         }
@@ -544,7 +549,7 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private  void  showProgressLayout(){
-        hideRecyclerScrollView();
+        hideRecyclerView();
         hideEmptyView();
         hideComingSoonLayout();
         hideErrorLayout();
@@ -561,7 +566,7 @@ public class productListingActivity extends AppCompatActivity
     }
 
     private void showEmptyView(){
-        hideRecyclerScrollView();
+        showRecyclerView();
         hideProgressLayout();
         hideComingSoonLayout();
         hideErrorLayout();
@@ -584,9 +589,38 @@ public class productListingActivity extends AppCompatActivity
         productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         productRecyclerView.setItemAnimator(new DefaultItemAnimator());
         productRecyclerView.setAdapter(productListingAdapter);
+
+        listing_loadMore_progress = (ProgressBar) findViewById(R.id.listing_loadMore_progress);
+        listing_loadMore_progress.setVisibility(View.GONE);
+        listing_allProductsShown = (TextView) findViewById(R.id.listing_allproductsShown);
+        listing_allProductsShown.setVisibility(View.GONE);
+
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                if(!nextPage.isEmpty() && !nextPage.equals("null")){
+                    loadNextDataFromApi(nextPage);
+                    listing_loadMore_progress.setVisibility(View.VISIBLE);
+                    listing_allProductsShown.setVisibility(View.GONE);
+                }else {
+                    listing_loadMore_progress.setVisibility(View.GONE);
+                    listing_allProductsShown.setVisibility(View.VISIBLE);
+                }
+
+
+
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        productRecyclerView.addOnScrollListener(scrollListener);
+
+
     }
 
-    private void showRecyclerScrollView(){
+    private void showRecyclerView(){
 //        productScrollView.setVisibility(View.VISIBLE);
         productRecyclerView.setVisibility(View.VISIBLE);
         hideEmptyView();
@@ -596,29 +630,11 @@ public class productListingActivity extends AppCompatActivity
         Log.d("product Recyler view","Shown");
     }
 
-    private void hideRecyclerScrollView(){
+    private void hideRecyclerView(){
 //        productScrollView.setVisibility(View.GONE);
         productRecyclerView.setVisibility(View.GONE);
         Log.d("product Recyler view","Hidden");
     }
-
-//    private void showProgressDialog(String showString) {
-//        if (mProgressDialog == null) {
-//            mProgressDialog = new ProgressDialog(this);
-//            mProgressDialog.setMessage(showString);
-//            mProgressDialog.setIndeterminate(true);
-//        }
-//        mProgressDialog.setMessage(showString);
-//        mProgressDialog.setCanceledOnTouchOutside(false);
-//        mProgressDialog.setCancelable(false);
-//        mProgressDialog.show();
-//    }
-//
-//    private void hideProgressDialog() {
-//        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-//            mProgressDialog.hide();
-//        }
-//    }
 
     private void getCollegeBranches(){
         showoptionsprogressBarLayout();
@@ -747,8 +763,8 @@ public class productListingActivity extends AppCompatActivity
             campusExchangeApp.getInstance().addToRequestQueue(getSubjectList,TAG);
         }else{
             if(sem <= 0) {
-                showSnack("Please select semester");
-            }else showSnack("Please select branch");
+                showSnack("Please select semester", Snackbar.LENGTH_SHORT);
+            }else showSnack("Please select branch", Snackbar.LENGTH_SHORT);
         }
 
 
@@ -760,7 +776,17 @@ public class productListingActivity extends AppCompatActivity
 //        http://api.backendless.com/test/data/products?loadRelations=book%2Cinstrument%2Ccombopack&props=listPrice%2CobjectId%2Cmrp
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
-        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+whereClause;
+
+        String Default_FilterClause="" ;//= FilterClause + "%20AND%20";  // AND
+        Default_FilterClause = Default_FilterClause + "college.collegeName%3D%27"; //term%3D%27 %27
+        Default_FilterClause = Default_FilterClause + URLEncoder.encode(campusExchangeApp.getInstance().getUniversalPerson().getCollegeName());
+        Default_FilterClause = Default_FilterClause + "%27";
+
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+        Default_FilterClause = Default_FilterClause + "enlisted%3DTRUE"; //enlisted = TRUE
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+Default_FilterClause+"("+whereClause+")";
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,
@@ -777,6 +803,9 @@ public class productListingActivity extends AppCompatActivity
                             for(Products product : productsList) {
                                 productList.add(product);
                             }
+
+                            nextPage = response.getString("nextPage");
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Product list","no rational data");
@@ -798,20 +827,6 @@ public class productListingActivity extends AppCompatActivity
                         showErrorLayout();
                     }
                 }){
-
-//            /**
-//             * Passing some request params
-//             * */
-//
-//            @Override
-//            protected Map<String, String> getParams() {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("name", "Androidhive");
-//                params.put("email", "abc@androidhive.info");
-//                params.put("password", "password123");
-//
-//                return params;
-//            }
 
             /**
              * Passing some request headers
@@ -899,6 +914,78 @@ public class productListingActivity extends AppCompatActivity
         campusExchangeApp.getInstance().addToRequestQueue(getProductList,TAG);
     }
 
+    private void loadNextDataFromApi(String nextPage) {
+
+        JsonObjectRequest getOrderList = new JsonObjectRequest(
+                Request.Method.GET,
+                nextPage,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String responseData = response.getJSONArray(RESPONSE_DATA).toString();
+                            Gson gson = campusExchangeApp.getInstance().getGson();
+                            List<Products> productsList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            for(Products product : productsList) {
+                                productList.add(product);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("Product list","no rational data");
+                            showSnack(getString(R.string.someErrorOccurred), Snackbar.LENGTH_INDEFINITE);
+
+                        }
+                        updateDataSetOfRecyclerView();
+                        updateUI();
+                        hideProgressLayout();
+
+//                        tv.setText(response.toString());
+//                        tv.setVisibility(View.VISIBLE);
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showSnack(getString(R.string.someErrorOccurred), Snackbar.LENGTH_INDEFINITE);
+                    }
+                }){
+
+//            /**
+//             * Passing some request params
+//             * */
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("name", "Androidhive");
+//                params.put("email", "abc@androidhive.info");
+//                params.put("password", "password123");
+//
+//                return params;
+//            }
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                Log.d("Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        campusExchangeApp.getInstance().addToRequestQueue(getOrderList,TAG);
+
+    }
+
+    private void updateNextPage(String nextPageNew) {
+        nextPage = nextPageNew;
+        Log.d("nextPage",nextPage);
+    }
+
     private void updateDataSetOfRecyclerView() {
         productListingAdapter.notifyDataSetChanged();
 
@@ -912,7 +999,6 @@ public class productListingActivity extends AppCompatActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(title);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -976,7 +1062,7 @@ public class productListingActivity extends AppCompatActivity
             case R.id.take_a_poll:
                 //code to show chrome custom tab for the poll
                 if(pollUrl.isEmpty() || pollUrl.equals("") ){//|| pollUrl.equals(null)){
-                    showSnack(getString(R.string.optionNotAvailable));
+                    showSnack(getString(R.string.optionNotAvailable), Snackbar.LENGTH_SHORT);
                 }else openCustomTab(pollUrl);
                 break;
             case R.id.apply_remove_filter:
@@ -1003,7 +1089,7 @@ public class productListingActivity extends AppCompatActivity
                 break;
         }
         }else {
-            showSnack(getString(R.string.NetworkFaliure));
+            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
         }
     }
 
@@ -1127,7 +1213,7 @@ public class productListingActivity extends AppCompatActivity
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    private void showSnack(String snackString) {
+    private void showSnack(String snackString, int timePeriod) {
         String message;
         message = snackString;
         Snackbar snackbar = Snackbar.make(activity_product_listing, message, Snackbar.LENGTH_LONG);
@@ -1139,11 +1225,11 @@ public class productListingActivity extends AppCompatActivity
         Log.d("networkChanged",isConnected?"Connected":"Not Connected");
         NETWORK_STATE = isConnected;
         if (isConnected) {
-            showSnack(getString(R.string.good_connection));
+            showSnack(getString(R.string.good_connection), Snackbar.LENGTH_SHORT);
 //            loadUI();
 //            refreshFragment();
         } else {
-            showSnack(getString(R.string.NetworkFaliure));
+            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
         }
 
     }

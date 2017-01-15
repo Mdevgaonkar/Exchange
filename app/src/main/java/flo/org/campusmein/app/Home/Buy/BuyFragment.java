@@ -50,6 +50,7 @@ public class BuyFragment extends Fragment implements
         ConnectivityReceiver.ConnectivityReceiverListener,
         SwipeRefreshLayout.OnRefreshListener{
 
+    private static final String TAG = BuyFragment.class.getSimpleName();
     private ProgressDialog mProgressDialog;
 
     private static final long ANIM_VIEWPAGER_DELAY = 5000;
@@ -474,7 +475,7 @@ public class BuyFragment extends Fragment implements
         type = varsCategories.items.get(index).type;
 //                 showSnack(title+" "+status+" "+whereClause);
         if(status == 1){
-            showSnack(getString(R.string.optionNotAvailable));
+            showSnack(whereClause);
         }else {
             openProductStoreList(title,status,whereClause,poll,pollUrl,___class,type);
         }
@@ -617,7 +618,7 @@ public class BuyFragment extends Fragment implements
                 }
         );
 
-        campusExchangeApp.getInstance().addToRequestQueue(fetchVariables,"FetchingVariables");
+        campusExchangeApp.getInstance().addToRequestQueue(fetchVariables,TAG);
 
     }
 

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "flo.org.exchange"
+        applicationId "flo.org.campusmein"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
@@ -13,8 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -36,6 +35,8 @@ dependencies {
 
     //google play services
     compile 'com.google.android.gms:play-services-auth:10.0.1'
+
+    compile "com.google.android.gms:play-services-gcm:10.0.1"
 
     //volley
     compile 'com.android.volley:volley:1.0.0'

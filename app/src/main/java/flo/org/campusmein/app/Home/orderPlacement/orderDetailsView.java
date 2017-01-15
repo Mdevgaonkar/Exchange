@@ -65,7 +65,7 @@ public class orderDetailsView extends AppCompatActivity
     private static final String TAG = orderDetailsView.class.getSimpleName();
     private orders order;
 
-    private TextView ordDt_date,ordDt_itemTitle,ordDt_itemSubtitle,ordDt_qty,ordDt_gr_total,ordDt_payment_mode,ordDt_code,ordDt_id,ordDt_status,ordDt_status_comments,ordDt_status_refresh,ordDt_delivery_address;
+    private TextView ordDt_updates_info_text,ordDt_date,ordDt_itemTitle,ordDt_itemSubtitle,ordDt_qty,ordDt_gr_total,ordDt_payment_mode,ordDt_code,ordDt_id,ordDt_status,ordDt_status_comments,ordDt_status_refresh,ordDt_delivery_address;
     private LinearLayout ordDt_cancel_btn,ordDt_contact_us_btn,divider;
     private CardView ordDt_receive_view;
 
@@ -162,6 +162,18 @@ public class orderDetailsView extends AppCompatActivity
         setPaymentMode(order);
         setOrderStatus(order);
         setDeliveryAddress();
+        setUpdatesInfo();
+
+    }
+
+    private void setUpdatesInfo() {
+        if(campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber().equals("")){
+            ordDt_updates_info_text.setText(R.string.updateYourPhoneNumber);
+            ordDt_updates_info_text.setTextAppearance(this, android.R.style.TextAppearance_Small);
+            ordDt_updates_info_text.setTextColor(getResources().getColor(R.color.colorRed));
+        }else {
+            ordDt_updates_info_text.setText(getString(R.string.phone)+campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber());
+        }
 
     }
 
@@ -266,6 +278,8 @@ public class orderDetailsView extends AppCompatActivity
     private void setupDetailsView(){
         details_view = (LinearLayout) findViewById(R.id.ordDt_view);
         hide_details_view();
+
+        ordDt_updates_info_text = (TextView) findViewById(R.id.ordDt_updates_info_text);
 
         ordDt_date = (TextView) findViewById(R.id.ordDt_date);
         ordDt_itemTitle = (TextView) findViewById(R.id.ordDt_itemTitle);

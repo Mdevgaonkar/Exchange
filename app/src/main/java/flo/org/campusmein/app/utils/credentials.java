@@ -11,8 +11,10 @@ public class credentials {
 
     public static final String CREDENTIALS_FILE = "credentials";
     public static final String CREDENTIALS = "keys";
+    public static final String USR_TOKEN = "usertoken";
 
     String credentials;
+    String userToken;
 
     private Context context;
 
@@ -27,6 +29,15 @@ public class credentials {
     public void setCredentials(String credentials) {
         this.credentials = credentials;
         setPreferences(context,CREDENTIALS,credentials);
+    }
+
+    public String getUserToken() {
+        return userToken = readPreferences(context,USR_TOKEN,"false");
+    }
+
+    public void setUserToken(String userToken) {
+        this.userToken = userToken;
+        setPreferences(context,USR_TOKEN,userToken);
     }
 
     private static void setPreferences(Context actContext, String preferenceName, String preferenceValue){

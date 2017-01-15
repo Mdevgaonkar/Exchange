@@ -49,8 +49,8 @@
             android:layout_marginTop="@dimen/search_bar_margins"
             android:padding="@dimen/search_bar_margins">
 
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/booksCategory"
+            <LinearLayout
+                android:id="@+id/sell_booksCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -72,9 +72,9 @@
                     android:layout_marginTop="@dimen/search_bar_margins"/>
 
 
-            </android.support.v7.widget.LinearLayoutCompat>
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/utilitiesCategory"
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/sell_utilitiesCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -94,9 +94,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/search_bar_margins"/>
 
-            </android.support.v7.widget.LinearLayoutCompat>
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/novelsCategory"
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/sell_novelsCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -116,10 +116,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/search_bar_margins"/>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </LinearLayout>
 
-            <android.support.v7.widget.LinearLayoutCompat
-                android:id="@+id/instumentsCategory"
+            <LinearLayout
+                android:id="@+id/sell_instumentsCategory"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/search_bar_margins"/>
 
-            </android.support.v7.widget.LinearLayoutCompat>
+            </LinearLayout>
 
         </android.support.v7.widget.LinearLayoutCompat>
 

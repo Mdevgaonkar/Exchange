@@ -6,7 +6,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ord_object_card"
     card_view:cardCornerRadius="@dimen/fourDP"
-    android:layout_marginTop="@dimen/sixDp"
+    android:layout_marginTop="@dimen/fourDP"
+    android:layout_marginBottom="@dimen/fourDP"
     android:layout_marginRight="@dimen/sixDp"
     android:layout_marginLeft="@dimen/sixDp"
     >
