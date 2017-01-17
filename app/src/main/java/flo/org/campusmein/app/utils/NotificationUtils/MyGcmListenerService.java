@@ -154,7 +154,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setStyle(inboxStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
                 .setSmallIcon(R.drawable.ic_notification_campusme)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notification_campusme))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -188,7 +188,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setStyle(bigPictureStyle)
                 .setWhen(getTimeMilliSec(timeStamp))
                 .setSmallIcon(R.drawable.ic_notification_campusme)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_notification_campusme))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
                 .build();
 

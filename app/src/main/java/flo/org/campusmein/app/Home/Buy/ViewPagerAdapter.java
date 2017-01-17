@@ -90,7 +90,7 @@ public class ViewPagerAdapter extends PagerAdapter {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(mContext,"you clicked page "+position, Toast.LENGTH_SHORT).show();
-                Toast.makeText(mContext,""+carousalItems.get(position).Status, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,""+carousalItems.get(position).Status, Toast.LENGTH_SHORT).show();
                 switch (carousalItems.get(position).screenType){
                     case 1:         //list View
                         openProductStoreList(

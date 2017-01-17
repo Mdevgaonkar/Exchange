@@ -142,7 +142,12 @@ public class MainHomeActivity extends AppCompatActivity
         fetchNewestVersion();
 
         setUpNavHeaderDetails();
-        validateUserLogin();
+        if(Boolean.valueOf(campusExchangeApp.getInstance().getUniversalPerson().getPersonPresent())){
+            validateUserLogin();
+        }{
+            showSnack("Please login to stay updated on best deals.", Snackbar.LENGTH_SHORT);
+        }
+
     }
 
 

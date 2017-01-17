@@ -204,14 +204,14 @@ public class productView extends AppCompatActivity
 
     private void setGeneralProperties(){
         setProductImageView(product.type);
-        if(product.bannerUrl == null){
+        if(product.bannerUrl == null || product.bannerUrl == ""){
             hideBannerView();
         }else {
             showBannerView(product.bannerUrl);
         }
         showMRPView(String.valueOf(product.mrp));
         setPrice(String.valueOf(product.listPrice));
-        if(product.disclaimerText == null){
+        if(product.disclaimerText == null || product.disclaimerText== ""){
            hideDisclaimerView();
         }else {
             showDisclaimerView(product.disclaimerText);

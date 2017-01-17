@@ -554,10 +554,12 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                                 if (!mobileNumber_editText.getText().equals(campusExchangeApp.getInstance().getUniversalPerson())) {
                                     String oldPhoneNumber = campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber();
                                     String newPhoneNumber = mobileNumber_editText.getText().toString();
-                                    if(oldPhoneNumber.equals(newPhoneNumber)){
+                                    if(!oldPhoneNumber.equals(newPhoneNumber)){
                                         updateMobileNumber(mobileNumber_editText.getText().toString());
+                                    }else {
+                                        updateMobileNumber(mobileNumber_editText.getText().toString());
+
                                     }
-                                    detailsUpload();
                                     placeBulkOrder();
                                     dialog.dismiss();
                                 }
@@ -580,6 +582,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
     private void updateMobileNumber(String number) {
 
         campusExchangeApp.getInstance().getUniversalPerson().setPhoneNumber(number);
+        detailsUpload(number);
     }
 
     private void placeBulkOrder() {
@@ -828,7 +831,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
         snackbar.show();
     }
 
-    private void detailsUpload(){
+    private void detailsUpload(String number){
 
         showProgressDialog(getString(R.string.uploading));
 
@@ -836,7 +839,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
         PersonGSON gsonPerson = new PersonGSON();
         PersonGSON.postPerson postObject = gsonPerson.getPostPerson();
         postObject.setName(newPerson.getPersonName());
-        postObject.setContactNumber(newPerson.getPhoneNumber());
+        postObject.setContactNumber(number);
         postObject.setEmail(newPerson.getPersonEmail());
         postObject.college.setObjectId(newPerson.getPersonCollegeObjectId());
         postObject.course.setObjectId(newPerson.getPersonCourseoBjectId());

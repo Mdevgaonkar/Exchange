@@ -218,8 +218,8 @@ public class BuyFragment extends Fragment implements
                     try{
                         Glide.with(getActivity())
                                 .load(Uri.parse(storeItems.get(i).photoUrl))
-                                .placeholder(R.color.colorCard)
-                                .error(R.drawable.sidebar_header_background)
+                                .placeholder(R.color.colorGrayDark)
+                                .error(R.color.colorGrayDark)
                                 .thumbnail(0.5f)
                                 .crossFade()
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)

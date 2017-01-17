@@ -284,6 +284,11 @@ public class login extends AppCompatActivity
         }
     }
 
+    private void set_campusMe_icon_as_avatar() {
+        profile_img.setVisibility(View.VISIBLE);
+        profile_img.setImageResource(R.mipmap.ic_launcher);
+    }
+
     private void show_WelcomView(){
         showWelcomeLayout();
         hideSplashLayout();
@@ -526,6 +531,7 @@ public class login extends AppCompatActivity
                     signIn();
                     break;
                 case R.id.skip_button:
+                    set_campusMe_icon_as_avatar();
                     updateUI(1);
                     break;
                 case R.id.btn_lets_start:
@@ -658,6 +664,7 @@ public class login extends AppCompatActivity
                             Log.d("credentials", response.toString());
                             credentials c = new credentials(getApplicationContext());
                             c.setCredentials(response.toString());
+
                             getCollegeList();
 //                            StartMainHomeActivity();
                         }
