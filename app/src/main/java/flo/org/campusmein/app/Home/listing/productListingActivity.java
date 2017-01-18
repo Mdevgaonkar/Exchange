@@ -601,7 +601,8 @@ public class productListingActivity extends AppCompatActivity
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                if(!nextPage.isEmpty() && !nextPage.equals("null")){
+                Log.d("NextPageLink",nextPage);
+                if(!nextPage.isEmpty() && !nextPage.equals("null") ){
                     loadNextDataFromApi(nextPage);
                     listing_loadMore_progress.setVisibility(View.VISIBLE);
                     listing_allProductsShown.setVisibility(View.GONE);
@@ -846,6 +847,7 @@ public class productListingActivity extends AppCompatActivity
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
         productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter;
+        Log.d("productRequestFilter", productRequest);
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,
@@ -862,6 +864,7 @@ public class productListingActivity extends AppCompatActivity
                             for(Products product : productsList) {
                                 productList.add(product);
                             }
+                            nextPage = response.getString("nextPage");
 //                            showSnack(productList.size()+"");
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -930,6 +933,7 @@ public class productListingActivity extends AppCompatActivity
                             for(Products product : productsList) {
                                 productList.add(product);
                             }
+                            updateNextPage(response.getString("nextPage"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("Product list","no rational data");
@@ -938,6 +942,7 @@ public class productListingActivity extends AppCompatActivity
                         }
                         updateDataSetOfRecyclerView();
                         updateUI();
+
                         hideProgressLayout();
 
 //                        tv.setText(response.toString());
@@ -948,6 +953,7 @@ public class productListingActivity extends AppCompatActivity
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("Product list","no rational data");
                         showSnack(getString(R.string.someErrorOccurred), Snackbar.LENGTH_INDEFINITE);
                     }
                 }){

@@ -67,6 +67,7 @@ public class productView extends AppCompatActivity
     private static final String SLASH = "/";
     private static final String QUERY = "?";
     private static final String TAG = productView.class.getSimpleName();
+    private static final String SRC_STR_KEY_LOGIN = "src";
     private boolean NETWORK_STATE = false;
 
     private Toolbar activityToolbar;
@@ -907,10 +908,22 @@ public class productView extends AppCompatActivity
     }
 
     private void buyItem() {
-        Intent buyThisItem = new Intent(this, priceView.class);
-        buyThisItem.putExtra(SRC_STR_KEY,"product");
-        buyThisItem.putExtra(PDCT_ID_KEY,product_objectId);
-        startActivity(buyThisItem);
+        if (NETWORK_STATE) {
+            if (Boolean.valueOf(campusExchangeApp.getInstance().getUniversalPerson().getPersonPresent())) {
+                Intent buyThisItem = new Intent(this, priceView.class);
+                buyThisItem.putExtra(SRC_STR_KEY, "product");
+                buyThisItem.putExtra(PDCT_ID_KEY, product_objectId);
+                startActivity(buyThisItem);
+            } else {
+                addToCart(product.objectId);
+                Intent signIn = new Intent(this, flo.org.campusmein.app.Login.login.class);
+                signIn.putExtra(SRC_STR_KEY_LOGIN,"cart");
+                startActivity(signIn);
+            }
+        }else{
+            showSnack(getString(R.string.NetworkFaliure));
+        }
+
     }
 
     private void addToCart(String s) {

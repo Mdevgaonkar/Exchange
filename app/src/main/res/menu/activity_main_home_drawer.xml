@@ -16,9 +16,9 @@
             android:icon="@drawable/ic_local_atm_black_24dp"
             android:title="@string/mySells" />
         <item
-            android:id="@+id/myWhishlist"
+            android:id="@+id/myWishlist"
             android:icon="@drawable/ic_favorite_border_black_24dp"
-            android:title="@string/whishlist" />
+            android:title="@string/wishlist" />
         <!--<item-->
             <!--android:id="@+id/notifications"-->
             <!--android:icon="@drawable/ic_notifications_none_black_24dp"-->

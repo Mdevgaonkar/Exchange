@@ -491,6 +491,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
 
     private void showMobilenumberConfirmationDialog(){
 
+        placeOrder.setVisibility(View.GONE);
         AlertDialog.Builder confirmMobileNumber;
         final EditText mobileNumber_editText = new EditText(this);
 
@@ -533,6 +534,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // negative button logic
+                        placeOrder.setVisibility(View.VISIBLE);
                         dialog.dismiss();
                     }
                 });
@@ -561,6 +563,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
 
                                     }
                                     placeBulkOrder();
+                                    placeOrder.setVisibility(View.GONE);
                                     dialog.dismiss();
                                 }
                             }else {
@@ -660,7 +663,7 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
         return String.valueOf(timestamp.getTime());
     }
 
-    private void placeOrder(String productId, int cost, int quantity, final int position) {
+    private void placeOrder(final String productId, int cost, int quantity, final int position) {
         showProgressDialog(getResources().getString(R.string.placingOrders));
 
         orders order = new orders();
@@ -691,12 +694,13 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            hideProgressDialog();
+
                             try {
                             if (response.isNull("objectId")) {
                                 Toast.makeText(getApplicationContext(),getString(R.string.order_not_placed)+productTitles.get(position),Toast.LENGTH_LONG).show();
                                 errorOrders.add(position);
                                 showOrderFaliure();
+                                cancelThisRequest(productId);
                             }else {
                                 showOrderSuccess();
 
@@ -709,6 +713,8 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            hideProgressDialog();
                         }
                     },
                     new Response.ErrorListener() {
@@ -717,6 +723,8 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                             Toast.makeText(getApplicationContext(),getString(R.string.order_not_placed)+productTitles.get(position),Toast.LENGTH_LONG).show();
                             errorOrders.add(position);
                             showOrderFaliure();
+                            cancelThisRequest(productId);
+
                         }
                     }){
                 /**
@@ -730,13 +738,17 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                 }
             };
 //
-            campusExchangeApp.getInstance().addToRequestQueue(createNewOrder,TAG);
+            campusExchangeApp.getInstance().addToRequestQueue(createNewOrder,TAG+productId);
 
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(),getString(R.string.order_not_placed)+productTitles.get(position),Toast.LENGTH_LONG).show();
             errorOrders.add(position);
             showOrderFaliure();
         }
+    }
+
+    private void cancelThisRequest(String productId) {
+        campusExchangeApp.getInstance().cancelPendingRequests(TAG+productId);
     }
 
     private void controlCompletionLayout(){

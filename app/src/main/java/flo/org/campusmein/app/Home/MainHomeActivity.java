@@ -144,7 +144,7 @@ public class MainHomeActivity extends AppCompatActivity
         setUpNavHeaderDetails();
         if(Boolean.valueOf(campusExchangeApp.getInstance().getUniversalPerson().getPersonPresent())){
             validateUserLogin();
-        }{
+        }else{
             showSnack("Please login to stay updated on best deals.", Snackbar.LENGTH_SHORT);
         }
 
@@ -386,7 +386,7 @@ public class MainHomeActivity extends AppCompatActivity
             case R.id.mySells:
                 showSnack(getString(R.string.option_comming_soon),Snackbar.LENGTH_LONG);
                 break;
-            case R.id.myWhishlist:
+            case R.id.myWishlist:
                 Intent myWishlist = new Intent(this, wishlistView.class);
                 startActivity(myWishlist);
                 break;

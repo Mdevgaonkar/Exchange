@@ -191,12 +191,14 @@ public class login extends AppCompatActivity
             getDetailsFromAccount(result);
             setDetailsFromAccount();
             Log.d(TAG, "Updated UI");
-            updateUI(1);
             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("true");
+            updateUI(1);
+
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(2);
             campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+
         }
     }
 
@@ -270,8 +272,9 @@ public class login extends AppCompatActivity
     private void updateUI(int i) {
         switch (i){
             case 1 ://signed in UI or skipped UI
-                show_WelcomView();
+
                 if (NETWORK_STATE) {
+                    show_WelcomView();
                     getCredentials();
                 }else {
                     showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_INDEFINITE);
