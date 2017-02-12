@@ -548,6 +548,7 @@ public class login extends AppCompatActivity
                             userRead();
                         } else {
 //                            getCredentials();
+                            deviceRegistration();
                             StartMainHomeActivity();
                         }
 //                        StartMainHomeActivity();
@@ -662,7 +663,11 @@ public class login extends AppCompatActivity
                     public void onResponse(JSONObject response) {
 
                         if (response.isNull("application-id")) {
-                            getCredentials();
+//                            getCredentials();
+                            hideProgressDialog();
+                            showSnack(getString(R.string.pleaseRestartApp), Snackbar.LENGTH_INDEFINITE);
+                            btn_lets_start.setVisibility(View.GONE);
+                            campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
                         }else {
                             Log.d("credentials", response.toString());
                             credentials c = new credentials(getApplicationContext());
@@ -1193,7 +1198,12 @@ public class login extends AppCompatActivity
                     public void onResponse(JSONObject response) {
                         hideProgressDialog();
                         if(response.isNull("user-token")){
-                            loginUser();
+//                            loginUser();
+                            hideProgressDialog();
+                            showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
+                            btn_lets_start.setVisibility(View.GONE);
+                            campusExchangeApp.getInstance().getUniversalPerson().setPersonPresent("false");
+                            campusExchangeApp.getInstance().getUniversalPerson().setPersonInfoCollected("false");
                         }else {
                             try {
                                 Log.d("login_user_token",response.getString("user-token"));
@@ -1247,194 +1257,6 @@ public class login extends AppCompatActivity
             Log.d("Login_JSON_exception", e.toString());
         }
     }
-
-//    private void createUser() {
-//
-//        showProgressDialog(getResources().getString(R.string.setting_up));
-//        String createUserString = getResources().getString(R.string.createUser);
-//        createUserString = createUserString+"?";
-//        final Person person = campusExchangeApp.getInstance().getUniversalPerson();
-//        try {
-//            createUserString = createUserString + "name=" + URLEncoder.encode(person.getPersonName(), "UTF-8");
-//            createUserString = createUserString+"&contactNumber="+ URLEncoder.encode(person.getPhoneNumber(),"UTF-8");
-//            createUserString = createUserString+"&email="+URLEncoder.encode(person.getPersonEmail(),"UTF-8");
-//            createUserString = createUserString+"&college="+URLEncoder.encode(person.getPersonCollegeObjectId(),"UTF-8");
-//            createUserString = createUserString+"&course="+URLEncoder.encode(person.getPersonCourseoBjectId(),"UTF-8");
-//            createUserString = createUserString+"&courseYear="+URLEncoder.encode(person.getAcademicYear(),"UTF-8");
-//            createUserString = createUserString+"&profilepic="+URLEncoder.encode(person.getPersonPhotoUrl(),"UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-////        Snackbar.make(activity_login, R.string.setup_complete, Snackbar.LENGTH_LONG).show();
-//        Log.d(TAG+"CUser", createUserString);
-////        hideProgressDialog();
-//
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//                createUserString, null,
-//                new Response.Listener<JSONObject>() {
-//
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        String personObjectId = null;
-//                        try {
-//                            hideProgressDialog();
-//                            if (response.isNull("objectId")) {
-//                                if (response.getInt("code") == 3033){
-//                                    Snackbar.make(activity_login," person already exists ", Snackbar.LENGTH_LONG).show();
-//                                    readUser();
-//                                }
-//                            } else {
-//                                personObjectId = response.getString("objectId");
-////                                Snackbar.make(activity_login, R.string.setup_complete + " " + personObjectId, Snackbar.LENGTH_LONG).show();
-//                                person.setPersonObjectId(personObjectId);
-////                                getCredentials();
-//                                StartMainHomeActivity();
-//                            }
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                hideProgressDialog();
-//                showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
-//                btn_lets_start.setVisibility(View.GONE);
-//                person.setPersonPresent("false");
-//                VolleyLog.d(TAG+" :while creating user", "Error: " + error.getMessage());
-//            }
-//        });
-//
-//        // Adding request to request queue
-//        campusExchangeApp.getInstance().addToRequestQueue(jsonObjReq, TAG);
-//
-//    }
-
-//    private void readUser(){
-//
-//        final Person person = campusExchangeApp.getInstance().getUniversalPerson();
-//        showProgressDialog(getResources().getString(R.string.readingUser));
-//        String readUserString = getResources().getString(R.string.readUser);
-//        readUserString = readUserString+"?";
-//        try {
-//            readUserString = readUserString + "email=" + URLEncoder.encode(person.getPersonEmail(), "UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.d(TAG+"ReUser", readUserString);
-//
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//                readUserString, null,
-//                new Response.Listener<JSONObject>() {
-//
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        String personObjectId = null;
-//                        try {
-//                            hideProgressDialog();
-//                            if (response.getInt("totalObjects") == 1){
-//
-//                                String responsePersonData = response.getJSONArray(RESPONSE_DATA).toString();
-//                                Gson gson = campusExchangeApp.getInstance().getGson();
-//                                List<PersonGSON> personG =  Arrays.asList(gson.fromJson(responsePersonData,PersonGSON[].class));
-//                                for(PersonGSON recognisedUser: personG){
-//                                    personObjectId = recognisedUser.objectId;
-//                                    person.setPersonObjectId(personObjectId);
-//                                }
-////                                        Snackbar.make(activity_login," person already exists ", Snackbar.LENGTH_LONG).show();
-////                                updateUser();
-//                                userUpdate();
-////                                        StartMainHomeActivity();
-//
-//                            } else {
-//
-//                                Snackbar.make(activity_login, R.string.noUser, Snackbar.LENGTH_LONG).show();
-//                            }
-//
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                hideProgressDialog();
-//                showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
-//                btn_lets_start.setVisibility(View.GONE);
-//                person.setPersonPresent("false");
-//                VolleyLog.d(TAG+" :while creating user", "Error: " + error.getMessage());
-//            }
-//        });
-//
-//        // Adding request to request queue
-//        campusExchangeApp.getInstance().addToRequestQueue(jsonObjReq, TAG);
-//
-//
-//    }
-
-//    private void updateUser() {
-//        final Person person = campusExchangeApp.getInstance().getUniversalPerson();
-//        showProgressDialog(getResources().getString(R.string.updatingUser));
-//        String updateUserString = getResources().getString(R.string.updateUser);
-//        updateUserString = updateUserString+"?";
-//        try {
-//            updateUserString = updateUserString+ "objectId=" + URLEncoder.encode(person.getPersonObjectId(), "UTF-8");
-//            updateUserString = updateUserString+ "&name=" + URLEncoder.encode(person.getPersonName(), "UTF-8");
-//            updateUserString = updateUserString+"&contactNumber="+ URLEncoder.encode(person.getPhoneNumber(),"UTF-8");
-////            updateUserString = updateUserString+"&email="+URLEncoder.encode(person.getPersonEmail(),"UTF-8");
-//            updateUserString = updateUserString+"&college="+URLEncoder.encode(person.getPersonCollegeObjectId(),"UTF-8");
-//            updateUserString = updateUserString+"&course="+URLEncoder.encode(person.getPersonCourseoBjectId(),"UTF-8");
-//            updateUserString = updateUserString+"&courseYear="+URLEncoder.encode(person.getAcademicYear(),"UTF-8");
-//            updateUserString = updateUserString+"&profilepic="+URLEncoder.encode(person.getPersonPhotoUrl(),"UTF-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
-//
-//        Log.d(TAG+"UpUser", updateUserString);
-//
-//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-//                updateUserString, null,
-//                new Response.Listener<JSONObject>() {
-//
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        String personObjectId = null;
-//
-//                        hideProgressDialog();
-//                        if (response.isNull("objectId")) {
-//                            Snackbar.make(activity_login, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
-//                        }else {
-////                            getCredentials();
-//                            StartMainHomeActivity();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                hideProgressDialog();
-//                showSnack(getString(R.string.pleaseRestartApp),Snackbar.LENGTH_INDEFINITE);
-//                btn_lets_start.setVisibility(View.GONE);
-//                person.setPersonPresent("false");
-//                VolleyLog.d(TAG+" :while creating user", "Error: " + error.getMessage());
-//            }
-//        });
-//
-//        // Adding request to request queue
-//        campusExchangeApp.getInstance().addToRequestQueue(jsonObjReq, TAG);
-//
-//
-//    }
 
     private void StartMainHomeActivity() {
 

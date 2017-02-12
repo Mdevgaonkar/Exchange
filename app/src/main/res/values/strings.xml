@@ -214,7 +214,7 @@
     <string name="removedText">Removed</string>
     <string name="percentageSymbol">% OFF</string>
     <string name="loadingCart">Gathering all items</string>
-    <string name="quantity">Quantity:\t</string>
+    <string name="quantity">Qty:\t</string>
     <string name="addedToCart">Item Added to cart</string>
     <string name="alreadyInCart">Already present in cart</string>
     <string name="myCart">My Cart</string>

@@ -138,6 +138,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        NotificationCompat.BigTextStyle bigtext = new NotificationCompat.BigTextStyle();
 
         inboxStyle.addLine(message);
 
@@ -151,10 +152,14 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setContentTitle(title)
                 .setContentIntent(pendingIntent)
                 .setSound(defaultSoundUri)
-                .setStyle(inboxStyle)
+//                .setStyle(bigtext)
                 .setWhen(getTimeMilliSec(timeStamp))
                 .setSmallIcon(R.drawable.ic_notification_campusme)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -190,6 +195,8 @@ public class MyGcmListenerService extends GcmListenerService {
                 .setSmallIcon(R.drawable.ic_notification_campusme)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
                 .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
