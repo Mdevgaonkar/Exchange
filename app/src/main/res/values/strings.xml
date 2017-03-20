@@ -298,6 +298,11 @@
     <!--SELL POLL LINK-->
     <string name="sell_poll_link">https://docs.google.com/forms/d/e/1FAIpQLSdQtyr5MpYznznBjsFgGvh9iiwjddv5LFgP4-UiMbqdRhkjVA/viewform</string>
     <string name="sell_coming_doon_message">We will soon update our services so that you can sell your old things.\n\nHelp us by telling what you want to sell in your college campus.\n\n Click \"OK\" To Continue.</string>
+    <string name="price_text_coming_soon">Coming Soon</string>
+    <string name="price_text_free">Free</string>
+    <string name="notification_for_coming_soon_product">We will notify you whenever this becomes available</string>
+    <string name="snack_text_for_free_products">Read description to avail this product/service</string>
+    <string name="share_option_menu">Share</string>
     <!--/SELL POLL LINK-->
 
     <!--Cancellation Reasons START-->

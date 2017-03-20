@@ -77,9 +77,11 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Products product = productList.get(position);
+        setPriceText(product, holder);
         if (product.type.equals(TYPE_BOOK)){
             holder.title.setText(product.book.title);
-            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
+
+//            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading product image using Glide library
 //            holder.thumbnail.setImageResource(R.drawable.ic_book_default);
             try{
@@ -94,7 +96,8 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
             }
         }else if(product.type.equals(TYPE_INSTRUMENT)){
             holder.title.setText(product.instrument.instrumentName);
-            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
+
+//            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading product image using Glide library
 //            holder.thumbnail.setImageResource(R.drawable.ic_instrument_default);
             try{
@@ -109,7 +112,7 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
             }
         }else if(product.type.equals(TYPE_COMBOPACK)){
             holder.title.setText(product.combopack.title);
-            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
+//            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
             // loading product image using Glide library
             holder.thumbnail.setImageResource(R.drawable.ic_combo_default);
             try{
@@ -144,6 +147,18 @@ public class productListingAdapter extends RecyclerView.Adapter<productListingAd
                 showPopupMenu(holder.overflow, product);
             }
         });
+    }
+
+    private void setPriceText(Products product, MyViewHolder holder) {
+        int price = product.listPrice;
+        if(price>0){
+            holder.count.setText(mContext.getString(R.string.rupeesSymbol)+product.listPrice+mContext.getString(R.string.priceEndSymbol));
+        }else if(price<0){
+            holder.count.setText(mContext.getString(R.string.price_text_coming_soon));
+        }else {
+            holder.count.setText(mContext.getString(R.string.price_text_free));
+        }
+
     }
 
 

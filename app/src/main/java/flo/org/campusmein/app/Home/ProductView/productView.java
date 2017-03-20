@@ -7,6 +7,8 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.net.Uri;
+
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -44,6 +46,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import flo.org.campusmein.R;
+import flo.org.campusmein.app.Home.MainHomeActivity;
 import flo.org.campusmein.app.Home.cart.cartView;
 import flo.org.campusmein.app.Home.orderPlacement.priceView;
 import flo.org.campusmein.app.utils.College;
@@ -84,6 +87,7 @@ public class productView extends AppCompatActivity
     private LinearLayout MRPView;
     private TextView MRP;
     private Button btn_buyNow;
+    private Button btn_addToCart;
     private LinearLayout error_Layout,progressBarLayout,removedView;
     private LinearLayout product_layout;
 
@@ -102,15 +106,20 @@ public class productView extends AppCompatActivity
     private static final String SRC_STR_KEY = "source";
     private static final String PDCT_ID_KEY = "productId";
 
+    private boolean linkAsSource = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_view);
+        onNewIntent(getIntent());
         Bundle b = getExtrasFromIntent();
 //        String type = b.getString(PRODUCT_TYPE);
 
-        product_objectId = b.getString(PRODUCT_OBJECT_ID);
+        if(b.getString(PRODUCT_OBJECT_ID) != null) {
+            product_objectId = b.getString(PRODUCT_OBJECT_ID);
+        }
 //        String bic_objectId = b.getString(BIC_OBJECT_ID);
 
         setupActionbar(getString(R.string.emptyString));
@@ -126,6 +135,18 @@ public class productView extends AppCompatActivity
             showErrorLayout();
         }
 
+    }
+    protected void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            String productId = data.substring(data.lastIndexOf("=") + 1);
+            product_objectId = productId;
+            linkAsSource = true;
+//            Toast.makeText(this, productId,Toast.LENGTH_LONG).show();
+//            showSnack(productId);
+
+        }
     }
 
     private void fetchProduct(String product_objectId) {
@@ -210,8 +231,10 @@ public class productView extends AppCompatActivity
         }else {
             showBannerView(product.bannerUrl);
         }
-        showMRPView(String.valueOf(product.mrp));
-        setPrice(String.valueOf(product.listPrice));
+        showMRPView(product.mrp);
+
+        setPrice(product.listPrice);
+
         if(product.disclaimerText == null || product.disclaimerText== ""){
            hideDisclaimerView();
         }else {
@@ -219,6 +242,8 @@ public class productView extends AppCompatActivity
         }
 
     }
+
+
 
     private void setBookProperties(){
         setTitle(product.book.title);
@@ -573,7 +598,8 @@ public class productView extends AppCompatActivity
         productTitle = (TextView) findViewById(R.id.productTitle);
         productSubtitle = (TextView) findViewById(R.id.productSubtitle);
         setupMRPView();
-        Button btn_addToCart = (Button) findViewById(R.id.btn_addToCart);
+
+        btn_addToCart = (Button) findViewById(R.id.btn_addToCart);
         btn_addToCart.setOnClickListener(this);
         btn_buyNow = (Button) findViewById(R.id.btn_buyNow);
         btn_buyNow.setOnClickListener(this);
@@ -677,14 +703,34 @@ public class productView extends AppCompatActivity
         hideMRPView();
     }
 
-    private void showMRPView(String MRPtext){
-        MRPView.setVisibility(View.VISIBLE);
-        MRP.setText(getString(R.string.mrp)+getString(R.string.rupeesSymbol)+MRPtext+getString(R.string.priceEndSymbol));
-        MRP.setPaintFlags(MRP.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    private void showMRPView(int MRPval){
+
+        if(MRPval>0){
+            MRPView.setVisibility(View.VISIBLE);
+            MRP.setText(getString(R.string.mrp)+getString(R.string.rupeesSymbol)+MRPval+getString(R.string.priceEndSymbol));
+            MRP.setPaintFlags(MRP.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else{
+            MRPView.setVisibility(View.GONE);
+//            MRP.setText(getString(R.string.mrp)+getString(R.string.rupeesSymbol)+MRPval+getString(R.string.priceEndSymbol));
+//            MRP.setPaintFlags(MRP.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
     }
 
-    private void setPrice(String price){
-        btn_buyNow.setText(getString(R.string.buyNow)+" "+getString(R.string.rupeesSymbol)+price+getString(R.string.priceEndSymbol));
+    private void setPrice(int price){
+
+        if (price>0){
+            btn_buyNow.setText(getString(R.string.buyNow)+" "+getString(R.string.rupeesSymbol)+price+getString(R.string.priceEndSymbol));
+            btn_addToCart.setVisibility(View.VISIBLE);
+        }else if(price<0){
+            btn_buyNow.setText(R.string.price_text_coming_soon);
+            btn_addToCart.setVisibility(View.GONE);
+
+        }else {
+            btn_buyNow.setText(R.string.price_text_free);
+            btn_addToCart.setVisibility(View.GONE);
+        }
+
     }
 
     private void setTitle(String title){
@@ -786,12 +832,19 @@ public class productView extends AppCompatActivity
             setColorWishlistIcon(menu,product);
         }
 
+        Drawable drawableShare= menu.getItem(1).getIcon();
+        if(drawableShare != null) {
+            drawableShare.mutate();
+            drawableShare.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
+        }
 
-        Drawable drawablecart = menu.getItem(1).getIcon();
+        Drawable drawablecart = menu.getItem(2).getIcon();
         if(drawablecart != null) {
             drawablecart.mutate();
             drawablecart.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
         }
+
+
 
 
 
@@ -839,15 +892,36 @@ public class productView extends AppCompatActivity
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                finish();
+
+                if(linkAsSource){
+                    finish();
+                    Intent homeAction = new Intent(this, MainHomeActivity.class);
+                    startActivity(homeAction);
+                }else {
+                    finish();
+                }
                 return true;
             case R.id.action_cart:
                 openCart();
                 return true;
             case R.id.action_add_wishlist:
                 addOrRemoveWish(product);
+                return true;
+            case R.id.action_share_product:
+                share(product);
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void share(Products product) {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        String shareBodyText = "Check it out. http://flolabs.in/CampusMe/app?pid="+product.objectId;
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Check it out at Campusमें | CampusMe ");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+        startActivity(Intent.createChooser(sharingIntent, "Shearing Option"));
+
     }
 
     private void addOrRemoveWish(Products product) {
@@ -890,8 +964,15 @@ public class productView extends AppCompatActivity
                 addToCart(product.objectId);
                 break;
             case R.id.btn_buyNow:
-                //method call for buy checkout
-                buyItem();
+                if(product.listPrice>0){
+                    //method call for buy checkout
+                    buyItem();
+                }else if(product.listPrice<0){
+                    showSnack(getString(R.string.notification_for_coming_soon_product));
+                }else {
+                    showSnack(getString(R.string.snack_text_for_free_products));
+                }
+
                 break;
             case R.id.tab_title_details:
                 showDetails();
@@ -987,7 +1068,13 @@ public class productView extends AppCompatActivity
         if(NETWORK_STATE){
             campusExchangeApp.getInstance().getmRequestQueue().cancelAll(TAG);
         }
-        finish();
+        if(linkAsSource){
+            finish();
+            Intent homeAction = new Intent(this, MainHomeActivity.class);
+            startActivity(homeAction);
+        }else {
+            finish();
+        }
         super.onBackPressed();
 
     }

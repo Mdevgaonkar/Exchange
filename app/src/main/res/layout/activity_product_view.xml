@@ -70,9 +70,6 @@
             />
     </LinearLayout>
 
-
-
-
                 <LinearLayout
                     android:id="@+id/product_layout"
                     android:layout_width="match_parent"
@@ -333,7 +330,9 @@
                                     android:layout_height="match_parent"
                                     android:layout_margin="@dimen/eightDP"
                                     android:text="Hey there this is the details of the product"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                                    android:clickable="true"
+                                    android:linksClickable="true"/>
 
                             </LinearLayout>
 
@@ -353,7 +352,9 @@
                                     android:layout_height="match_parent"
                                     android:layout_margin="@dimen/eightDP"
                                     android:text="Hey there this is the description of the product"
-                                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                                    android:clickable="true"
+                                    android:linksClickable="true"/>
 
                             </LinearLayout>
 
@@ -375,7 +376,10 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/eightDP"
                             android:text="This is how the disclaimer text will be shown"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                            android:clickable="true"
+                            android:linksClickable="true"
+                            />
                     </android.support.v7.widget.CardView>
 
 
