@@ -33,8 +33,10 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+    <!--android:id="@+id/swipe_refresh_layout"-->
+    <LinearLayout
+        android:id="@+id/buy_home_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -365,5 +367,6 @@
 
     </LinearLayout>
     </ScrollView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 </FrameLayout>

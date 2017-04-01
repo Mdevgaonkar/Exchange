@@ -99,6 +99,7 @@ public class BuyFragment extends Fragment implements
     private ArrayList<buyFragmentVariables.carousal.items> carousalItems;
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private LinearLayout buy_home_linear_layout;
 
 
     public BuyFragment() {
@@ -112,7 +113,8 @@ public class BuyFragment extends Fragment implements
         // Inflate the layout for this fragment
         home_view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_buy,container,false);
 
-        setupSwipeToRefresh();
+//        setupSwipeToRefresh();
+        setupBuyHomeLinearLayout();
         setupFramelayout();
         setupVariablesObject();
         setupViews();
@@ -123,6 +125,10 @@ public class BuyFragment extends Fragment implements
         setupViewPagerTouchListener();
         return home_view;
 
+    }
+
+    private void setupBuyHomeLinearLayout() {
+        buy_home_linear_layout = (LinearLayout) home_view.findViewById(R.id.buy_home_linear_layout);
     }
 
     private void setupViewPagerTouchListener() {
@@ -155,7 +161,7 @@ public class BuyFragment extends Fragment implements
     }
 
     private void setupSwipeToRefresh() {
-        swipeRefreshLayout = (SwipeRefreshLayout) home_view.findViewById(R.id.swipe_refresh_layout);
+//        swipeRefreshLayout = (SwipeRefreshLayout) home_view.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorRed, R.color.colorGreen);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -203,6 +209,7 @@ public class BuyFragment extends Fragment implements
             }
             if(storeItems.size()>0){
                 store_heading_text.setVisibility(View.VISIBLE);
+//                store_heading_text.setVisibility(View.GONE);
                 store_cards.setVisibility(View.VISIBLE);
                 //emptying the linear layout off stores
                 if(store_cards.getChildCount() > 0){
@@ -643,7 +650,7 @@ public class BuyFragment extends Fragment implements
 
         showProgressBar();
         fetchVariables();
-        swipeRefreshLayout.setRefreshing(false);
+//        swipeRefreshLayout.setRefreshing(false);
 
     }
 

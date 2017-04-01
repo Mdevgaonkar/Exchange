@@ -468,9 +468,26 @@ public class productListingActivity extends AppCompatActivity
 
             branchFilter.setSelection(0);
 
-        } else {
+        }
+        else if(semesterFilter.getSelectedItemPosition() == 1 || semesterFilter.getSelectedItemPosition() == 2) {
             //showSnack("Semester "+semesterFilter.getSelectedItemPosition()+" Selected");
             toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+            branchFilter.setVisibility(View.GONE);
+                if (NETWORK_STATE){
+                    getsubjectList();
+                }else {
+                    showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
+                }
+                btn_apply_remove_filter.performClick();
+
+//                subjectFilter.setVisibility(View.GONE);
+//                branchFilter.performClick();
+
+
+        }else {
+            //showSnack("Semester "+semesterFilter.getSelectedItemPosition()+" Selected");
+            toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+            branchFilter.setVisibility(View.VISIBLE);
             if(branchFilter.getSelectedItemPosition() > 0){
 
                 if (NETWORK_STATE){
@@ -732,8 +749,14 @@ public class productListingActivity extends AppCompatActivity
         subjectFilter.setVisibility(View.GONE);
         int sem = semesterFilter.getSelectedItemPosition();
         int branch = branchFilter.getSelectedItemPosition()-1;
-        if(sem > 0 && branch >= 0){
-            String whereClauseForSubjects = "Subjects?props=subject%2CsubjectShort&where=branch.branch%3D%27"+URLEncoder.encode(branches.get(branch).branch)+"%27%20AND%20semester%3D"+sem;
+        if(sem > 0 ){
+            String whereClauseForSubjects="";
+            if(sem == 1 || sem == 2){
+                whereClauseForSubjects = "Subjects?props=subject%2CsubjectShort&where=semester%3D"+sem;
+            }else if(branch >= 0){
+                whereClauseForSubjects = "Subjects?props=subject%2CsubjectShort&where=branch.branch%3D%27"+ URLEncoder.encode(branches.get(branch).branch)+"%27%20AND%20semester%3D"+sem;
+            }
+
             String backendRequestUrl = getString(R.string.baseBackendUrl);
             backendRequestUrl = backendRequestUrl+whereClauseForSubjects;
             JsonObjectRequest getSubjectList = new JsonObjectRequest(
@@ -871,7 +894,7 @@ public class productListingActivity extends AppCompatActivity
     private void prepareProducts(String filter) {
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
-        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter;
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter+"%20AND%20("+whereClause+")";
         Log.d("productRequestFilter", productRequest);
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
@@ -1110,6 +1133,8 @@ public class productListingActivity extends AppCompatActivity
                     //clear filter
                     semesterFilter.setSelection(0);
                     branchFilter.setSelection(0);
+                    semesterFilter.setVisibility(View.VISIBLE);
+                    branchFilter.setVisibility(View.VISIBLE);
                     clearSubjectsFilter();
                     loadUI();
                     toggleApplyClearButton(FILTER_APPLY_GONE);
