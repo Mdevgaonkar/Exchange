@@ -169,6 +169,7 @@ public class productListingActivity extends AppCompatActivity
         setupProgressBarLayout();
         setupEmptyView();
         setupRecyclerView();
+        loadUI();
     }
 
     @Override
@@ -201,7 +202,7 @@ public class productListingActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         // register connection status listener
-        loadUI();
+//        loadUI();
         campusExchangeApp.getInstance().setConnectivityListener(this);
         if(mCartMenuIcon!=null){
             int cartSize = RealmController.getInstance().getItems().size();
@@ -345,7 +346,7 @@ public class productListingActivity extends AppCompatActivity
 
         branchFilter = (SearchableSpinner) findViewById(R.id.branchFilter);
         branchFilter.setTitle(getString(R.string.branch_filterOptionTitle));
-        branchFilter.setPositiveButton(getString(R.string.ok_action));
+//        branchFilter.setPositiveButton(getString(R.string.ok_action));
         branchesStringArray = new ArrayList<>();
         branchesStringArray.add(getString(R.string.filterTextBranch));
         branchOptionsSpinnerAdapter = new spinnerAdapter(this,android.R.layout.simple_list_item_1, branchesStringArray);
@@ -362,14 +363,15 @@ public class productListingActivity extends AppCompatActivity
 
         semesterFilter = (SearchableSpinner) findViewById(R.id.semesterFilter);
         semesterFilter.setTitle(getString(R.string.semester_filterOptionTitle));
-        semesterFilter.setPositiveButton(getString(R.string.ok_action));
+//        semesterFilter.setPositiveButton(getString(R.string.ok_action));
         semesterOptionsSpinnerAdapter = new spinnerAdapter(this,android.R.layout.simple_list_item_1, Arrays.asList(getResources().getStringArray(R.array.semesters)));
         semesterFilter.setAdapter(semesterOptionsSpinnerAdapter);
         semesterFilter.setSelection(0);
 
         subjectFilter = (SearchableSpinner) findViewById(R.id.subjectFilter);
+        subjectFilter.setVisibility(View.GONE);
         subjectFilter.setTitle(getString(R.string.subject_filterOptionTitle));
-        subjectFilter.setPositiveButton(getString(R.string.ok_action));
+//        subjectFilter.setPositiveButton(getString(R.string.ok_action));
         subjectsStringArray = new ArrayList<>();
         subjectsStringArray.add(getString(R.string.filterTextSubject));
         subjectOptionsSpinnerAdapter = new spinnerAdapter(this,android.R.layout.simple_list_item_1, subjectsStringArray);
@@ -380,24 +382,7 @@ public class productListingActivity extends AppCompatActivity
         semesterFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                clearSubjectsFilter();
-                if (semesterFilter.getSelectedItemPosition() == 0) {
-                     toggleApplyClearButton(FILTER_APPLY_GONE);
-
-                    branchFilter.setSelection(0);
-
-                } else {
-                    //showSnack("Semester "+semesterFilter.getSelectedItemPosition()+" Selected");
-                    toggleApplyClearButton(FILTER_APPLY_VISIBLE);
-                    if(branchFilter.getSelectedItemPosition() > 0){
-
-                        if (NETWORK_STATE){
-                            getsubjectList();
-                        }else {
-                            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
-                        }
-                    }
-                }
+                onSemesterFilterSelected();
 
             }
 
@@ -410,24 +395,7 @@ public class productListingActivity extends AppCompatActivity
         branchFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                clearSubjectsFilter();
-                if (branchFilter.getSelectedItemPosition() <= 0) {
-
-                    if(semesterFilter.getSelectedItemPosition()>0) {
-                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
-                    }else toggleApplyClearButton(FILTER_APPLY_GONE);
-
-                } else {
-                    //showSnack(branchFilter.getSelectedItemPosition()+" Branch Selected");
-                    if(semesterFilter.getSelectedItemPosition()>0){
-                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
-                        if (NETWORK_STATE){
-                            getsubjectList();
-                        }else {
-                            showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
-                        }
-                    }
-                }
+                onBranchFilterSelected();
 
             }
 
@@ -440,15 +408,7 @@ public class productListingActivity extends AppCompatActivity
         subjectFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (subjectFilter.getSelectedItemPosition() == 0) {
-                    if(semesterFilter.getSelectedItemPosition()>0 || branchFilter.getSelectedItemPosition()>0) {
-                        toggleApplyClearButton(FILTER_APPLY_VISIBLE);
-                    }else toggleApplyClearButton(FILTER_APPLY_GONE);
-
-                } else {
-//                    showSnack(subjectFilter.getSelectedItemPosition()+" Selected");
-                    toggleApplyClearButton(FILTER_APPLY_VISIBLE);
-                }
+                onSubjectsFilterSelected();
 
             }
 
@@ -460,6 +420,71 @@ public class productListingActivity extends AppCompatActivity
 
 
 
+    }
+
+    private void onSubjectsFilterSelected() {
+        if (subjectFilter.getSelectedItemPosition() == 0) {
+            if(semesterFilter.getSelectedItemPosition()>0 || branchFilter.getSelectedItemPosition()>0) {
+                toggleApplyClearButton(FILTER_CLEAR_VISIBLE);
+            }else toggleApplyClearButton(FILTER_APPLY_GONE);
+
+        } else {
+//                    showSnack(subjectFilter.getSelectedItemPosition()+" Selected");
+            toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+            btn_apply_remove_filter.performClick();
+        }
+    }
+
+    private void onBranchFilterSelected() {
+        clearSubjectsFilter();
+        if (branchFilter.getSelectedItemPosition() <= 0) {
+
+            if(semesterFilter.getSelectedItemPosition()>0) {
+                toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+            }else toggleApplyClearButton(FILTER_APPLY_GONE);
+
+        } else {
+            //showSnack(branchFilter.getSelectedItemPosition()+" Branch Selected");
+            if(semesterFilter.getSelectedItemPosition()>0){
+                toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+                if (NETWORK_STATE){
+                    getsubjectList();
+                }else {
+                    showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
+                }
+                btn_apply_remove_filter.performClick();
+            }else {
+                subjectFilter.setVisibility(View.GONE);
+                semesterFilter.performClick();
+            }
+        }
+    }
+
+    private void onSemesterFilterSelected() {
+
+        clearSubjectsFilter();
+        if (semesterFilter.getSelectedItemPosition() == 0) {
+            toggleApplyClearButton(FILTER_APPLY_GONE);
+
+            branchFilter.setSelection(0);
+
+        } else {
+            //showSnack("Semester "+semesterFilter.getSelectedItemPosition()+" Selected");
+            toggleApplyClearButton(FILTER_APPLY_VISIBLE);
+            if(branchFilter.getSelectedItemPosition() > 0){
+
+                if (NETWORK_STATE){
+                    getsubjectList();
+                }else {
+                    showSnack(getString(R.string.NetworkFaliure), Snackbar.LENGTH_SHORT);
+                }
+                btn_apply_remove_filter.performClick();
+            }else {
+                subjectFilter.setVisibility(View.GONE);
+                branchFilter.performClick();
+            }
+
+        }
     }
 
     private void showfilterOptionsLayout(){

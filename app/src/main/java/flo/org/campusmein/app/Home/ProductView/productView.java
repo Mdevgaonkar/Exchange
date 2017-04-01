@@ -917,11 +917,26 @@ public class productView extends AppCompatActivity
     private void share(Products product) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBodyText = "Check it out. http://flolabs.in/CampusMe/app?pid="+product.objectId;
+        String shareBodyText = "Hey! " +
+                "Check-out "+getProductTitle(product)+" on "+getString(R.string.app_name)+" at  " +
+                "http://flolabs.in/CampusMe/app?pid="+product.objectId;
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,"Check it out at Campusमें | CampusMe ");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
         startActivity(Intent.createChooser(sharingIntent, "Shearing Option"));
 
+    }
+
+    private String getProductTitle(Products product) {
+        String title="";
+        String productType = product.type;
+        if(productType.equals(getString(R.string.bookType))){
+            title = product.book.title;
+        }else if(productType.equals(getString(R.string.instrumentType))){
+            title = product.instrument.instrumentName;
+        }else if(productType.equals(getString(R.string.comboType))){
+            title = product.combopack.title;
+        }
+        return title;
     }
 
     private void addOrRemoveWish(Products product) {
