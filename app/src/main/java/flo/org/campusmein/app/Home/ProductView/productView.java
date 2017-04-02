@@ -1,6 +1,8 @@
 package flo.org.campusmein.app.Home.ProductView;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -12,18 +14,22 @@ import android.net.Uri;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,16 +40,19 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import flo.org.campusmein.R;
 import flo.org.campusmein.app.Home.MainHomeActivity;
@@ -53,12 +62,15 @@ import flo.org.campusmein.app.utils.College;
 import flo.org.campusmein.app.utils.Books;
 import flo.org.campusmein.app.utils.ConnectivityReceiver;
 import flo.org.campusmein.app.utils.Instruments;
+import flo.org.campusmein.app.utils.Person;
+import flo.org.campusmein.app.utils.PersonGSON;
 import flo.org.campusmein.app.utils.Products;
 import flo.org.campusmein.app.utils.RealmUtils.RealmController;
 import flo.org.campusmein.app.utils.Subjects;
 import flo.org.campusmein.app.utils.campusExchangeApp;
 import flo.org.campusmein.app.utils.cartObject;
 import flo.org.campusmein.app.utils.cartViewUtils.BadgeDrawable;
+import flo.org.campusmein.app.utils.preOrder;
 
 
 public class productView extends AppCompatActivity
@@ -71,7 +83,9 @@ public class productView extends AppCompatActivity
     private static final String QUERY = "?";
     private static final String TAG = productView.class.getSimpleName();
     private static final String SRC_STR_KEY_LOGIN = "src";
+    private static final String NAME_REGEX = "^[\\p{L} .'-]+$";
     private boolean NETWORK_STATE = false;
+    private static final String PHONE_REGEX = "((\\+*)((0[ -]+)*|(91 )*)(\\d{12}+|\\d{10}+))|\\d{5}([- ]*)\\d{6}";
 
     private Toolbar activityToolbar;
     private CoordinatorLayout activity_product_view;
@@ -107,6 +121,7 @@ public class productView extends AppCompatActivity
     private static final String PDCT_ID_KEY = "productId";
 
     private boolean linkAsSource = false;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -983,7 +998,8 @@ public class productView extends AppCompatActivity
                     //method call for buy checkout
                     buyItem();
                 }else if(product.listPrice<0){
-                    showSnack(getString(R.string.notification_for_coming_soon_product));
+//                    showSnack(getString(R.string.notification_for_coming_soon_product));
+                    preOrderPopup();
                 }else {
                     showSnack(getString(R.string.snack_text_for_free_products));
                 }
@@ -1001,6 +1017,281 @@ public class productView extends AppCompatActivity
 
         }
         
+    }
+
+    private void preOrderPopup() {
+        AlertDialog.Builder confirmPreOrder;
+        final EditText mobileNumber_editText = new EditText(this);
+        final EditText name_editText = new EditText(this);
+        String productStr="product";
+        String manufacturer="publisher/manufacturer";
+
+        if(product.type.equals("B")){
+            productStr = "Book";
+            manufacturer = "publisher";
+        }
+
+        confirmPreOrder = new AlertDialog.Builder(this);
+        confirmPreOrder.setTitle("Pre-booking Available");
+        confirmPreOrder.setMessage("Just Enter your name and contact no.\n\n" +
+                "We'll notify you as soon as \n" +
+                "the "+productStr+" is released by the "+manufacturer+".\n\n" +
+                "Thank you \uD83D\uDE09");
+
+        LinearLayout preOrderDialog_layout = new LinearLayout(this);
+        preOrderDialog_layout.setOrientation(LinearLayout.VERTICAL);
+        preOrderDialog_layout.setPadding(dpTopixels(12),dpTopixels(12),dpTopixels(12),dpTopixels(12));
+
+        name_editText.setHint(R.string.enter_name_hint);
+        name_editText.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
+        name_editText.setPadding(dpTopixels(8),dpTopixels(8),dpTopixels(8),dpTopixels(8));
+        name_editText.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        int pixelsLR = dpTopixels(6);
+        int pixelsTB = dpTopixels(6);
+        params.setMargins(pixelsLR,pixelsTB,pixelsLR,pixelsTB);
+        name_editText.setLayoutParams(params);
+        if(campusExchangeApp.getInstance().getUniversalPerson().getPersonName().equals("null")){
+            name_editText.setText("");
+        }else {
+            name_editText.setText(""+campusExchangeApp.getInstance().getUniversalPerson().getPersonName());
+        }
+
+        mobileNumber_editText.setHint(R.string.confirmation_mobile_number_edit_text);
+        mobileNumber_editText.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
+        mobileNumber_editText.setPadding(dpTopixels(8),dpTopixels(8),dpTopixels(8),dpTopixels(8));
+        mobileNumber_editText.setInputType(InputType.TYPE_CLASS_PHONE);
+        params.setMargins(pixelsLR,pixelsTB,pixelsLR,pixelsTB);
+        mobileNumber_editText.setLayoutParams(params);
+        if(campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber().equals("")){
+            mobileNumber_editText.setText(R.string.mobile_number_country_code);
+        }else {
+            mobileNumber_editText.setText(""+campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber());
+        }
+
+
+
+
+        preOrderDialog_layout.addView(name_editText);
+        preOrderDialog_layout.addView(mobileNumber_editText);
+        confirmPreOrder.setView(preOrderDialog_layout);
+
+        String positiveText = getString(android.R.string.ok);
+        confirmPreOrder.setPositiveButton(positiveText,null);
+
+        String negativeText = getString(android.R.string.cancel);
+        confirmPreOrder.setNegativeButton(negativeText,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // negative button logic
+//                        placeOrder.setVisibility(View.VISIBLE);
+                        dialog.dismiss();
+                    }
+                });
+
+        final AlertDialog dialog = confirmPreOrder.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialogInterface).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        // positive button logic
+                        String number = mobileNumber_editText.getText().toString();
+                        String name   = name_editText.getText().toString();
+                        if(number.isEmpty() || name.isEmpty()){
+                            Toast.makeText(getApplicationContext(), R.string.confirm_pre_order, Toast.LENGTH_LONG).show();
+                        }else {
+                            if(isPersonNumberValid(number) && isPersonNameValid(name)){
+
+                                    String oldPhoneNumber = campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber();
+                                    String newPhoneNumber = number;
+                                    if(!oldPhoneNumber.equals(newPhoneNumber)){
+                                        updateMobileNumber(number);
+                                    }else {
+                                        updateMobileNumber(number);
+                                    }
+
+                                    if (campusExchangeApp.getInstance().getUniversalPerson().getPersonObjectId().equals("null")){
+                                        updatePersonName(name);
+                                    }
+                                    placePreOrder(name,number);
+                                    dialog.dismiss();
+
+                            }else {
+                                Toast.makeText(getApplicationContext(), R.string.confirm_pre_order, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        // display dialog
+        dialog.show();
+    }
+
+    private void placePreOrder(String name, String phoneNumber) {
+        showProgressDialog("Booking in progress");
+        preOrder preOrderObj = new preOrder();
+        preOrderObj.setName(name);
+        preOrderObj.setPhoneNumber(phoneNumber);
+        preOrderObj.setObjectId(product.objectId);
+        preOrderObj.setPreOrderId(name+phoneNumber+product_objectId);
+        Gson gtoj = campusExchangeApp.getInstance().getGson();
+        String jsonObjStr = gtoj.toJson(preOrderObj);
+        Log.d("preorder",jsonObjStr);
+
+        try {
+            JSONObject jsonPreOrder = new JSONObject(jsonObjStr);
+
+            String preorderURL = "http://api.backendless.com/test/data/preRegistrations";
+            JsonObjectRequest uploadPreorder = new JsonObjectRequest(
+                    Request.Method.POST,
+                    preorderURL,
+                    jsonPreOrder,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                            Log.d("Pre-order", response.toString());
+                            hideProgressDialog();
+//                            Snackbar.make(activity_product_view, R.string.sucessfullyBooked, Snackbar.LENGTH_LONG).show();
+                            try {
+
+                                if(!response.isNull("objectId")) {
+
+                                    Snackbar.make(activity_product_view, R.string.sucessfullyBooked, Snackbar.LENGTH_LONG).show();
+                                }else if (response.getString("message").equals("Duplicate entry")) {//Duplicate entry
+//                                    showSnack(getString(R.string.alreadysucessfullyBooked));
+                                    Snackbar.make(activity_product_view, R.string.alreadysucessfullyBooked, Snackbar.LENGTH_LONG).show();
+
+                                }else {
+                                    Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+//                            rollbackIfError();
+//                            Snackbar.make(activity_product_view, R.string.alreadysucessfullyBooked, Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+//                            Snackbar.make(activity_product_view, error.getMessage(), Snackbar.LENGTH_LONG).show();
+                            VolleyLog.d(TAG + " :while uploading pre-order", "Error: " + error.getMessage());
+                        }
+                    }) {
+                /**
+                 * Passing some request headers
+                 */
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = campusExchangeApp.getInstance().getCredentialsHashMap();
+                    Log.d("Headers", headers.toString());
+                    return headers;
+                }
+            };
+
+            campusExchangeApp.getInstance().addToRequestQueue(uploadPreorder, TAG);
+        } catch (JSONException e) {
+                e.printStackTrace();
+//            rollbackIfError();
+                Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+            }
+    }
+
+    private void detailsUpload(String number){
+
+
+        if(!(campusExchangeApp.getInstance().getUniversalPerson().getPersonObjectId().equals("null"))) {
+            showProgressDialog(getString(R.string.uploading));
+            try {
+                JSONObject jsonPerson = new JSONObject("{\"contactNumber\":\""+ number + "\"}");
+
+
+                String updateUserString = getString(R.string.classUsers);
+                updateUserString = updateUserString + "/" + campusExchangeApp.getInstance().getUniversalPerson().getPersonObjectId();
+
+                JsonObjectRequest updateNewUser = new JsonObjectRequest(
+                        Request.Method.PUT,
+                        updateUserString,
+                        jsonPerson,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                String personObjectId = null;
+
+                                hideProgressDialog();
+                                try {
+                                    Log.d("Person ObjectId", response.getString("objectId"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                if (response.isNull("objectId")) {
+//                                    Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+//                                rollbackIfError();
+                                } else {
+//                                    Snackbar.make(activity_product_view, R.string.NumberVerified, Snackbar.LENGTH_LONG).show();
+//                                finish();
+//                            StartMainHomeActivity();
+                                }
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+//                            rollbackIfError();
+//                                Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+                                VolleyLog.d(TAG + " :while updating user", "Error: " + error.getMessage());
+                            }
+                        }) {
+                    /**
+                     * Passing some request headers
+                     */
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = campusExchangeApp.getInstance().getCredentialsHashMap();
+                        Log.d("Headers", headers.toString());
+                        return headers;
+                    }
+                };
+
+                campusExchangeApp.getInstance().addToRequestQueue(updateNewUser, TAG);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+//            rollbackIfError();
+                Snackbar.make(activity_product_view, R.string.NetworkError, Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private static boolean isPersonNumberValid(String number) {
+        return number != null && Pattern.matches(PHONE_REGEX, number);
+    }
+
+    private static boolean isPersonNameValid(String name){
+        return name != null && name.length() > 6 && Pattern.matches(NAME_REGEX, name);
+    }
+
+    private void updateMobileNumber(String number) {
+        campusExchangeApp.getInstance().getUniversalPerson().setPhoneNumber(number);
+        detailsUpload(number);
+    }
+
+    private void updatePersonName(String name) {
+
+        campusExchangeApp.getInstance().getUniversalPerson().setPersonName(name);
+
     }
 
     private void buyItem() {
@@ -1092,6 +1383,38 @@ public class productView extends AppCompatActivity
         }
         super.onBackPressed();
 
+    }
+
+    private void showProgressDialog(String progressString) {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(progressString);
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    finish();
+                }
+            });
+        }
+        mProgressDialog.setMessage(progressString);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.show();
+
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mProgressDialog != null){
+            mProgressDialog.dismiss();
+        }
     }
 
 

@@ -153,7 +153,7 @@
     <string name="creatingUser">We are glad you joined us</string>
     <string name="updatingUser">Welcome back, just updating your info.</string>
     <string name="noUser">No user found</string>
-    <string name="NetworkError">Oops...a Network Error occured.</string>
+    <string name="NetworkError">Oops… a Network Error occurred… Please Retry.</string>
     <string name="NetworkFaliure">No Data connection found. Please try again later.</string>
     <string name="good_connection">Good! Connected to Internet</string>
     <string name="filterTextBranch">Branch</string>
@@ -275,7 +275,7 @@
     <string name="validLoginGreetings">Welcome</string>
     <string name="EnterYourMobileNumber">Confirm Your Mobile Number</string>
     <string name="confirm_mobile_number_message_text">All updates will be sent to this number via call or message</string>
-    <string name="confirmation_mobile_number_edit_text">Enter Mobile Number</string>
+    <string name="confirmation_mobile_number_edit_text">Enter Your Mobile Number</string>
     <string name="mobile_number_country_code">+91</string>
     <string name="confirm_mob_number_invalid_mob_number">Please Enter a Valid 10 digit phone number</string>
     <string name="NumberVerified">Phone Number Saved</string>
@@ -303,6 +303,10 @@
     <string name="notification_for_coming_soon_product">We will notify you whenever this becomes available</string>
     <string name="snack_text_for_free_products">Read description to avail this product/service</string>
     <string name="share_option_menu">Share</string>
+    <string name="enter_name_hint">Enter Your Name</string>
+    <string name="confirm_pre_order">Please enter your name and 10 digit valid contact number</string>
+    <string name="alreadysucessfullyBooked">You have already booked this product. We will Notify you as soon as it is available.</string>
+    <string name="sucessfullyBooked">Booked Sucessfully. We will  notify you about it soon. Thank You</string>
     <!--/SELL POLL LINK-->
 
     <!--Cancellation Reasons START-->

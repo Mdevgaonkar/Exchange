@@ -342,8 +342,14 @@ public class login extends AppCompatActivity
                 select_college_spinner.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
                 select_course_spinner.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
                 if(position > 0) {
+
                     branches = colleges.get(position-1).branches;
+                    if(branchesStringArray != null) {
+                        branchesStringArray.clear();
+                        branchesStringArray.add(getResources().getString(R.string.select_your_course));
+                    }
                     for (College.Branch branch : branches) {
+
                         branchesStringArray.add(branch.branch);
                     }
 
@@ -715,7 +721,7 @@ public class login extends AppCompatActivity
     }
 
     private void getCollegeList() {
-        String collegeRequest = "http://api.backendless.com/test/data/colleges?loadRelations=branches&sortBy=collegeName%20asc";
+        String collegeRequest = "http://api.backendless.com/test/data/colleges?pageSize=100&loadRelations=branches&sortBy=collegeName%20asc";
         showProgressDialog(getString(R.string.loading));
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,

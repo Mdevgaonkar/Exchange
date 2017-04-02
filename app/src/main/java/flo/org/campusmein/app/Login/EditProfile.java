@@ -140,7 +140,7 @@ public class EditProfile extends AppCompatActivity
 
 
     private void getCollegeList() {
-        String collegeRequest = "http://api.backendless.com/test/data/colleges?loadRelations=branches&sortBy=collegeName%20asc";
+        String collegeRequest = "http://api.backendless.com/test/data/colleges?pageSize=100&loadRelations=branches&sortBy=collegeName%20asc";
         showProgressDialog(getString(R.string.loading));
         JsonObjectRequest getProductList = new JsonObjectRequest(
                 Request.Method.GET,
@@ -344,26 +344,33 @@ public class EditProfile extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()){
-            case R.id.select_college_spinner :
+            case R.id.profile_edit_select_college_spinner :
+//                Log.d("college","position"+position);
                 person_branchname.setEnabled(true);
                 person_branchname.setClickable(true);
                 person_collegename.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
                 person_branchname.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
                 if(position > 0) {
-                    branches = colleges.get(position-1).branches;
+                    branches = colleges.get(position - 1).branches;
+                    if(branchesStringArray != null){
+                        branchesStringArray.clear();
+                        branchesStringArray.add(getResources().getString(R.string.select_your_course));
+                        person_branchname.setSelection(0);
+                    }
                     for (College.Branch branch : branches) {
                         branchesStringArray.add(branch.branch);
                     }
+
 //                    Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.select_course_spinner :
+            case R.id.profile_edit_select_course_spinner :
                 if(position > 0) {
 //                    Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                     person_branchname.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));
                 }
                 break;
-            case R.id.select_year_spinner :
+            case R.id.profile_edit_select_year_spinner :
                 if(position > 0){
 //                    Toast.makeText(getBaseContext(), parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
                     person_year.setBackground(getResources().getDrawable(R.drawable.filled_background_rounded_rectangle));

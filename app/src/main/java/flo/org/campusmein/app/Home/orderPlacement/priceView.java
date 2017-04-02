@@ -553,7 +553,6 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                             Toast.makeText(getApplicationContext(), R.string.confirm_mob_number_invalid_mob_number, Toast.LENGTH_LONG).show();
                         }else {
                             if(isPersonNumberValid(mobileNumber_editText.getText().toString())){
-                                if (!mobileNumber_editText.getText().equals(campusExchangeApp.getInstance().getUniversalPerson())) {
                                     String oldPhoneNumber = campusExchangeApp.getInstance().getUniversalPerson().getPhoneNumber();
                                     String newPhoneNumber = mobileNumber_editText.getText().toString();
                                     if(!oldPhoneNumber.equals(newPhoneNumber)){
@@ -565,7 +564,6 @@ public class priceView extends AppCompatActivity implements View.OnClickListener
                                     placeBulkOrder();
                                     placeOrder.setVisibility(View.GONE);
                                     dialog.dismiss();
-                                }
                             }else {
                                 Toast.makeText(getApplicationContext(), R.string.confirm_mob_number_invalid_mob_number, Toast.LENGTH_LONG).show();
                             }
