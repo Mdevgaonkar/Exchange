@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.MatrixCursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -15,7 +16,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -26,9 +26,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -54,10 +56,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,15 +70,17 @@ import flo.org.campusmein.app.Home.Buy.BuyFragment;
 import flo.org.campusmein.app.Home.WishList.wishlistView;
 import flo.org.campusmein.app.Home.cart.cartView;
 import flo.org.campusmein.app.Home.orderPlacement.ordersView;
+import flo.org.campusmein.app.Home.search.Search;
 import flo.org.campusmein.app.Home.sell.SellFragment;
 import flo.org.campusmein.app.utils.Person;
 import flo.org.campusmein.app.utils.RealmUtils.RealmController;
-import flo.org.campusmein.app.utils.buyFragmentVariables;
+import flo.org.campusmein.app.utils.SuggestionRealmObject;
 import flo.org.campusmein.app.utils.campusExchangeApp;
 import flo.org.campusmein.app.utils.cartObject;
 import flo.org.campusmein.app.utils.cartViewUtils.BadgeDrawable;
 import flo.org.campusmein.app.utils.chromeCustomTab.CustomTabActivityHelper;
 import flo.org.campusmein.app.utils.chromeCustomTab.WebviewFallback;
+import io.realm.RealmResults;
 
 public class MainHomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -104,7 +108,20 @@ public class MainHomeActivity extends AppCompatActivity
 
 //    Chrome custom activity helper
     private CustomTabActivityHelper mCustomTabActivityHelper;
+    private SimpleCursorAdapter busStopCursorAdapter;
+    String[] sggstn_str_arr;
 
+    ArrayList<SuggestionRealmObject> suggestionRealmObjectArrayList;
+    MatrixCursor cursor;
+
+    private static final String PRODUCT_TITLE = "productTitle";
+    private static final String PRODUCT_STATUS = "productStatus";
+    private static final String PRODUCT_WHERE_CLAUSE = "productWhereClause";
+    private static final String PRODUCT_CLASS = "productClass";
+    private static final String PRODUCT_POLL = "productPoll";
+    private static final String PRODUCT_POLL_URL = "productPollUrl";
+    private static final String PRODUCT_TYPE = "type";
+    private static final String SRC_STR_KEY = "src"; // added to provide all previous orders directly from sidebar
 
 
     @Override
@@ -225,7 +242,7 @@ public class MainHomeActivity extends AppCompatActivity
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new BuyFragment(), getResources().getString(R.string.buy));
-        adapter.addFragment(new SellFragment(), getResources().getString(R.string.sell));
+//        adapter.addFragment(new SellFragment(), getResources().getString(R.string.sell));
 //        adapter.addFragment(new Chats(), getResources().getString(R.string.chatsTab));
         viewPager.setAdapter(adapter);
     }
@@ -286,9 +303,9 @@ public class MainHomeActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_home, menu);
+        getMenuInflater().inflate(R.menu.main_home_with_search, menu);
         mCartMenuIcon = (LayerDrawable) menu.findItem(R.id.action_cart).getIcon();
         int cartSize = RealmController.getInstance().getItems().size();
         setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
@@ -301,8 +318,83 @@ public class MainHomeActivity extends AppCompatActivity
             }
         }
 
+        // Associate searchable configuration with the SearchView
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        setupSearch(menu);
+
         return true;
     }
+
+    private void setupSearch(Menu menu) {
+
+        final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        final Search s = new Search(getApplicationContext(),this);
+
+        suggestionRealmObjectArrayList = new ArrayList<>();
+        s.setNewSuggestions(suggestionRealmObjectArrayList);
+        searchView.setSuggestionsAdapter(s.getSuggestionAdapter());
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+//                String wClause = "attribbutes%20LIKE%20%27%25"+query+"%25%27";
+                String wClause = "book.author%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.edition%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.description%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.title%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.ISBN%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.publicationYear%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"book.publisher%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"instrument.instrumentName%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"instrument.description%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"instrument.instrumentSubtitle%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"instrument.type%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"combopack.title%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"combopack.description%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"combopack.subTitle%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"specialization.branchShort%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"specialization.branch%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27%20OR%20"
+                        +"attribbutes%20LIKE%20%27%25"+URLEncoder.encode(query)+"%25%27";
+
+                gatherExtrasForSearchIntent(wClause,query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+//                Toast.makeText(getApplicationContext(),"You searched for "+newText,Toast.LENGTH_LONG).show();
+
+                RealmResults<SuggestionRealmObject> sggstns =s.FindInDataset(newText);
+                suggestionRealmObjectArrayList.clear();
+                for (SuggestionRealmObject realmObject: sggstns){
+                    suggestionRealmObjectArrayList.add(realmObject);
+                }
+                Log.d("quick"," \n size:-"+suggestionRealmObjectArrayList.size()+" "+suggestionRealmObjectArrayList.toString());
+                s.setNewSuggestions(suggestionRealmObjectArrayList);
+                searchView.setSuggestionsAdapter(s.getSuggestionAdapter());
+                return false;
+            }
+        });
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                SuggestionRealmObject sObj = suggestionRealmObjectArrayList.get(position);
+                String title= sObj.getTitle();
+                String whereClause = sObj.getWhereClause();
+                gatherExtrasForSearchIntent(whereClause,title);
+                return false;
+            }
+        });
+
+    }
+
 
     public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
 
@@ -334,6 +426,33 @@ public class MainHomeActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void gatherExtrasForSearchIntent(String whereClause, String title){
+        int status = 0;
+        String ___class = "products";
+        String type = "A";
+//        String title = "Search";
+        boolean poll =  false;
+        String pollUrl = null;
+
+            openProductStoreList(title,status,whereClause,poll,pollUrl,___class,type);
+
+
+    }
+
+    private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String productClass, String type) {
+        Intent openProductStore = new Intent(getApplicationContext(), flo.org.campusmein.app.Home.listing.productListingActivity.class);
+        openProductStore.putExtra(PRODUCT_TYPE, type);
+        openProductStore.putExtra(PRODUCT_TITLE, productTitle);
+        openProductStore.putExtra(PRODUCT_STATUS, productListStatus);
+        openProductStore.putExtra(PRODUCT_WHERE_CLAUSE, whereClause);
+        openProductStore.putExtra(PRODUCT_CLASS,productClass);
+        openProductStore.putExtra(PRODUCT_POLL,poll);
+        openProductStore.putExtra(PRODUCT_POLL_URL,pollUrl);
+        startActivity(openProductStore);
+
     }
 
     public void openCart() {
@@ -381,6 +500,7 @@ public class MainHomeActivity extends AppCompatActivity
                 break;
             case R.id.myOrders:
                 Intent myOrders = new Intent(this, ordersView.class);
+                myOrders.putExtra(SRC_STR_KEY,"profile_options");
                 startActivity(myOrders);
                 break;
             case R.id.mySells:
@@ -694,21 +814,39 @@ public class MainHomeActivity extends AppCompatActivity
                         try {
                             String newVersion = response.getString("appVersion");
                             String unsupportedVersion = response.getString("unsupportedVersion");
+                            String dataset_upd_dt = response.getString("dataset_upd_dt");
+
                             float newVersionFloat = Float.valueOf(newVersion);
                             Log.d("Float_newVersionFloat",newVersionFloat+"");
+
                             float unsupportedVersionFloat = Float.valueOf(unsupportedVersion);
                             Log.d("Float_unsupported",unsupportedVersionFloat+"");
+
                             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+
                             String presentVersion = pInfo.versionName;
                             float presentVersionFloat = Float.valueOf(presentVersion);
+
                             Log.d("Float_presentVersion",presentVersionFloat+"");
-                            if(presentVersionFloat<newVersionFloat){
+
+                            if(presentVersionFloat!=newVersionFloat){
                                 if(presentVersionFloat <= unsupportedVersionFloat){
                                     showDialogToUpdate(1);
                                 }else {
                                     showDialogToUpdate(0);
                                 }
                             }
+
+                            if(!dataset_upd_dt.equals(campusExchangeApp.getInstance().getUniversalPerson().getDataset_upd_dt())){
+                                Search searchDataSet = new Search(getApplicationContext(), MainHomeActivity.this);
+                                searchDataSet.getNewDataset(dataset_upd_dt);
+
+                            }else{
+                                Toast.makeText(getApplicationContext(), "dataset up to date", Toast.LENGTH_SHORT).show();
+                            }
+
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.d("JSON Exception",e.toString());
@@ -922,5 +1060,10 @@ public class MainHomeActivity extends AppCompatActivity
                 dps,
                 getResources().getDisplayMetrics());
     }
+
+
+
+
+
 
 }

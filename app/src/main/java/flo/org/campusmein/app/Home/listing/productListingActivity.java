@@ -3,6 +3,7 @@ package flo.org.campusmein.app.Home.listing;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.MatrixCursor;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -14,10 +15,12 @@ import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -49,6 +52,7 @@ import java.util.Map;
 
 import flo.org.campusmein.R;
 import flo.org.campusmein.app.Home.cart.cartView;
+import flo.org.campusmein.app.Home.search.Search;
 import flo.org.campusmein.app.utils.College;
 import flo.org.campusmein.app.utils.EndlessRecyclerViewScrollListener;
 import flo.org.campusmein.app.utils.Person;
@@ -57,11 +61,13 @@ import flo.org.campusmein.app.utils.ConnectivityReceiver;
 import flo.org.campusmein.app.utils.Products;
 import flo.org.campusmein.app.utils.RealmUtils.RealmController;
 import flo.org.campusmein.app.utils.Subjects;
+import flo.org.campusmein.app.utils.SuggestionRealmObject;
 import flo.org.campusmein.app.utils.campusExchangeApp;
 import flo.org.campusmein.app.utils.cartViewUtils.BadgeDrawable;
 import flo.org.campusmein.app.utils.chromeCustomTab.CustomTabActivityHelper;
 import flo.org.campusmein.app.utils.chromeCustomTab.WebviewFallback;
 import flo.org.campusmein.app.utils.searchableSpinnerViewUtils.SearchableSpinner;
+import io.realm.RealmResults;
 
 public class productListingActivity extends AppCompatActivity
             implements View.OnClickListener,ConnectivityReceiver.ConnectivityReceiverListener{
@@ -119,6 +125,7 @@ public class productListingActivity extends AppCompatActivity
 
     private int status;
     private String whereClause;
+    private String title;
     private boolean poll;
     private String pollUrl;
     private String ___class;
@@ -144,6 +151,11 @@ public class productListingActivity extends AppCompatActivity
     private ProgressBar listing_loadMore_progress;
     private TextView listing_allProductsShown;
 
+    ArrayList<SuggestionRealmObject> suggestionRealmObjectArrayList;
+    MatrixCursor cursor;
+
+    boolean searchUsedIndicator = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +164,8 @@ public class productListingActivity extends AppCompatActivity
         Intent productType = getIntent();
 
         Bundle b = productType.getExtras();
-        String title = b.getString(PRODUCT_TITLE);
+
+        title = b.getString(PRODUCT_TITLE);
         status = b.getInt(PRODUCT_STATUS,1);
         whereClause = b.getString(PRODUCT_WHERE_CLAUSE);
         ___class = b.getString(PRODUCT_CLASS);
@@ -626,9 +639,9 @@ public class productListingActivity extends AppCompatActivity
         productList = new ArrayList<>();
         productListingAdapter = new productListingAdapter(this, productList);
 
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         productRecyclerView.setLayoutManager(mLayoutManager);
-        productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        productRecyclerView.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(0), true));
         productRecyclerView.setItemAnimator(new DefaultItemAnimator());
         productRecyclerView.setAdapter(productListingAdapter);
 
@@ -863,7 +876,9 @@ public class productListingActivity extends AppCompatActivity
                         }
                         updateDataSetOfRecyclerView();
                         updateUI();
+                        searchUsedIndicator = false;
                         hideProgressLayout();
+
 
 //                        tv.setText(response.toString());
 //                        tv.setVisibility(View.VISIBLE);
@@ -894,7 +909,7 @@ public class productListingActivity extends AppCompatActivity
     private void prepareProducts(String filter) {
         String productRequest = getString(R.string.baseBackendUrl);
 //        productRequest = productRequest+getString(R.string.products);
-        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter+"%20AND%20("+whereClause+")";
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+filter;//+"%20AND%20("+whereClause+")";
         Log.d("productRequestFilter", productRequest);
         showProgressLayout();
         JsonObjectRequest getProductList = new JsonObjectRequest(
@@ -1057,7 +1072,7 @@ public class productListingActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_home, menu);
+        getMenuInflater().inflate(R.menu.main_home_with_search, menu);
         mCartMenuIcon = (LayerDrawable) menu.findItem(R.id.action_cart).getIcon();
         int cartSize = RealmController.getInstance().getItems().size();
         setBadgeCount(this, mCartMenuIcon, String.valueOf(cartSize));
@@ -1069,8 +1084,113 @@ public class productListingActivity extends AppCompatActivity
                 drawable.setColorFilter(getResources().getColor(R.color.colorCard), PorterDuff.Mode.SRC_ATOP);
             }
         }
+        setupSearch(menu);
+
+
 
         return true;
+    }
+
+    private void setupSearch(Menu menu) {
+
+        final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        final Search s = new Search(getApplicationContext(),this);
+
+        suggestionRealmObjectArrayList = new ArrayList<>();
+        s.setNewSuggestions(suggestionRealmObjectArrayList);
+        searchView.setSuggestionsAdapter(s.getSuggestionAdapter());
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+//                String wClause = "attribbutes%20LIKE%20%27%25"+query+"%25%27";
+//                gatherExtrasForSearchIntent(wClause,query);
+                String wClause = "book.author%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.edition%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.description%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.title%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.ISBN%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.publicationYear%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"book.publisher%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"instrument.instrumentName%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"instrument.description%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"instrument.instrumentSubtitle%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"instrument.type%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"combopack.title%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"combopack.description%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"combopack.subTitle%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"specialization.branchShort%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"specialization.branch%20LIKE%20%27%25"+query+"%25%27%20OR%20"
+                        +"attribbutes%20LIKE%20%27%25"+query+"%25%27";
+                searchClause(wClause, query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+//                Toast.makeText(getApplicationContext(),"You searched for "+newText,Toast.LENGTH_LONG).show();
+
+                RealmResults<SuggestionRealmObject> sggstns =s.FindInDataset(newText);
+                suggestionRealmObjectArrayList.clear();
+                for (SuggestionRealmObject realmObject: sggstns){
+                    suggestionRealmObjectArrayList.add(realmObject);
+                }
+                Log.d("quick"," \n size:-"+suggestionRealmObjectArrayList.size()+" "+suggestionRealmObjectArrayList.toString());
+                s.setNewSuggestions(suggestionRealmObjectArrayList);
+                searchView.setSuggestionsAdapter(s.getSuggestionAdapter());
+                return false;
+            }
+        });
+
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                return false;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                SuggestionRealmObject sObj = suggestionRealmObjectArrayList.get(position);
+                String title= sObj.getTitle();
+                String whereClause = sObj.getWhereClause();
+//                gatherExtrasForSearchIntent(whereClause,title);
+                searchClause(whereClause,title);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                prepareProducts();
+                return false;
+            }
+        });
+
+
+
+    }
+
+    private void searchClause(String whereClause,String title){
+
+        searchUsedIndicator = true;
+
+        String Default_FilterClause="" ;//= FilterClause + "%20AND%20";  // AND
+        Default_FilterClause = Default_FilterClause + "college.collegeName%3D%27"; //term%3D%27 %27
+        Default_FilterClause = Default_FilterClause + URLEncoder.encode(campusExchangeApp.getInstance().getUniversalPerson().getCollegeName());
+        Default_FilterClause = Default_FilterClause + "%27";
+
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+        Default_FilterClause = Default_FilterClause + "enlisted%3DTRUE"; //enlisted = TRUE
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        String filter = Default_FilterClause +"(" +whereClause+")";
+
+        prepareProducts(filter);
+        getSupportActionBar().setTitle(title);
+
     }
 
     public static void setBadgeCount(Context context, LayerDrawable icon, String count) {
@@ -1095,7 +1215,13 @@ public class productListingActivity extends AppCompatActivity
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                finish();
+                if(searchUsedIndicator){
+                    searchUsedIndicator = false;
+                    prepareProducts();
+                    getSupportActionBar().setTitle(title);
+                }else {
+                    finish();
+                }
                 return true;
             case R.id.action_cart:
                 openCart();
@@ -1295,7 +1421,13 @@ public class productListingActivity extends AppCompatActivity
         if(NETWORK_STATE) {
             campusExchangeApp.getInstance().getmRequestQueue().cancelAll(TAG);
         }
-        finish();
+        if(searchUsedIndicator){
+
+            prepareProducts();
+            getSupportActionBar().setTitle(title);
+        }else {
+            finish();
+        }
         super.onBackPressed();
 
     }

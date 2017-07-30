@@ -3,6 +3,8 @@ package flo.org.campusmein.app.Home.Buy;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +13,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -20,9 +26,11 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,10 +42,19 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import flo.org.campusmein.R;
+import flo.org.campusmein.app.Home.listing.productListingActivity;
+import flo.org.campusmein.app.Home.listing.productListingAdapter;
 import flo.org.campusmein.app.utils.ConnectivityReceiver;
+import flo.org.campusmein.app.utils.EndlessRecyclerViewScrollListener;
+import flo.org.campusmein.app.utils.Products;
 import flo.org.campusmein.app.utils.buyFragmentVariables;
 import flo.org.campusmein.app.utils.campusExchangeApp;
 
@@ -51,6 +68,19 @@ public class BuyFragment extends Fragment implements
         SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = BuyFragment.class.getSimpleName();
+    private static final String QUERY = "?";
+    private static final String LOAD_RELATIONS ="loadRelations=book%2Cinstrument%2Ccombopack";
+    private static final String QUERY_SEPERATOR = "&";
+    private static final String LOAD_PROPS = "props=listPrice%2CobjectId%2Cmrp%2CdateEnlisted%2Ctype";
+    private static final String WHERE_EQUAL_TO = "where=";
+
+    private static final String RESPONSE_DATA = "data";
+    private String nextPage="" ;
+
+    private String whereClause="type%3D%27B%27";
+
+
+
     private ProgressDialog mProgressDialog;
 
     private static final long ANIM_VIEWPAGER_DELAY = 5000;
@@ -84,13 +114,15 @@ public class BuyFragment extends Fragment implements
 
     private FrameLayout fragment_buy;
     private LinearLayout store_cards;
-    private TextView store_heading_text;
+    private TextView store_heading_text,recomendedTxt;
     private CardView[] card_view_store;
     private ArrayList<buyFragmentVariables.stores.items> storeItems;
     private LinearLayout booksCategory, utilitiesCategory,novelsCategory,servicesCategory,instumentsCategory,othersCategory;
     private LinearLayout buy_progressBarLayout;
     private LinearLayout buy_error_Layout;
     private ScrollView buy_scrollView;
+    private RecyclerView product_list_recycler_view;
+    private rcmdtnListingAdapter productListingAdapter;
 
     buyFragmentVariables.carousal varsCarousal;
     buyFragmentVariables.categories varsCategories;
@@ -100,6 +132,8 @@ public class BuyFragment extends Fragment implements
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private LinearLayout buy_home_linear_layout;
+    private ArrayList<Products> rcmdedPrdcts;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
 
     public BuyFragment() {
@@ -119,6 +153,7 @@ public class BuyFragment extends Fragment implements
         setupVariablesObject();
         setupViews();
         setupStoreCards();
+        setupRecomendations();
         setupViewPager();
         setupCategoryViews();
         checkConnection();
@@ -126,6 +161,200 @@ public class BuyFragment extends Fragment implements
         return home_view;
 
     }
+
+    private void setupRecomendations() {
+        recomendedTxt = (TextView) home_view.findViewById(R.id.recomendedTxt);
+        recomendedTxt.setVisibility(View.GONE);
+        product_list_recycler_view = (RecyclerView) home_view.findViewById(R.id.product_list_recycler_view);
+
+        product_list_recycler_view.setVisibility(View.GONE);
+
+        rcmdedPrdcts = new ArrayList<>();
+        productListingAdapter = new rcmdtnListingAdapter(getContext(), rcmdedPrdcts);
+
+        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getContext(), 1, LinearLayoutManager.HORIZONTAL, false);
+//        RecyclerView.LayoutManager mLayoutManager  = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        product_list_recycler_view.setLayoutManager(mLayoutManager);
+//        product_list_recycler_view.addItemDecoration(new GridSpacingItemDecoration(1, dpToPx(10), true));
+        product_list_recycler_view.setItemAnimator(new DefaultItemAnimator());
+        product_list_recycler_view.setAdapter(productListingAdapter);
+
+        // Retain an instance so that you can call `resetState()` for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(mLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+//                Log.d("NextPageLink",nextPage);
+//                if(!nextPage.isEmpty() && !nextPage.equals("null") ){
+//                    loadNextDataFromApi(nextPage);
+//                    listing_loadMore_progress.setVisibility(View.VISIBLE);
+//                    listing_allProductsShown.setVisibility(View.GONE);
+//                }else {
+//                    listing_loadMore_progress.setVisibility(View.GONE);
+//                    listing_allProductsShown.setVisibility(View.VISIBLE);
+//                }
+
+
+
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        product_list_recycler_view.addOnScrollListener(scrollListener);
+        prepareProducts();
+
+    }
+
+
+    private void prepareProducts() {
+
+//        http://api.backendless.com/test/data/products?loadRelations=book%2Cinstrument%2Ccombopack&props=listPrice%2CobjectId%2Cmrp
+        String productRequest = getString(R.string.baseBackendUrl);
+//        productRequest = productRequest+getString(R.string.products);
+
+        String year = campusExchangeApp.getInstance().getUniversalPerson().getAcademicYear();
+        String sem = "";
+        String branch= campusExchangeApp.getInstance().getUniversalPerson().getPersonCourseoBjectId();
+        if(year.equals("F.E.")){
+            sem="(%271%27%2C%272%27)";
+        }else if(year.equals("S.E.")){
+            sem="(%273%27%2C%274%27)";
+        }else if(year.equals("T.E.")){
+            sem="(%275%27%2C%276%27)";
+        }else if(year.equals("B.E.")){
+            sem="(%277%27%2C%278%27)";
+        }
+
+
+        String Default_FilterClause="" ;//= FilterClause + "%20AND%20";  // AND
+
+        Default_FilterClause = Default_FilterClause + "specialization.objectID%3D%27"; //term%3D%27 %27
+        Default_FilterClause = Default_FilterClause + branch;
+        Default_FilterClause = Default_FilterClause + "%27";
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        Default_FilterClause = Default_FilterClause + "term%20IN%20"; //term%3D%27 %27
+        Default_FilterClause = Default_FilterClause + sem;
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        Default_FilterClause = Default_FilterClause + "college.objectId%3D%27"; //term%3D%27 %27
+        Default_FilterClause = Default_FilterClause + URLEncoder.encode(campusExchangeApp.getInstance().getUniversalPerson().getPersonCollegeObjectId());
+        Default_FilterClause = Default_FilterClause + "%27";
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        Default_FilterClause = Default_FilterClause + "enlisted%3DTRUE"; //enlisted = TRUE
+        Default_FilterClause = Default_FilterClause + "%20AND%20";  // AND
+
+        String ___class="products";
+        productRequest = productRequest+___class+QUERY+LOAD_RELATIONS+QUERY_SEPERATOR+LOAD_PROPS+QUERY_SEPERATOR+WHERE_EQUAL_TO+Default_FilterClause+"("+whereClause+")";
+//        showProgressLayout();
+        JsonObjectRequest getProductList = new JsonObjectRequest(
+                Request.Method.GET,
+                productRequest,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String responseData = response.getJSONArray(RESPONSE_DATA).toString();
+                            Gson gson = campusExchangeApp.getInstance().getGson();
+                            List<Products> productsList = Arrays.asList(gson.fromJson(responseData,Products[].class));
+                            rcmdedPrdcts.clear();
+                            for(Products product : productsList) {
+                                rcmdedPrdcts.add(product);
+                            }
+
+                            nextPage = response.getString("nextPage");
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.d("Product list","no rational data");
+                            showErrorLayout();
+
+                        }
+                        updateDataSetOfRecyclerView();
+//                        updateUI();
+//                        hideProgressLayout();
+
+//                        tv.setText(response.toString());
+//                        tv.setVisibility(View.VISIBLE);
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        showErrorLayout();
+                    }
+                }){
+
+            /**
+             * Passing some request headers
+             * */
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers= campusExchangeApp.getInstance().getCredentialsHashMap();
+                Log.d("Headers", headers.toString());
+                return headers;
+            }
+        };
+
+        campusExchangeApp.getInstance().addToRequestQueue(getProductList,TAG);
+    }
+
+    private void updateDataSetOfRecyclerView() {
+        productListingAdapter.notifyDataSetChanged();
+        recomendedTxt.setVisibility(View.VISIBLE);
+        product_list_recycler_view.setVisibility(View.VISIBLE);
+
+    }
+
+    /**
+     * RecyclerView item decoration - give equal margin around grid item
+     */
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position % spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing; // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
+                }
+            }
+        }
+    }
+
+    /**
+     * Converting dp to pixel
+     */
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
 
     private void setupBuyHomeLinearLayout() {
         buy_home_linear_layout = (LinearLayout) home_view.findViewById(R.id.buy_home_linear_layout);
@@ -519,23 +748,6 @@ public class BuyFragment extends Fragment implements
         }
     }
 
-//    private void showProgressDialog(String showString) {
-//        if (mProgressDialog == null) {
-//            mProgressDialog = new ProgressDialog(getActivity());
-//            mProgressDialog.setMessage(showString);
-//            mProgressDialog.setIndeterminate(true);
-//        }
-//        mProgressDialog.setMessage(showString);
-//        mProgressDialog.setCanceledOnTouchOutside(false);
-//        mProgressDialog.setCancelable(false);
-//        mProgressDialog.show();
-//    }
-//
-//    private void hideProgressDialog() {
-//        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-//            mProgressDialog.hide();
-//        }
-//    }
     private void openProductStoreList(String productTitle, int productListStatus, String whereClause, boolean poll, String pollUrl, String productClass, String type) {
         Intent openProductStore = new Intent(getActivity(), flo.org.campusmein.app.Home.listing.productListingActivity.class);
         openProductStore.putExtra(PRODUCT_TYPE, type);
@@ -650,6 +862,7 @@ public class BuyFragment extends Fragment implements
 
         showProgressBar();
         fetchVariables();
+        prepareProducts();
 //        swipeRefreshLayout.setRefreshing(false);
 
     }

@@ -14,7 +14,8 @@
         <item
             android:id="@+id/mySells"
             android:icon="@drawable/ic_local_atm_black_24dp"
-            android:title="@string/mySells" />
+            android:title="@string/mySells"
+            android:visible="false"/>
         <item
             android:id="@+id/myWishlist"
             android:icon="@drawable/ic_favorite_border_black_24dp"

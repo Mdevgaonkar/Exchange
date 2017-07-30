@@ -75,7 +75,7 @@
                 android:spinnerMode="dropdown"
                 android:background="@drawable/filled_background_rounded_rectangle"
                 android:layout_margin="@dimen/sixteenDp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
             </android.support.v7.widget.AppCompatSpinner>
 
@@ -88,7 +88,7 @@
                 android:spinnerMode="dropdown"
                 android:background="@drawable/filled_background_rounded_rectangle"
                 android:layout_margin="@dimen/sixteenDp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
             </android.support.v7.widget.AppCompatSpinner>
 
@@ -101,7 +101,7 @@
                 android:spinnerMode="dropdown"
                 android:background="@drawable/filled_background_rounded_rectangle"
                 android:layout_margin="@dimen/sixteenDp"
-                android:visibility="gone"
+                android:visibility="visible"
                 >
             </android.support.v7.widget.AppCompatSpinner>
 
@@ -193,7 +193,8 @@
             android:layout_marginBottom="@dimen/sixteenDp"
             android:padding="@dimen/sixteenDp"
             android:clickable="true"
-            android:background="?attr/selectableItemBackground"/>
+            android:background="?attr/selectableItemBackground"
+            android:visibility="gone"/>
 
         </LinearLayout>
 

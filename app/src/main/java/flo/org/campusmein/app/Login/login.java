@@ -86,7 +86,7 @@ public class login extends AppCompatActivity
     private LinearLayout loginLayout;
     private LinearLayout welcomeLayout;
     private SignInButton btn_sign_in;
-    private TextView skip_button;
+    private TextView skip_button; //functionality Removed since vc 16
     private CircularImageView profile_img;
     private TextView profile_name;
     private Button btn_lets_start;
@@ -135,7 +135,8 @@ public class login extends AppCompatActivity
 
     private void showOrHideSkipOption(){
         if(srcString.equals("new")){
-            skip_button.setVisibility(View.VISIBLE);
+//            skip_button.setVisibility(View.VISIBLE);
+            skip_button.setVisibility(View.GONE);
         }else if(srcString.equals("cart")){
             skip_button.setVisibility(View.GONE);
         }
@@ -540,8 +541,7 @@ public class login extends AppCompatActivity
                     signIn();
                     break;
                 case R.id.skip_button:
-                    set_campusMe_icon_as_avatar();
-                    updateUI(1);
+
                     break;
                 case R.id.btn_lets_start:
                     //condition based activity start

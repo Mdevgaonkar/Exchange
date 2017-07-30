@@ -26,6 +26,7 @@ public class Person {
     public static final String PERSON_COLLEGE_SHORT = "personcollegeshort";
     public static final String PERSON_COURSE_SHORT = "personcourseshort";
     public static final String PERSON_AUTH_CODE = "authcode";
+    public static final String DATASET_UPD_DT = "dataset_upd_dt";
 
     String personName;
     String personPhotoUrl;
@@ -48,6 +49,8 @@ public class Person {
 
     private Context context;
     private String authCode;
+    private String dataset_upd_dt;
+
 
     public Person(Context context){
         this.context=context;
@@ -223,5 +226,14 @@ public class Person {
 
     public String getPersonAuthCode() {
         return readPreferences(context,PERSON_AUTH_CODE,"secretPasskey");
+    }
+
+    public void setDataset_upd_dt(String dataset_upd_dt) {
+        this.dataset_upd_dt = dataset_upd_dt;
+        setPreferences(context,DATASET_UPD_DT,dataset_upd_dt);
+    }
+
+    public String getDataset_upd_dt() {
+        return readPreferences(context,DATASET_UPD_DT,"0");
     }
 }

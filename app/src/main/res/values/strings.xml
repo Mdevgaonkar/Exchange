@@ -145,9 +145,12 @@
 
     <!--User table-->
     <string name="classUsers">http://api.backendless.com/test/data/Users</string>
-    <string name="createUser">http://xchange.hol.es/createUser.php</string>
-    <string name="readUser">http://xchange.hol.es/readUser.php</string>
-    <string name="updateUser">http://xchange.hol.es/updateUser.php</string>
+    <!--<string name="createUser">http://xchange.hol.es/createUser.php</string>-->
+    <string name="createUser">http://cmapi.flolabs.in/oldAPI/createUser.php</string>
+    <!--<string name="readUser">http://xchange.hol.es/readUser.php</string>-->
+    <string name="readUser">http://cmapi.flolabs.in/oldAPI/readUser.php</string>
+    <!--<string name="updateUser">http://xchange.hol.es/updateUser.php</string>-->
+    <string name="updateUser">http://cmapi.flolabs.in/oldAPI/updateUser.php</string>
     <string name="setting_up">Setting Up</string>
     <string name="setup_complete">Setup Complete</string>
     <string name="creatingUser">We are glad you joined us</string>
@@ -163,12 +166,17 @@
     <string name="publication">Publication</string>
     <string name="action_add_favourite">Add to Favourites</string>
     <string name="gettingCredentials">Getting Credentials</string>
-    <string name="credentialFetcher">http://xchange.hol.es/credentialfetcher.php</string>
+    <!--<string name="credentialFetcher">http://xchange.hol.es/credentialfetcher.php</string>-->
+    <string name="credentialFetcher">http://cmapi.flolabs.in/oldAPI/credentialfetcher.php</string>
     <string name="store">Store</string>
     <string name="baseBackendUrl">http://api.backendless.com/test/data/</string>
     <string name="products">products</string>
-    <string name="buyPageVariables">http://xchange.hol.es/hompageVariables.json</string>
-    <string name="versionVariables">http://xchange.hol.es/versionVariables.json</string>
+    <!--<string name="buyPageVariables">http://xchange.hol.es/hompageVariables.json</string>-->
+    <string name="buyPageVariables">http://cmapi.flolabs.in/oldAPI/hompageVariables.json</string>
+    <!--<string name="versionVariables">http://xchange.hol.es/versionVariables.json</string>-->
+    <string name="versionVariables">http://cmapi.flolabs.in/oldAPI/versionVariables.json</string>
+    <!--<string name="suggestionsDataset">http://xchange.hol.es/suggestionsDataset.json</string>-->
+    <string name="suggestionsDataset">http://cmapi.flolabs.in/oldAPI/suggestionsDataset.json</string>
     <string name="optionNotAvailable">Sorry the option is not available yet</string>
     <string name="branch_filterOptionTitle">Select Branch</string>
     <string name="ok_action">OK</string>
@@ -270,7 +278,8 @@
     <string name="helpQueryMailSubject">Help Query By\t</string>
     <string name="help_Confirmation">Mail us your Query</string>
     <string name="help_Confirmation_dialog_text">Mention your query on the next page and just press send.\n\nWe will contact you on phone or on mail as soon as possible.\n\n Press OK to Continue</string>
-    <string name="about_us_link">http://xchange.hol.es/</string>
+    <!--<string name="about_us_link">http://xchange.hol.es/</string>-->
+    <string name="about_us_link">http://flolabs.in/</string>
     <string name="option_comming_soon">Sorry... This Option Will Be Available Soon</string>
     <string name="validLoginGreetings">Welcome</string>
     <string name="EnterYourMobileNumber">Confirm Your Mobile Number</string>
@@ -307,6 +316,8 @@
     <string name="confirm_pre_order">Please enter your name and 10 digit valid contact number</string>
     <string name="alreadysucessfullyBooked">You have already booked this product. We will Notify you as soon as it is available.</string>
     <string name="sucessfullyBooked">Booked Sucessfully. We will  notify you about it soon. Thank You</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Enter subject name to search books</string>
     <!--/SELL POLL LINK-->
 
     <!--Cancellation Reasons START-->
