@@ -266,6 +266,7 @@ public class productView extends AppCompatActivity
 
         String details = getBookDetails();
         setDetailsText(details);
+
         setDescriptionText(product.book.description);
     }
 
@@ -286,11 +287,16 @@ public class productView extends AppCompatActivity
         Details = Details + greyFont + getString(R.string.edition) + endGreyFont + product.book.edition+breakTag+breakTag;
         Details = Details + greyFont + getString(R.string.pubYear) + endGreyFont + product.book.publicationYear+breakTag+breakTag;
         String subjects = getSubjects();
-        Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
-        Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
+        if(subjects!=""){
+            Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
+        }
+        if(product.term != ""){
+            Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
+        }
         String courses = getCourses();
-        Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
-
+        if(courses != null){
+            Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
+        }
         return Details;
     }
 
@@ -349,14 +355,23 @@ public class productView extends AppCompatActivity
         final String breakTag = "<br>";
 
         Details = Details + greyFont + getString(R.string.title) + endGreyFont + product.instrument.instrumentName+" ("+product.instrument.instrumentSubtitle+")"+breakTag+breakTag;
+
         String condition=getCondition();
         Details = Details + greyFont + getString(R.string.condition) + endGreyFont + condition+breakTag+breakTag;
+
         Details = Details + greyFont + getString(R.string.category) + endGreyFont+ product.instrument.type +breakTag+breakTag;
+
         String subjects = getSubjects();
-        Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
-        Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
+        if(subjects!= ""){
+            Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
+        }
+        if(product.term != ""){
+            Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
+        }
         String courses = getCourses();
-        Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
+        if(courses!=""){
+            Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
+        }
 
         return Details;
     }
@@ -382,10 +397,16 @@ public class productView extends AppCompatActivity
         String condition=getCondition();
         Details = Details + greyFont + getString(R.string.condition) + endGreyFont + condition+breakTag+breakTag;
         String subjects = getSubjects();
-        Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects+breakTag+breakTag;
-        Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term+breakTag+breakTag;
+        if(subjects != "") {
+            Details = Details + greyFont + getString(R.string.subjects) + endGreyFont + subjects + breakTag + breakTag;
+        }
+        if(product.term != "") {
+            Details = Details + greyFont + getString(R.string.term) + endGreyFont + product.term + breakTag + breakTag;
+        }
         String courses = getCourses();
-        Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
+        if(courses != ""){
+            Details = Details + greyFont + getString(R.string.course) + endGreyFont + courses;
+        }
 
         return Details;
     }
@@ -686,7 +707,7 @@ public class productView extends AppCompatActivity
 
     }
 
-    private void showDescription(){
+    private void showDescription() {
         //show details title bold
         tab_title_details.setTypeface(null, Typeface.NORMAL);
         tab_title_description.setTypeface(null, Typeface.BOLD);
@@ -700,6 +721,20 @@ public class productView extends AppCompatActivity
         tab_content_description.setVisibility(View.VISIBLE);
     }
 
+    private void hideDescription() {
+        //show details title bold
+        tab_title_details.setTypeface(null, Typeface.BOLD);
+        tab_title_description.setVisibility(View.GONE);
+
+        //show details Indicator
+        tab_indicator_details.setVisibility(View.VISIBLE);
+        tab_indicator_description.setVisibility(View.VISIBLE);
+
+        //show details content
+        tab_content_details.setVisibility(View.VISIBLE);
+        tab_content_description.setVisibility(View.GONE);
+    }
+
     private void setDetailsText(String Details){
         //set details text
         tab_content_text_details.setText(Html.fromHtml(Details));
@@ -707,9 +742,16 @@ public class productView extends AppCompatActivity
     }
 
     private void setDescriptionText(String Description){
-        //set description text
-        tab_content_text_description.setText(Html.fromHtml(Description));
-        tab_content_text_details. setMovementMethod(LinkMovementMethod.getInstance());
+        if(Description == null || Description == ""){
+            hideDescription();
+            tab_content_text_description.setText("");
+        }else {
+            //set description text
+            tab_content_text_description.setText(Html.fromHtml(Description));
+            tab_content_text_details. setMovementMethod(LinkMovementMethod.getInstance());
+        }
+
+
     }
 
     private void setupMRPView() {
@@ -1006,7 +1048,10 @@ public class productView extends AppCompatActivity
 
                 break;
             case R.id.tab_title_details:
-                showDetails();
+
+                if(!tab_content_text_description.getText().equals("")){
+                    showDetails();
+                }
                 break;
             case R.id.tab_title_description:
                 showDescription();
