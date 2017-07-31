@@ -4,13 +4,13 @@ android {
     signingConfigs {
     }
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.1'
     defaultConfig {
         applicationId "flo.org.campusmein"
         minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 18
-        versionName "1.010"
+        targetSdkVersion 25
+        versionCode 19
+        versionName "1.011"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
